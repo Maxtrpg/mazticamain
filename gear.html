@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>裝備與物品 GEAR - 馬茲提卡</title>
+<!-- ✅ 導覽列與背景模組 -->
+<link href="navbar.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer="" src="navbar.js"></script>
+<link href="background.css" rel="stylesheet"/>
+<script defer="" src="background.js"></script>
+<!-- ✅ 字型 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.cdnfonts.com/css/quatl" rel="stylesheet"/>
+<style>
+    :root { --gold:#c9a35a; --jade:#0e4b3a; --ink:#1a1a1a; --paper:#f5e9c9; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body { font-family:'Noto Sans TC',sans-serif; color:#f1e8d6; overflow-x:hidden; }
+
+    header{
+      text-align:left;
+      padding:40px 40px 0px;
+      opacity:0;
+      transform:translateY(-30px);
+    }
+    header h1{
+      font-family:"Quatl",serif;
+      font-size:2rem;
+      color:var(--gold);
+      letter-spacing:2px;
+    }
+    header p{
+      margin-top:8px;
+      font-size:1.05rem;
+      color:#fffbe8;
+      line-height:1.7;
+    }
+
+main{
+  /* 改為只在初始動畫時使用 transform，不保留在常態樣式 */
+  max-width:1200px;
+  margin:30px auto;
+  padding:0 32px 40px;
+  background:rgba(0,0,0,0.25);
+  border:1px solid var(--gold);
+  border-radius:12px;
+  backdrop-filter:blur(3px);
+  box-shadow:0 4px 10px rgba(0,0,0,0.5);
+  opacity:0;
+}
+/* ✅ 在動畫用 GSAP 控制 Y 軸移動即可，不要靜態 transform */
+    main h2, main h3, main h4{
+      color:var(--gold);
+      margin-top:1.5em;
+      margin-bottom:0.6em;
+    }
+    main p, main li{
+      line-height:1.8;
+      margin-bottom:10px;
+    }
+    main ul{ margin-left:20px; }
+    main img{
+      display:block;
+      max-width:100%;
+      border-radius:8px;
+      margin:16px auto;
+      box-shadow:0 3px 10px rgba(0,0,0,0.4);
+      opacity:0;
+      transform:translateY(20px);
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin:20px 0;
+      font-size:0.95rem;
+      background:rgba(0,0,0,0.3);
+    }
+    th,td{
+      border:1px solid rgba(255,255,255,0.15);
+      padding:8px 10px;
+    }
+    th{color:var(--gold);text-align:left;}
+    td{color:#f1e8d6;}
+
+    .divider{
+      width:100%;
+      height:80px;
+      margin:0px 0 0;
+      background:url('images/aztec-divider.png') repeat-x;
+      background-size:auto 200%;
+      opacity:.9;
+    }
+
+    /* ✅ 返回上方按鈕 */
+    #backToTop {
+      position:fixed;
+      bottom:40px;
+      right:40px;
+      background:rgba(201,163,90,0.85);
+      color:#111;
+      padding:10px 16px;
+      border-radius:30px;
+      border:1px solid var(--gold);
+      font-weight:bold;
+      cursor:pointer;
+      opacity:0;
+      transition:all 0.3s ease;
+      box-shadow:0 0 10px rgba(201,163,90,0.4);
+    }
+    #backToTop:hover{
+      background:var(--gold);
+      box-shadow:0 0 15px rgba(255,210,130,0.8);
+      transform:translateY(-3px);
+    }
+  
+/* ==== Tabs and Buttons ==== */
+.gear-tabs {
+  display:flex; flex-wrap:wrap; gap:12px;
+  justify-content:center; align-items:center;
+  margin:20px auto; opacity:0; transform:translateY(10px);
+}
+.tab-btn {
+  background:transparent; border:2px solid var(--gold);
+  color:var(--gold); padding:10px 20px; border-radius:10px;
+  font-size:1rem; font-weight:600; letter-spacing:1px;
+  cursor:pointer; position:relative; overflow:hidden;
+  transition:all .25s ease;
+}
+.tab-btn:hover {
+  background:rgba(201,163,90,.2);
+  box-shadow:0 0 12px rgba(201,163,90,.5);
+}
+.tab-btn.active {
+  background:var(--gold); color:#17130b;
+  box-shadow:0 0 16px rgba(255,210,130,.8);
+}
+.tab-btn::after {
+  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+  background:linear-gradient(90deg, transparent, rgba(255,230,160,0.9), transparent);
+  transition:left .5s ease;
+}
+.tab-btn.flash::after { left:100%; }
+
+.tab-content { display:none; opacity:0; transition:opacity .4s ease; }
+.tab-content.active { display:block; opacity:1; }
+
+.text-block {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 20px 0;
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
+}
+.text-block h2 {
+  color: var(--gold);
+  margin-bottom: 12px;
+  font-size: 1.4rem;
+}
+.text-block ul {
+  margin-left: 20px;
+  line-height: 1.8;
+}
+
+/* 🔧 調整文字區塊的上方間距 */
+.text-block {
+  margin-top: 0;   /* 消除上方空白 */
+  margin-bottom: 20px;
+}
+
+/* 🔧 讓文字區塊內的標題不再往下推太多 */
+.text-block h2,
+.text-block h3 {
+  margin-top: 0;
+}
+
+.tab-content { padding-top: 20px; }
+/* （可選） */
+.tab-content:not(.active){ display: none !important; }
+
+.weapon-info > li {
+  margin-bottom: 10px;
+  line-height: 1.8;
+}
+.weapon-info ul li {
+  margin-bottom: 6px;
+  line-height: 1.7;
+
+}
+/* 🔶 武器分頁：金色小標題強調 */
+.weapon-info strong {
+  color: var(--gold);
+  font-weight: 600;
+}
+/* 🟡 負重規則與稀有度：金色小標題 */
+#weight strong {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* 🟡 武器子分頁標籤列 */
+.weapon-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.weapon-btn {
+  background: transparent;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  padding: 8px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: all .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.weapon-btn:hover {
+  background: rgba(201,163,90,.2);
+  box-shadow: 0 0 10px rgba(201,163,90,.4);
+  transform: translateY(-2px);
+}
+
+.weapon-btn.active {
+  background: var(--gold);
+  color: #17130b;
+  box-shadow: 0 0 14px rgba(255,210,130,.8);
+}
+
+.weapon-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,230,160,0.9), transparent);
+  transition: left .5s ease;
+}
+.weapon-btn.flash::after { left: 100%; }
+
+/* 🟡 子分頁內容區 */
+.weapon-tab-content {
+  display: none;
+  opacity: 0;
+  transition: opacity .4s ease;
+  padding-top: 10px;
+}
+.weapon-tab-content.active {
+  display: block;
+  opacity: 1;
+}
+
+/* 🟡 武器表格樣式 */
+.weapon-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0 30px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.weapon-table th, .weapon-table td {
+  border: 1px solid rgba(201,163,90,0.3);
+  padding: 8px 10px;
+  text-align: center;
+}
+.weapon-table th {
+  background: rgba(201,163,90,0.2);
+  color: var(--gold);
+  font-weight: 600;
+}
+.weapon-table tbody tr:hover {
+  background: rgba(201,163,90,0.1);
+}
+.weapon-tab-content {
+  display: none;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.weapon-tab-content.active {
+  display: block;
+  opacity: 1;
+}
+/* 🟡 武器搜尋列樣式 */
+.weapon-search {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0 20px;
+}
+
+.weapon-search input {
+  width: 60%;
+  max-width: 400px;
+  padding: 8px 12px;
+  border: 2px solid var(--gold);
+  border-radius: 10px;
+  background: rgba(0,0,0,0.4);
+  color: var(--gold);
+  font-size: 1rem;
+  text-align: center;
+  outline: none;
+  transition: all .3s ease;
+}
+
+.weapon-search input:focus {
+  box-shadow: 0 0 10px rgba(201,163,90,0.6);
+  background: rgba(0,0,0,0.6);
+}
+/* ✨ 搜尋結果高亮動畫 */
+@keyframes highlightFlash {
+  0% { background: rgba(255,215,0,0.3); }
+  100% { background: transparent; }
+}
+.weapon-table tbody tr.highlight {
+  animation: highlightFlash 1s ease;
+}
+
+/* 讓主導覽列位於最上層 */
+#site-navbar { position: relative; z-index: 1000; }
+header, main { position: relative; z-index: 1; }
+
+/* 視窗打開時鎖住底層滾動 */
+body.modal-open { overflow: hidden; }
+
+/* 讓彈出層一定全視窗置中顯示 */
+.weapon-popup {
+  position: fixed !important;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(4px);
+  z-index: 3000; /* 高於導覽列（你的導覽列是 1000） */
+}
+.weapon-popup.active { display: flex; }
+
+@keyframes popupFadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+.weapon-popup-bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+}
+/* 內容區不會超出視窗；太長時在卡片內捲動 */
+.weapon-popup-content {
+  max-width: 560px;
+  max-height: calc(100vh - 80px);
+  overflow: auto;
+}
+@keyframes contentPop {
+  0% {transform: scale(0.8); opacity: 0;}
+  100% {transform: scale(1); opacity: 1;}
+}
+.weapon-popup-content img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(201,163,90,0.5);
+}
+.weapon-popup-content h3 {
+  color: var(--gold);
+  margin-bottom: 10px;
+  text-align: center;
+}
+.weapon-popup-content p {
+  line-height: 1.8;
+  text-align: justify;
+}
+.popup-close {
+  position: absolute;
+  top: 8px; right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.popup-close:hover {
+  transform: scale(1.2);
+  color: #fff3b0;
+}
+
+.clickable-weapon {
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: 600;
+  text-shadow: 0 0 6px rgba(201,163,90,0.6);
+  transition: text-shadow 0.2s ease;
+}
+.clickable-weapon:hover {
+  text-shadow: 0 0 12px rgba(255,230,160,0.8);
+}
+.clickable-weapon {
+  color: #c9a35a;
+  cursor: pointer;
+  font-weight: 600;
+  transition: text-shadow 0.3s ease;
+}
+.clickable-weapon:hover {
+  text-shadow: 0 0 10px #ffeaa7, 0 0 20px #ffdd99;
+}
+
+</style>
+<style>
+/* === 絕對置中：武器介紹卡修正版 === */
+.weapon-popup {
+  position: fixed !important;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000 !important;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.weapon-popup.active {
+  display: flex;
+}
+
+.weapon-popup-content {
+  position: relative;
+  background: rgba(30, 30, 30, 0.95);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(201, 163, 90, 0.5);
+  padding: 24px;
+  width: min(90%, 520px);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  text-align: justify;
+  color: var(--paper);
+  animation: popupFadeIn 0.3s ease;
+}
+
+@keyframes popupFadeIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.popup-close {
+  position: absolute;
+  top: 8px; right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.popup-close:hover {
+  transform: scale(1.2);
+  color: #fff3b0;
+}
+</style><style>
+/* === 絕對置中武器介紹卡（最終修正版） === */
+
+/* 移除 body filter 造成的 stacking context */
+body {
+  filter: none !important;
+}
+
+/* 將亮度/對比效果移到背景層 */
+.bg-gradient,
+.bg-fog,
+#bg-canvas {
+  filter: brightness(1.15) contrast(1.05);
+}
+
+/* 彈窗層 */
+.weapon-popup {
+  position: fixed !important;
+  inset: 0 !important;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999 !important;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+}
+
+.weapon-popup.active {
+  display: flex;
+}
+
+.weapon-popup-content {
+  position: relative;
+  background: rgba(30, 30, 30, 0.95);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(201,163,90,0.5);
+  padding: 24px;
+  width: min(90%, 520px);
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  text-align: justify;
+  color: var(--paper);
+  animation: popupFadeIn 0.3s ease;
+}
+
+@keyframes popupFadeIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.popup-close {
+  position: absolute;
+  top: 8px; right: 12px;
+  background: transparent;
+  border: none;
+  color: var(--gold);
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.popup-close:hover {
+  transform: scale(1.2);
+  color: #fff3b0;
+}
+</style><script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+<style>
+.video-embed {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9比例 */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid #c9a35a;
+  border-radius: 8px;
+  margin: 20px auto;
+}
+.video-embed iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+}
+.video-embed p {
+  text-align: center;
+  color: #d8c79a;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+/* 只讓被標記為 .active 的分頁顯示；護甲&頭盔時會同時給兩個 section 加 .active */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* 滑鼠指向可開啟彈窗的項目 */
+#armor tr[onclick], #helmets tr[onclick] {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+#armor tr[onclick]:hover, #helmets tr[onclick]:hover {
+  background: rgba(255,215,0,0.08);
+}
+
+/* 沒有彈窗的列維持普通樣式 */
+#armor tr:not([onclick]):hover,
+#helmets tr:not([onclick]):hover {
+  background: transparent;
+}
+
+
+</style>
+
+</head>
+<body>
+<div id="site-navbar"></div>
+<header>
+<h1>裝備與物品</h1>
+<!-- 🔹 裝備導覽列（五分頁） -->
+<nav class="gear-tabs">
+  <button class="tab-btn active" data-tab="weight">負重規則</button>
+  <button class="tab-btn" data-tab="weapons">武器</button>
+  <button class="tab-btn" data-tab="armor-helmets">護甲＆頭盔</button>
+  <button class="tab-btn" data-tab="instruments">樂器</button>
+  <button class="tab-btn" data-tab="items">其他裝備＆物品</button>
+</nav>
+
+</header>
+<div class="divider"></div>
+<main id="content">
+<section class="tab-content active" id="weight">
+<div class="text-block">
+<h3>負重規則</h3>
+<ul>
+<li><strong>負重上限：</strong>物品欄可以攜帶的物品數量 = <strong>力量</strong>值的一半（向上取整）。</li>
+<li><strong>重量：</strong>大多數物品的重量為 1，當記錄在物品欄時，占據一列。</li>
+<li><strong>重型物品：</strong>重型物品的重量會超過 1，當記錄在物品欄時，重量多少就占據多少列。</li>
+<li><strong>微型物品：</strong>可以藏在拳頭裡的物品稱為微型物品。這些物品不計入負重。</li>
+<li><strong>備戰物品：</strong>最多三件，不計入負重。</li>
+<li><strong>頭盔 &amp; 護甲：</strong>穿戴中的護甲與頭盔不計入負重。</li>
+<li><strong>食物：</strong>每四份食物視為一個物品。</li>
+<li><strong>火炬 &amp; 提燈：</strong>皆視為一個物品。</li>
+<li><strong>箭矢 &amp; 石頭：</strong>箭袋視為一個物品；石頭不記錄。</li>
+<li><strong>背包：</strong>使負重上限 +2。</li>
+<li><strong>硬幣：</strong>少於 100 枚視為微型物品。</li>
+<li><strong>超重：</strong>需進行<strong>力量</strong>檢定，失敗則丟棄或停下。</li>
+<li><strong>背負他人：</strong>自動視為<strong>超重</strong>且無法戰鬥。</li>
+</ul>
+</div>
+<div class="text-block">
+<h3>稀有度</h3>
+<ul>
+<li><strong>常見：</strong>在任何村莊或市場都能買到。</li>
+<li><strong>罕見：</strong>通常只能在特定工匠的工坊買到。</li>
+<li><strong>珍稀：</strong>通常只能特別向工匠訂做。</li>
+<li><strong>獨特：</strong>只能透過冒險或向特定人士取得。</li>
+</ul>
+</div>
+</section>
+<section class="tab-content" id="weapons">
+<div class="text-block">
+<h2>武器</h2>
+<p>自從哀號之夜過後，馬茲提卡發生了很大的變化，武器裝備也有了巨大的改進。如果黃金軍團今天入侵馬茲提卡，戰爭的結局將與一個多世紀前大不相同。</p>
+<p>儘管因為外來者入侵帶來了冶金技術，但重量和阻魔性的副作用，使得黑曜石仍是整個馬茲提克大陸族裔的首選材料，幾乎所有武器都使用了它。</p>
+<p>目前關於金屬裝備的冶煉技術，只有矮人學習並掌握。</p>
+<ul class="weapon-info">
+<li><strong>精良武器：</strong>花費原價的十倍可購買武器的精良版本 = 力量需求 -3、耐久度 +3。另外每個精良武器至少會有一條特殊屬性。</li>
+<li><strong>重量：</strong>每一把武器的重量都為 1。</li>
+<li><strong>技能類型：</strong>使用該武器所需的技能檢定。盾牌使用你最高的力量類近戰武器技能（徒手、劍、斧、棍棒、矛）。</li>
+<li><strong>持握：</strong>代表你需要一手或兩手才能使用該武器。</li>
+<li><strong>力量限制：</strong>代表你需要多少力量才能有效使用該武器。若你的力量低於需求，則使用該武器進行攻擊和格擋都會獲得 1 個劣勢。若力量低於需求的一半，則完全無法使用該武器。</li>
+<li><strong>射程：</strong>該武器進行攻擊的有效射程，單位為米。若使用遠程武器，你最遠可以攻擊兩倍射程內的目標，但獲得 1 個劣勢。</li>
+<li><strong>耐久：</strong>若你格擋成功，敵人的攻擊會命中你的武器或盾牌。如果敵人的攻擊傷害超過你武器的耐久，該武器會因此受損，無法繼續使用，直到用工藝檢定修復為止。</li>
+<li><strong>價格：</strong>以正常管道購買的價值，單位為銀幣。</li>
+<li><strong>材質：</strong>武器主要攻擊部位的材質：
+        <ul>
+<li><strong>黑曜石：</strong>攻擊穿戴金屬護甲的敵人時若攻擊檢定大失敗，該武器受損。</li>
+<li><strong>木質：</strong>由於幾乎隨處可得，你在修復時的工藝檢定具有優勢。</li>
+<li><strong>金屬：</strong>因為金屬的阻魔性，當你持握金屬武器時無法施法。</li>
+</ul>
+</li>
+<li><strong>特性：</strong>武器的特殊屬性：
+        <ul>
+<li><strong>靈巧：</strong>當使用此武器進行偷襲時，攻擊檢定獲得 1 個優勢，且會提升傷害。</li>
+<li><strong>長柄：</strong>此武器可以攻擊最遠 4 米內的敵人。</li>
+<li><strong>絆摔：</strong>使用此武器嘗試絆摔敵人時獲得 1 個優勢。</li>
+<li><strong>穿刺：</strong>此武器會造成穿刺傷害。當使用穿刺武器時，你可以尋找護甲的空隙，自願讓攻擊檢定承受 1 個劣勢，若仍命中，敵人的護甲無法抵抗該次攻擊。</li>
+<li><strong>揮砍：</strong>此武器會造成揮砍傷害。當鎖子甲在抵抗揮砍傷害時，護甲值 +2。</li>
+<li><strong>鈍擊：</strong>此武器會造成鈍擊傷害。當皮甲和鑲釘皮甲在抵抗鈍擊傷害時，護甲值 +2。</li>
+</ul>
+</li>
+</ul>
+</div>
+<!-- 🔶 武器類型子分頁導覽列 -->
+<nav class="weapon-tabs">
+<button class="weapon-btn active" data-tab="unarmed">徒手類</button>
+<button class="weapon-btn" data-tab="axe">斧類</button>
+<button class="weapon-btn" data-tab="club">棍棒類</button>
+<button class="weapon-btn" data-tab="spear">矛類</button>
+<button class="weapon-btn" data-tab="sword">劍類</button>
+<button class="weapon-btn" data-tab="shield">盾類</button>
+<button class="weapon-btn" data-tab="knife">小刀類</button>
+<button class="weapon-btn" data-tab="sling">投石繩類</button>
+<button class="weapon-btn" data-tab="atlatl">投槍器類</button>
+<button class="weapon-btn" data-tab="bow">弓類</button>
+<button class="weapon-btn" data-tab="blowgun">吹箭類</button>
+</nav>
+<!-- 🟡 武器搜尋列 -->
+<div class="weapon-search">
+<input id="weaponSearchInput" placeholder="🔍 搜尋武器名稱或特性..." type="text"/>
+</div>
+<div class="weapon-tab-content active" id="unarmed">
+<h3>徒手類(力量)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>徒手</td><td>1D6</td><td>-</td><td>2</td><td>-</td><td>-</td><td>-</td><td>鈍擊</td><td>-</td><td>-</td></tr>
+<tr><td>輕型鈍器</td><td>1D8</td><td>-</td><td>力量</td><td>單手</td><td>-</td><td>-</td><td>鈍擊、可投擲</td><td>3</td><td>-</td></tr>
+<tr><td>重型鈍器</td><td>2D8</td><td>-</td><td>16</td><td>雙手</td><td>-</td><td>-</td><td>鈍擊</td><td>3</td><td>-</td></tr>
+</tbody>
+</table>
+</div>
+<div class="weapon-tab-content" id="axe">
+<h3>斧類(力量)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>黑曜石斧</td><td>2D6</td><td>7</td><td>力量</td><td>單手</td><td>2金</td><td>黑曜石</td><td>絆摔、揮砍、投擲</td><td>6</td><td>常見</td></tr>
+<tr><td>銅斧 Itztōpīlli</td><td>2D8</td><td>10</td><td>2</td><td>單手</td><td>10金</td><td>金屬</td><td>絆摔、揮砍、鈍擊</td><td>9</td><td>常見</td></tr>
+<tr><td>銅製巨斧</td><td>2D10</td><td>16</td><td>2</td><td>雙手</td><td>50金</td><td>金屬</td><td>絆摔、揮砍</td><td>9</td><td>罕見</td></tr>
+</tbody>
+</table>
+</div>
+<div class="weapon-tab-content" id="club">
+<h3>棍棒類(力量)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>硬木棒 Cuahuitl</td><td>2D4</td><td>-</td><td>力量 ×2</td><td>單手</td><td>5銀</td><td>木頭</td><td>絆摔、鈍擊、投擲</td><td>3</td><td>常見</td></tr>
+<tr><td>碎骨棒 Cuauholōlli</td><td>2D6</td><td>10</td><td>2</td><td>單手</td><td>1金</td><td>木頭</td><td>絆摔、鈍擊</td><td>6</td><td>常見</td></tr>
+<tr><td>刃棒 Huitzauhqui</td><td>2D8</td><td>13</td><td>2</td><td>雙手</td><td>5金</td><td>木頭</td><td>絆摔、鈍擊、揮砍(材質視為黑曜石)</td><td>8</td><td>常見</td></tr>
+<tr><td>銅製輕鎚</td><td>2D6</td><td>10</td><td>2</td><td>單手</td><td>20金</td><td>金屬</td><td>絆摔、鈍擊</td><td>12</td><td>罕見</td></tr>
+<tr><td>銅製重鎚</td><td>2D10</td><td>16</td><td>2</td><td>雙手</td><td>40金</td><td>金屬</td><td>絆摔、鈍擊</td><td>12</td><td>珍稀</td></tr>
+</tbody>
+</table>
+</div>
+<div class="weapon-tab-content" id="spear">
+<h3>矛類(力量)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>投射標槍 Tlacochtli</td><td>1D6</td><td>7</td><td>力量</td><td>單手</td><td>1銀</td><td>黑曜石</td><td>穿刺、投擲</td><td>3</td><td>常見</td></tr>
+<tr><td>木矛 Tepoztōpīlli</td><td>2d6/2d8</td><td>7</td><td>力量</td><td>單手/雙手</td><td>2金</td><td>黑曜石</td><td>長柄、穿刺、揮砍(近戰)、投擲</td><td>3</td><td>常見</td></tr>
+<tr><td>銅製三叉戟</td><td>2D6</td><td>10</td><td>力量</td><td>單手</td><td>30金</td><td>金屬</td><td>絆摔、穿刺、投擲</td><td>9</td><td>罕見</td></tr>
+<tr><td>銅製長矛</td><td>2D8</td><td>10</td><td>4</td><td>雙手</td><td>10金</td><td>金屬</td><td>穿刺、長柄</td><td>9</td><td>罕見</td></tr>
+<tr><td>銅製斧槍</td><td>2D8</td><td>13</td><td>4</td><td>雙手</td><td>75金</td><td>金屬</td><td>長柄、絆摔、穿刺、揮砍</td><td>12</td><td>罕見</td></tr>
+<tr><td>銅製騎槍</td><td>2D10</td><td>13</td><td>4</td><td>單手</td><td>50金</td><td>金屬</td><td>長柄、穿刺、需騎乘坐騎</td><td>12</td><td>罕見</td></tr>
+</tbody>
+</table>
+</div>
+<div class="weapon-tab-content" id="sword">
+<h3>劍類(力量)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>馬夸維爾特 Mācuahuitl (馬卡劍 Maca)</td><td>2D6/2D8</td><td>10</td><td>2</td><td>單手/雙手</td><td>12金</td><td>黑曜石</td><td>揮砍、鈍擊</td><td>9</td><td>常見</td></tr>
+<tr><td>馬卡短劍 Mācuāhuitzōctli</td><td>1D10</td><td>10</td><td>2</td><td>單手</td><td>10金</td><td>黑曜石</td><td>穿刺、揮砍</td><td>9</td><td>常見</td></tr>
+<tr><td>銅製短劍</td><td>1D10</td><td>7</td><td>2</td><td>單手</td><td>16金</td><td>金屬</td><td>穿刺、揮砍</td><td>12</td><td>罕見</td></tr>
+<tr><td>銅製長劍</td><td>2D8</td><td>13</td><td>2</td><td>單手</td><td>50金</td><td>金屬</td><td>穿刺、揮砍</td><td>15</td><td>罕見</td></tr>
+<tr><td>銅製彎刀</td><td>2D6</td><td>10</td><td>2</td><td>單手</td><td>30金</td><td>金屬</td><td>絆摔、揮砍</td><td>12</td><td>珍稀</td></tr>
+<tr><td>銅製巨劍</td><td>2D10</td><td>16</td><td>2</td><td>雙手</td><td>75金</td><td>金屬</td><td>穿刺、揮砍</td><td>18</td><td>珍稀</td></tr>
+</tbody>
+</table>
+</div>
+<!-- 🟡 盾類-->
+<div class="weapon-tab-content" id="shield">
+<h3>盾類(力量/敏捷)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>木盾</td><td>1d6</td><td>-</td><td>2</td><td>單手</td><td>1金</td><td>木頭</td><td>鈍擊、大成功命中時破損</td><td>10</td><td>常見</td></tr>
+<tr><td>圓盾 Chīmalli</td><td>1d8</td><td>7</td><td>2</td><td>單手</td><td>4金</td><td>木頭</td><td>鈍擊</td><td>15</td><td>罕見</td></tr>
+<tr><td>銅盾</td><td>1d10</td><td>10</td><td>2</td><td>單手</td><td>25金</td><td>金屬</td><td>鈍擊</td><td>18</td><td>珍稀</td></tr>
+</tbody>
+</table>
+</div>
+<!-- 🟡 小刀類 -->
+<div class="weapon-tab-content" id="knife">
+<h3>小刀類(敏捷)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>黑曜石飛刃</td><td>1D4</td><td>-</td><td>力量</td><td>單手</td><td>3銀</td><td>黑曜石</td><td>穿刺、投擲、特殊(重量0.5)</td><td>3</td><td>常見</td></tr>
+<tr><td>黑曜石小刀 Tecpatl</td><td>1D8</td><td>-</td><td>力量</td><td>單手</td><td>5銀</td><td>黑曜石</td><td>靈巧、穿刺、揮砍、投擲</td><td>6</td><td>常見</td></tr>
+<tr><td>銅製匕首</td><td>1D8</td><td>-</td><td>力量</td><td>單手</td><td>10金</td><td>金屬</td><td>靈巧、穿刺、揮砍、投擲</td><td>9</td><td>罕見</td></tr>
+<tr><td>格擋匕首</td><td>1D6</td><td>-</td><td>2</td><td>單手</td><td>20金</td><td>金屬</td><td>靈巧、穿刺、揮砍</td><td>15</td><td>珍稀</td></tr>
+</tbody>
+</table>
+</div>
+<!-- 🟡 投石繩類 -->
+<div class="weapon-tab-content" id="sling">
+<h3>投石繩類(敏捷)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>投石繩 Tēmātlatl</td><td>1D8</td><td>-</td><td>20</td><td>單手</td><td>5銀</td><td>木頭</td><td>鈍擊、揮砍(需黑曜石彈丸袋)、微型物品、無傷害加值</td><td>3</td><td>常見</td></tr>
+</tbody>
+</table>
+<div class="video-embed">
+  <iframe src="https://www.youtube.com/shorts/has70yWU9ZU" allowfullscreen></iframe>
+</div>
+<p>🎥 投石繩（Tēmātlatl）示範影片</p>
+</div>
+<!-- 🟡 投槍器類 -->
+<div class="weapon-tab-content" id="atlatl">
+<h3>投槍器類(力量)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>投槍器 Ahtlatl</td><td>1D10(投射標槍)/1D8(箭矢)</td><td>-</td><td>力量X2(投射標槍)/力量X3(箭矢)</td><td>單手</td><td>5銀</td><td>木頭</td><td>穿刺、需要箭袋 或 標槍</td><td>6</td><td>常見</td></tr>
+</tbody>
+</table>
+<div class="video-embed">
+  <iframe src="https://www.youtube.com/watch?v=NHgUMUk3YwY" allowfullscreen></iframe>
+</div>
+<p>🎥 投槍器（Atlatl）示範影片</p>
+
+</div>
+<!-- 🟡 弓類 -->
+<div class="weapon-tab-content" id="bow">
+<h3>弓類(敏捷)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>短弓</td><td>1D8</td><td>7</td><td>30</td><td>雙手</td><td>25金</td><td>木頭</td><td>穿刺、需要箭袋</td><td>6</td><td>常見</td></tr>
+<tr><td>戰弓 Tlahhuītōlli</td><td>1D12</td><td>13</td><td>100</td><td>雙手</td><td>50金</td><td>木頭</td><td>穿刺、需要箭袋</td><td>6</td><td>常見</td></tr>
+</tbody>
+</table>
+</div>
+<!-- 🟡 吹箭類 -->
+<div class="weapon-tab-content" id="blowgun">
+<h3>吹箭類(敏捷)</h3>
+<table class="weapon-table">
+<thead>
+<tr><th>名稱</th><th>傷害</th><th>力量限制</th><th>射程</th><th>持握</th>
+<th>價格</th><th>材質</th><th>特性</th><th>耐久</th><th>供應</th></tr>
+</thead>
+<tbody>
+<tr><td>吹箭筒 Tlacalhuazcuahuitl</td><td>1D6</td><td>-</td><td>敏捷X2</td><td>單手</td><td>1金</td><td>木頭</td><td>穿刺、需要吹箭袋</td><td>3</td><td>常見</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="tab-content" id="armor"><h2 style="color:#c9a35a;text-align:center;margin-top:20px;">護甲與頭盔</h2><p style="text-align:center;color:#d8c79a;margin-bottom:20px;">護甲值：代表當你被攻擊命中時，可以減去多少傷害。你同時只能穿戴一套護甲，但護甲可以和頭盔結合。點擊名稱可開啟介紹。</p><table class="weapon-table"><thead><tr><th>名稱</th><th>價格</th><th>材質</th><th>供應</th><th>效果</th><th>護甲值</th></tr></thead><tbody><tr><td>獸皮甲</td><td>2金</td><td>非金屬</td><td>常見</td><td>抵抗鈍擊傷害時，護甲值 +2。</td><td>1</td></tr><tr><td><span class="clickable-weapon" data-popup-id="popup-ichcahuipilli">棉甲 Ichcahuīpīll</span></td><td>5金</td><td>非金屬</td><td>常見</td><td>抵抗黑曜石材質武器的傷害時，護甲值 +2。</td><td>1</td></tr><tr><td><span class="clickable-weapon" data-popup-id="popup-tlahuiztli">皮革戰甲 Tlahuiztli</span></td><td>20金</td><td>非金屬</td><td>罕見</td><td>抵抗黑曜石材質武器和鈍擊傷害時，護甲值 +2。</td><td>2</td></tr><tr><td><span class="clickable-weapon" data-popup-id="popup-ehuatl">戰士外衣 Ēhuatl</span></td><td>50金</td><td>非金屬</td><td>罕見</td><td>可與其他護甲同時穿戴。抵抗穿刺傷害時護甲值+1。</td><td>1</td></tr><tr><td><span class="clickable-weapon" data-popup-id="popup-eagle-armor">鷹/豹騎士戰甲 Eagle/Jaguar Armor</span></td><td>100金</td><td>非金屬</td><td>珍稀</td><td>抵抗黑曜石材質武器和鈍擊傷害時，護甲值 +2。</td><td>3</td></tr><tr><td> 鎖子甲</td><td>50金</td><td>金屬</td><td>罕見</td><td>閃避、隱匿劣勢。抵抗揮砍傷害時，護甲值 +2。</td><td>4</td></tr><tr><td>板甲</td><td>500 金</td><td>金屬</td><td>珍稀</td><td>體操、閃避、隱匿劣勢。</td><td>6</td></tr><tr><td><span class="clickable-weapon" data-popup-id="popup-cuacalalatli">木製戰盔 Cuacalalatli</span></td><td>5金</td><td>非金屬</td><td>罕見</td><td>察覺劣勢。被大成功的攻擊命中時將會破損(失去護甲值)。</td><td>1</td></tr><tr><td>開面頭盔</td><td>12金</td><td>金屬</td><td>罕見</td><td>察覺劣勢。</td><td>1</td></tr><tr><td>全筒頭盔</td><td>100金</td><td>金屬</td><td>珍稀</td><td>察覺、遠程攻擊劣勢。</td><td>2</td></tr></tbody></table></section>
+<!-- 彈窗 -->
+<div class="weapon-popup" id="popup-ichcahuipilli">
+<div class="weapon-popup-bg"></div><div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="棉甲 Ichcahuīpīlli" src="images/gear/Ichcahuīpīlli.png"/>
+<h3>棉甲 Ichcahuīpīlli</h3>
+<p>以多層棉布緊密縫製、浸鹽晾乾而成，能有效分散衝擊與減緩箭矢穿刺。平民與戰士皆能取得，是最普及的護甲。</p>
+</div></div>
+<div class="weapon-popup" id="popup-tlahuiztli">
+<div class="weapon-popup-bg"></div><div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="皮革戰甲 Tlahuiztli" src="images/gear/Tlahuiztli.png"/>
+<h3>皮革戰甲 Tlahuiztli</h3>
+<p>堅韌皮革與植物纖維縫製的戰衣，常飾以家族或戰團圖紋，象徵武運與護佑。</p>
+</div></div>
+<div class="weapon-popup" id="popup-ehuatl">
+<div class="weapon-popup-bg"></div><div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="戰士外衣 Ēhuatl" src="images/gear/Ēhuatl.png"/>
+<h3>戰士外衣 Ēhuatl</h3>
+<p>披掛於護甲之外的儀式戰衣，以色塊與羽飾彰顯軍階與功績；在祭典與出征皆會穿著。</p>
+</div></div>
+<div class="weapon-popup" id="popup-cuacalalatli">
+<div class="weapon-popup-bg"></div><div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="木製戰盔 Cuacalalatli" src="images/gear/Cuacalalatli.png"/>
+<h3>木製戰盔 Cuacalalatli</h3>
+<p>由硬木雕刻而成。形狀代表不同的動物。這些頭盔保護了戰士的大部分頭部直至下顎線，其設計使戰士能夠透過動物張開的下巴看到，並且根據佩戴者的 皮革戰甲 進行裝飾。</p>
+</div></div>
+<div class="weapon-popup" id="popup-eagle-armor">
+<div class="weapon-popup-bg"></div><div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="鷹/豹騎士 Eagle Armor" src="images/gear/knight_armor.png"/>
+<h3>鷹/豹騎士戰甲 Eagle/Jaguar Armor</h3>
+<p>這是鷹/豹騎士團的專屬鎧甲。如果在沒有獲得權利（透過成為受人尊敬的分會成員）的情況下穿著這件盔甲，即使是在最和平的民間，也將被立即處以死刑。這在馬茲提卡被認為是與謀殺一樣可怕的犯罪行為。盔甲本身製作精良。它由經過處理的皮革製成，但通常包括一個頭巾，佩戴者的臉部僅從頭巾中露出。臉部的位置使其看起來像是來自老鷹或豹的嘴。只有與各個分會密切合作的工匠才知道製作這種盔甲的方法，而且秘密從未以其他方式公開。</p>
+</div></div>
+<div class="weapon-popup" id="popup-jaguar-armor">
+<div class="weapon-popup-bg"></div><div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="豹騎士戰甲 Jaguar Armor" src="images/gear/armor_jaguar_knight.jpg"/>
+<h3> Jaguar Armor</h3>
+<p>這是豹騎士團的專屬鎧甲。如果在沒有獲得權利（透過成為受人尊敬的分會成員）的情況下穿著這件盔甲，即使是在最和平的民間，也將被立即處以死刑。這在馬茲提卡被認為是與謀殺一樣可怕的犯罪行為。盔甲本身製作精良。它由經過處理的皮革製成，但通常包括一個頭巾，佩戴者的臉部僅從頭巾中露出。臉部的位置使其看起來像是來自老鷹或豹的嘴。只有與各個分會密切合作的工匠才知道製作這種盔甲的方法，而且秘密從未以其他方式公開。</p>
+</div></div>
+<section class="tab-content" id="items">
+  <div class="text-block">
+    <h2>其他裝備＆物品</h2>
+    <p>這裡列出各種在冒險中會用到的裝備與物資，從衣物、工具到動力與服務。根據需要選擇適合角色背景與用途的物品。</p>
+  </div>
+
+  <!-- 🔶 子分頁標籤列 -->
+  <nav class="weapon-tabs" id="item-tabs">
+    <button class="weapon-btn active" data-tab="clothing">服裝</button>
+    <button class="weapon-btn" data-tab="magic">研究＆魔法</button>
+    <button class="weapon-btn" data-tab="light">照明</button>
+    <button class="weapon-btn" data-tab="tools">工具</button>
+    <button class="weapon-btn" data-tab="container">容器</button>
+    <button class="weapon-btn" data-tab="medical">醫療</button>
+    <button class="weapon-btn" data-tab="huntfish">狩獵＆釣魚</button>
+    <button class="weapon-btn" data-tab="service">服務</button>
+    <button class="weapon-btn" data-tab="trade">貿易物品</button>
+    <button class="weapon-btn" data-tab="transport">交通</button>
+    <button class="weapon-btn" data-tab="power">動物</button>
+  </nav>
+
+  <!-- 🟡 搜尋列 -->
+  <div class="weapon-search">
+    <input id="itemSearchInput" type="text" placeholder="🔍 搜尋物品名稱或效果..." />
+  </div>
+
+  <!-- 🟡 各分類表格（結構範例，內容可由CSV導入） -->
+  <div class="weapon-tab-content active" id="clothing">
+    <h3>服裝</h3>
+    <table class="weapon-table">
+      <thead>
+        <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr>
+      </thead>
+      <tbody>
+<tr><td>輕便服裝</td><td>5銀</td><td>1(穿戴時不計)</td><td>常見</td><td>若沒穿，基於魅力的技能檢定獲得 1 個劣勢。</td></tr>
+<tr><td>靴子</td><td>2金</td><td>1(穿戴時不計)</td><td>罕見</td><td>可以避免某些旅行意外。</td></tr>
+<tr><td>斗篷</td><td>8銀</td><td>1(穿戴時不計)</td><td>罕見</td><td>可以避免某些旅行意外。</td></tr>
+<tr><td>奢華服裝</td><td>10金</td><td>1(穿戴時不計)</td><td>罕見</td><td>基於魅力的技能檢定獲得 1 個優勢（GM 裁決）。</td></tr>
+<tr><td>毛皮大衣</td><td>1金</td><td>1(穿戴時不計)</td><td>常見</td><td>抵抗寒冷的求生檢定獲得 1 個優勢。</td></tr>
+<tr><td>破布</td><td>5銅</td><td>-</td><td>常見</td><td>基於魅力的技能檢定獲得 1 個劣勢（GM 裁決）。</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="weapon-tab-content" id="magic">
+    <h3>研究＆魔法</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody>
+<tr><td>護身符</td><td>3金</td><td>-</td><td>罕見</td><td>可作為法術的法器。</td></tr>
+<tr><td>書本</td><td>25金</td><td>1</td><td>罕見</td><td>特定主題的技能檢定獲得 1 個優勢。</td></tr>
+<tr><td>胸針</td><td>5金</td><td>-</td><td>罕見</td><td>可作為法術的法器。</td></tr>
+<tr><td>粉筆</td><td>1銅</td><td>-</td><td>常見</td><td>可作為法術的法器。</td></tr>
+<tr><td>魔導書</td><td>50金或以上</td><td>1</td><td>獨特</td><td>價格依書本內容而定，可能更高。</td></tr>
+<tr><td>沙漏</td><td>25金</td><td>1</td><td>珍稀</td><td>可作為法術的法器。</td></tr>
+<tr><td>筆記本</td><td>5金</td><td>1</td><td>常見</td><td>可作為空白的魔導書使用。</td></tr>
+<tr><td>水晶球</td><td>18金</td><td>1</td><td>罕見</td><td>可作為法術的法器。</td></tr>
+<tr><td>紙（一張）</td><td>2銀</td><td>-</td><td>罕見</td><td>可用於抄寫法術。</td></tr>
+<tr><td>羊皮紙（一張）</td><td>1銀</td><td>-</td><td>常見</td><td>可用於抄寫法術。</td></tr>
+<tr><td>羽毛筆 & 墨水</td><td>10金</td><td>1</td><td>罕見</td><td>可用於抄寫法術。</td></tr>
+<tr><td>聖徽</td><td>5金</td><td>1</td><td>罕見</td><td>可作為法術的法器。</td></tr>
+<tr><td>魔杖</td><td>10金</td><td>1</td><td>罕見</td><td>可作為法術的法器。</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="light">
+    <h3>照明</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>打火匣</td><td>5銀</td><td>-</td><td>常見</td><td>用於生火或點燃火炬、蠟燭、油燈。</td></tr>
+<tr><td>燈油</td><td>3銀</td><td>1</td><td>常見</td><td>共十劑。一劑可維持火光一班時間。</td></tr>
+<tr><td>提燈</td><td>10金</td><td>1</td><td>常見</td><td>照亮 10 米半徑區域。點燃後最久可燃燒一班時間。<br>但每經一刻時間需擲 1D8，若擲到 1 則火光熄滅，需重新加油並點燃（動作）。<br>提燈可以掛在腰間，但每當你被攻擊命中時，你必須馬上擲骰判斷火焰是否會熄滅。</td></tr>
+<tr><td>油燈</td><td>1金</td><td>1</td><td>常見</td><td>照亮 10 米半徑區域。點燃後最久可燃燒一班時間。<br>但每經一刻時間需擲 1D6，若擲到 1 則火光熄滅，需重新加油並點燃（動作）。<br>每當你被攻擊命中時，你必須馬上擲骰判斷火焰是否會熄滅。</td></tr>
+<tr><td>蠟燭</td><td>1銅</td><td>-</td><td>常見</td><td>照亮 4 米半徑區域。點燃後最久可燃燒一班時間。<br>但每經一刻時間，或被攻擊命中都需擲 1D4，若擲到 1 則熄滅。</td></tr>
+<tr><td>火炬</td><td>5銅</td><td>1</td><td>常見</td><td>照亮 10 米半徑區域。點燃後最久可燃燒一班時間。<br>但每經一刻時間或使用火炬進行攻擊都需擲 1D6，若擲到 1 則熄滅。<br>火炬可以當作武器使用，視為可以造成火焰傷害的「小型木棒」。<br>每當你用火炬攻擊命中敵人時，你必須馬上擲骰判斷火焰是否會熄滅。</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="tools">
+    <h3>工具</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>撬棍</td><td>2金</td><td>1</td><td>常見</td><td>對門或牆造成 2D6 傷害，自動命中且不會受損。</td></tr>
+<tr><td>鎚子</td><td>1金</td><td>1</td><td>常見</td><td>對門或牆造成 2D4 傷害，自動命中且不會受損。</td></tr>
+<tr><td>針線</td><td>3銀</td><td>-</td><td>常見</td><td>使用工藝技能來修補服裝。</td></tr>
+<tr><td>十字鎬</td><td>3金</td><td>1</td><td>常見</td><td>對門或牆造成 2D8 傷害，自動命中且不會受損。</td></tr>
+<tr><td>鋸子</td><td>5金</td><td>1</td><td>罕見</td><td>在一刻時間內切割金屬或木頭。</td></tr>
+<tr><td>鏟子</td><td>2金</td><td>1</td><td>常見</td><td>將挖掘時間減半。</td></tr>
+<tr><td>大鎚子</td><td>3金</td><td>2</td><td>常見</td><td>對門或牆造成 2D10 傷害，自動命中且不會受損。</td></tr>
+<tr><td>鍛匠工具</td><td>40金</td><td>1</td><td>罕見</td><td>用於工藝技能。</td></tr>
+<tr><td>木匠工具</td><td>8金</td><td>1</td><td>罕見</td><td>用於工藝技能。</td></tr>
+<tr><td>皮匠工具</td><td>5金</td><td>1</td><td>罕見</td><td>用於工藝技能。</td></tr>
+<tr><td>石匠工具</td><td>20金</td><td>1</td><td>罕見</td><td>用於工藝技能。</td></tr>
+<tr><td>織布工具</td><td>10金</td><td>1</td><td>罕見</td><td>用於工藝技能。</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="container">
+    <h3>容器</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>背包</td><td>3金</td><td>-</td><td>常見</td><td>負重上限+2。一次只能背一個背包。</td></tr>
+<tr><td>木桶</td><td>2金</td><td>2</td><td>常見</td><td>可容納重量 15 的物品。HP 10、AR 3。</td></tr>
+<tr><td>籃子</td><td>4銀</td><td>1</td><td>常見</td><td>可容納重量 10 的物品。</td></tr>
+<tr><td>瓶子</td><td>1金</td><td>1</td><td>常見</td><td>可容納 1 份液體。</td></tr>
+<tr><td>桶子</td><td>5銅</td><td>1</td><td>常見</td><td>可容納 5 份液體。</td></tr>
+<tr><td>箱子</td><td>5金</td><td>3</td><td>常見</td><td>可容納重量 20 的物品。HP 25、AR 5。</td></tr>
+<tr><td>泥罐</td><td>5銀</td><td>1</td><td>常見</td><td>可容納 1 份液體。</td></tr>
+<tr><td>鞍袋</td><td>6金</td><td>-</td><td>常見</td><td>動物負重上限 +2。一次只能背兩個鞍袋。</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="medical">
+    <h3>醫療</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>藥草汁</td><td>1金</td><td>1</td><td>罕見</td><td>照顧生病患者的醫療檢定獲得 1 個優勢。</td></tr>
+<tr><td>治療藥水</td><td>50金</td><td>1</td><td>珍稀</td><td>立刻恢復 2D6 HP。</td></tr>
+<tr><td>繃帶（十份）</td><td>5銀</td><td>1</td><td>常見</td><td>若沒有繃帶，急救的醫療檢定獲得 1 個劣勢。</td></tr>
+<tr><td>手術工具</td><td>15金</td><td>1</td><td>罕見</td><td>急救時的醫療檢定獲得 1 個優勢。</td></tr>
+<tr><td>致命毒藥</td><td>效力 ×2 金</td><td>1</td><td>罕見</td><td>-</td></tr>
+<tr><td>麻痺毒藥</td><td>效力 ×12 銀</td><td>1</td><td>罕見</td><td>-</td></tr>
+<tr><td>催眠毒藥</td><td>效力 ×6 銀</td><td>1</td><td>罕見</td><td>-</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="huntfish">
+    <h3>狩獵＆釣魚</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>圈套陷阱</td><td>5銅</td><td>1</td><td>常見</td><td>可用於狩獵。只能使用一次。</td></tr>
+<tr><td>捕熊陷阱</td><td>3金</td><td>1</td><td>罕見</td><td>可用於狩獵。</td></tr>
+<tr><td>釣竿</td><td>8銀</td><td>1</td><td>常見</td><td>釣魚時可獲得 1D4 份食物。</td></tr>
+<tr><td>漁網</td><td>2金</td><td>2</td><td>常見</td><td>釣魚時可獲得 1D6 份食物。</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="service">
+    <h3>服務</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>客棧泡澡</td><td>6銅</td><td>-</td><td>常見</td><td>在一刻時間內恢復一個狀態。一天僅一次有效。</td></tr>
+<tr><td>保鑣</td><td>2金/天</td><td>-</td><td>罕見</td><td>雇傭一名守衛隨行。</td></tr>
+<tr><td>一碗燉菜湯</td><td>5銅</td><td>-</td><td>常見</td><td>滿足日常食物需求。</td></tr>
+<tr><td>修補服裝</td><td>5銀</td><td>-</td><td>常見</td><td>消除破爛服裝的效果（旅行意外）。</td></tr>
+<tr><td>信使</td><td>1 銀/公里</td><td>-</td><td>常見</td><td>將訊息送給接收者。</td></tr>
+<tr><td>宴會</td><td>2金</td><td>-</td><td>罕見</td><td>滿足日常食物需求。</td></tr>
+<tr><td>一杯奧克特力</td><td>2銀</td><td>-</td><td>罕見</td><td>一班時間內可喝最多兩杯，之後再喝會獲得狀態。</td></tr>
+<tr><td>理髮</td><td>2銀</td><td>-</td><td>常見</td><td>在一刻時間內恢復一個狀態。一週僅一次有效。</td></tr>
+<tr><td>治療</td><td>5金</td><td>-</td><td>罕見</td><td>治療檢定自動成功。</td></tr>
+<tr><td>客棧住宿（雅房）</td><td>5銀</td><td>-</td><td>常見</td><td>不用進行求生檢定就能長休。</td></tr>
+<tr><td>客棧住宿（通鋪）</td><td>1銀</td><td>-</td><td>常見</td><td>不用進行求生檢定就能長休，但長休後需骰 1D4，<br>骰到 1 代表有人打呼太大聲，讓大家無法睡覺。</td></tr>
+<tr><td>客棧住宿（豪華）</td><td>2金</td><td>-</td><td>罕見</td><td>不用進行求生檢定就能長休。</td></tr>
+<tr><td>客棧用餐</td><td>3銀</td><td>-</td><td>常見</td><td>滿足日常食物需求。</td></tr>
+<tr><td>過路收費</td><td>2銅</td><td>-</td><td>常見</td><td>允許通行。</td></tr>
+<tr><td>驛站馬車</td><td>3銅/公里</td><td>-</td><td>常見</td><td>運送至特定地點。</td></tr>
+<tr><td>一杯索科特爾</td><td>4銅</td><td>-</td><td>常見</td><td>一班時間內可喝最多三杯，之後再喝會獲得狀態。</td></tr>
+<tr><td>導師</td><td>5金/每班</td><td>-</td><td>常見</td><td>在導師底下學習一班時間可以額外獲得一次升級檢定。</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="trade">
+    <h3>貿易物品</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>算盤</td><td>2金</td><td>1</td><td>常見</td><td>處理數學問題的智力檢定獲得 1 個優勢。</td></tr>
+<tr><td>毛毯</td><td>5銀</td><td>1</td><td>常見</td><td>避免抵抗寒冷效果的檢定獲得 1 個劣勢。</td></tr>
+<tr><td>棋盤組</td><td>1金</td><td>1</td><td>常見</td><td>智力對抗檢定勝出即是贏家。</td></tr>
+<tr><td>骰子</td><td>1銀</td><td>-</td><td>常見</td><td>隨機決定誰是贏家。</td></tr>
+<tr><td>野炊工具</td><td>4金</td><td>2</td><td>常見</td><td>烹飪的求生檢定獲得 1 個優勢。</td></tr>
+<tr><td>食物</td><td>1銀</td><td>1/4</td><td>常見</td><td>每天必須食用一份食物，否則陷入飢餓。</td></tr>
+<tr><td>爪鉤</td><td>3金</td><td>1</td><td>常見</td><td>可用來固定繩索。可用體操檢定來投擲並固定爪鉤，投擲有效射程為力量（米）。</td></tr>
+<tr><td>簡易開鎖器</td><td>1金</td><td>1</td><td>罕見</td><td>避免開鎖的巧手檢定獲得 1 個劣勢。</td></tr>
+<tr><td>進階開鎖器</td><td>20金</td><td>1</td><td>珍稀</td><td>開鎖的巧手檢定獲得 1 個優勢。</td></tr>
+<tr><td>放大鏡</td><td>30金</td><td>1</td><td>罕見</td><td>調查檢定獲得 1 個優勢。</td></tr>
+<tr><td>地圖</td><td>5金</td><td>-</td><td>罕見</td><td>避免旅行帶路的求生檢定獲得 1 個劣勢。</td></tr>
+<tr><td>掛鎖</td><td>10金</td><td>-</td><td>常見</td><td>鎖住門或箱子。HP 20、AR 5。</td></tr>
+<tr><td>滾珠</td><td>1金</td><td>1</td><td>常見</td><td>可用動作投擲於 10 米內的一個類人生物。對方下一回合必須進行閃避檢定才能移動。</td></tr>
+<tr><td>香水（10 劑）</td><td>5金</td><td>1</td><td>常見</td><td>基於魅力的技能檢定獲得 1 個優勢。</td></tr>
+<tr><td>遊戲紙牌</td><td>5銀</td><td>1</td><td>罕見</td><td>欺瞞對抗檢定勝出即是贏家。</td></tr>
+<tr><td>木鏃箭袋</td><td>5銀</td><td>1</td><td>常見</td><td>弓的彈藥。與之對抗的護甲值加倍。</td></tr>
+<tr><td>黃銅箭袋</td><td>20金</td><td>1</td><td>罕見</td><td>弓或弩的彈藥，遠程攻擊材質視為金屬。</td></tr>
+<tr><td>黑曜石箭袋</td><td>2金</td><td>1</td><td>常見</td><td>弓的彈藥，遠程攻擊材質視為黑曜石。</td></tr>
+<tr><td>10 米麻繩</td><td>1金</td><td>1</td><td>常見</td><td>攀爬的體操檢定獲得 1 個優勢，但必須固定。</td></tr>
+<tr><td>10 米絲繩</td><td>10金</td><td>-</td><td>罕見</td><td>攀爬的體操檢定獲得 1 個優勢，但必須固定。</td></tr>
+<tr><td>鞍座</td><td>10金</td><td>1</td><td>常見</td><td>避免在馬背上戰鬥獲得 1 個劣勢。</td></tr>
+<tr><td>睡袋</td><td>1金</td><td>1</td><td>常見</td><td>避免紮營的求生檢定獲得 1 個劣勢。</td></tr>
+<tr><td>望遠鏡</td><td>50金</td><td>1</td><td>珍稀</td><td>旅行帶路的求生檢定獲得 1 個優勢。</td></tr>
+<tr><td>小帳篷</td><td>2金</td><td>2</td><td>常見</td><td>可容納 2 人。紮營的求生檢定獲得 1 個優勢。一個人骰，其他人可協助。</td></tr>
+<tr><td>大帳篷</td><td>4金</td><td>4</td><td>常見</td><td>可容納 6 人。紮營的求生檢定獲得 1 個優勢。一個人骰，其他人可協助。</td></tr>
+<tr><td>哨子</td><td>5銀</td><td>-</td><td>常見</td><td>哨音可傳到 100 米遠。</td></tr>
+<tr><td>吹箭袋</td><td>2金</td><td>1</td><td>常見</td><td>吹箭筒的彈藥，遠程攻擊材質視為木頭。</td></tr>
+<tr><td>黑曜石彈丸袋</td><td>2金</td><td>1</td><td>常見</td><td>投石繩的彈藥，遠程攻擊材質視為黑曜石，且額外造成1D4傷害。</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="transport">
+    <h3>交通</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>二輪推車</td><td>15金</td><td>-</td><td>常見</td><td>由一匹馬或驢子拉動。共可乘載 2 人和重量 50 的物品。</td></tr>
+<tr><td>四輪馬車</td><td>30金</td><td>-</td><td>常見</td><td>由兩匹馬或驢子拉動。共可乘載 4 人和重量 100 的物品。</td></tr>
+<tr><td>獨木舟</td><td>6金</td><td>-</td><td>常見</td><td>共可乘載 2 人和重量 10 的物品。</td></tr>
+<tr><td>划艇</td><td>15金</td><td>-</td><td>常見</td><td>共可乘載 4 人和重量 50 的物品。</td></tr>
+<tr><td>帆船</td><td>40金</td><td>-</td><td>罕見</td><td>共可乘載 6 人和重量 100 的物品。</td></tr>
+</tbody></table>
+  </div>
+
+  <div class="weapon-tab-content" id="power">
+    <h3>動物</h3>
+    <table class="weapon-table"><thead>
+      <tr><th>名稱</th><th>價格</th><th>重量</th><th>供應</th><th>效果／用途</th></tr></thead><tbody><tr><td>騎用馬</td><td>60金</td><td>-</td><td>罕見</td><td>可乘載 1 人和重量 10 的物品，或乘載 2 人。</td></tr>
+<tr><td>戰馬</td><td>400金</td><td>-</td><td>珍稀</td><td>可乘載 1 人和重量 10 的物品，或乘載 2 人。</td></tr>
+<tr><td>牛</td><td>10金</td><td>-</td><td>罕見</td><td>每天可提供 1D4 份食物（牛奶），或屠宰後可提供 2D10 份食物。生肉應該烹煮後再吃。</td></tr>
+<tr><td>驢</td><td>12金</td><td>-</td><td>常見</td><td>可乘載重量 10 的物品。無法載人。</td></tr>
+<tr><td>雞</td><td>4銀</td><td>-</td><td>常見</td><td>屠宰後可提供一份食物。生肉應該烹煮後再吃。</td></tr>
+<tr><td>護衛犬</td><td>15金</td><td>-</td><td>常見</td><td>保護主人。</td></tr>
+<tr><td>信鴿</td><td>2金</td><td>-</td><td>罕見</td><td>釋放後，無論在哪，都可以回到籠子裡。</td></tr>
+<tr><td>豬</td><td>2金</td><td>-</td><td>常見</td><td>屠宰後可提供 2D6 份食物。生肉應該烹煮後再吃。</td></tr>
+<tr><td>綿羊</td><td>3金</td><td>-</td><td>常見</td><td>屠宰後可提供 2D4 份食物。生肉應該烹煮後再吃。</td></tr>
+</tbody></table>
+  </div>
+</section>
+
+<!-- 🎵 樂器分頁 -->
+<section class="tab-content" id="instruments">
+  <div class="text-block">
+    <h2>樂器 Instruments</h2>
+    <p>這些樂器是馬茲提卡音樂文化的重要象徵。每件樂器都能讓音樂家展現獨特的音色與靈力，強化他們的能力或引起情感共鳴。</p>
+  </div>
+
+  <table class="weapon-table">
+    <thead>
+      <tr>
+        <th>名稱</th>
+        <th>價格</th>
+        <th>重量</th>
+        <th>供應</th>
+        <th>效果／用途</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr onclick="openPopup('Teponaztli')"><td><span class="clickable-weapon">長鼓 Teponaztli</span></td><td>4金</td><td>2</td><td>常見</td><td>音樂家能力的效果範圍提升至 20 米。</td></tr>
+      <tr onclick="openPopup('Cocolli')"><td><span class="clickable-weapon">海貝號角 Cocolli</span></td><td>6金</td><td>2</td><td>常見</td><td>音樂家能力的效果範圍提升至 100 米。</td></tr>
+      <tr onclick="openPopup('Acapitztli')"><td><span class="clickable-weapon">長笛 Tlapitzalli</span></td><td>2金</td><td>1</td><td>常見</td><td>音樂家能力觸發優勢效果時，WP 消耗降低至 2。</td></tr>
+      <tr onclick="openPopup('DeathWhistle')"><td><span class="clickable-weapon">死亡哨 Death Whistle</span></td><td>10金</td><td>-</td><td>罕見</td><td>音樂家能力只能觸發劣勢效果，但範圍提升至 50 米，且附帶一次恐懼攻擊。</td></tr>
+      <tr onclick="openPopup('Flute4')"><td><span class="clickable-weapon">四管笛 4-barrelled flute</span></td><td>30金</td><td>1</td><td>罕見</td><td>音樂家能力的 WP 消耗降低至 1，效果範圍提升至 50 米。</td></tr>
+      <tr onclick="openPopup('Yoyotl')"><td><span class="clickable-weapon">種子莢鈴 Yoyotl</span></td><td>1金</td><td>-</td><td>常見</td><td>音樂家能力的效果範圍提升至 15 米。</td></tr>
+      <tr onclick="openPopup('Omichicahuaztli')"><td><span class="clickable-weapon">骨銼 Omichicahuaztli</span></td><td>2金</td><td>1</td><td>常見</td><td>音樂家能力觸發劣勢效果時，WP 消耗降低至 2。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</main>
+<!-- 🟡 特殊武器介紹：馬夸維爾特 -->
+<div class="weapon-popup" id="popup-maca">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="馬夸維爾特" src="images/gear/weapon_maca.png"/>
+<h3>馬夸維爾特 Mācuahuitl</h3>
+<p>
+      這是馬茲提卡大陸上最常用的武器，其使用不受文化甚至種族的限制。<br/>在眾神中，札爾特克以其巨大的黑色馬夸維爾特而聞名，他用它斬首了他的母親馬茲提卡。<br/>據稱，他向人類傳授了其創造和設計的秘密。本質上是一把扁平、寬闊的木劍，其兩側嵌有鋒利的黑曜石刀片。<br/>據說，當用兩隻手揮舞時，這種武器的一擊可以斬首火蜥蜴。
+    </p>
+</div>
+</div>
+<button id="backToTop">⬆ 返回</button>
+<script>
+    // ✅ 頁面進場動畫
+    window.addEventListener('load', () => {
+      gsap.to('header', { opacity:1, y:0, duration:1, ease:'power2.out' });
+      gsap.to('main', { opacity:1, y:0, duration:1.2, delay:0.3, ease:'power2.out' });
+      gsap.utils.toArray('main img').forEach((img,i)=>{
+        gsap.to(img,{opacity:1,y:0,duration:0.8,delay:0.6+i*0.1,ease:'power2.out'});
+      });
+    });
+
+    // ✅ 分頁切換淡入淡出動畫（可與主網站統一）
+document.querySelectorAll('main a').forEach(link=>{
+  link.addEventListener('click', e => {
+    if(link.hostname === window.location.hostname){
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      gsap.to('main',{opacity:0,y:40,duration:0.5,onComplete:()=>{window.location.href = href;}});
+    }
+  });
+});
+
+
+    // ✅ 返回上方按鈕顯示/隱藏
+    const backToTop = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      if(window.scrollY > 400){
+        backToTop.style.opacity = 1;
+      }else{
+        backToTop.style.opacity = 0;
+      }
+    });
+    backToTop.addEventListener('click', () => {
+      gsap.to(window, {scrollTo:0, duration:0.8, ease:'power2.inOut'});
+    });
+  </script>
+<script>
+// Tabs switching with fade + flash effect
+const tabButtons = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if(btn.classList.contains('active')) return;
+    tabButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    btn.classList.add('flash');
+    setTimeout(()=>btn.classList.remove('flash'),500);
+    const targetId = btn.getAttribute('data-tab');
+    tabContents.forEach(sec => {
+      if(sec.id === targetId){
+        gsap.to('.tab-content.active', {opacity:0, duration:0.3, onComplete:()=>{
+          tabContents.forEach(s=>s.classList.remove('active'));
+          sec.classList.add('active');
+          gsap.fromTo(sec, {opacity:0}, {opacity:1, duration:0.4});
+          window.scrollTo({top:0, behavior:'smooth'});
+        }});
+      }
+    });
+  });
+});
+
+window.addEventListener('load', ()=>{
+  gsap.to('.gear-tabs', {opacity:1, y:0, duration:.6, ease:'power2.out', delay:.3});
+});
+
+// 🟡 武器類型子分頁切換
+const weaponButtons = document.querySelectorAll('.weapon-btn');
+const weaponContents = document.querySelectorAll('.weapon-tab-content');
+
+weaponButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('active')) return;
+    weaponButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    btn.classList.add('flash');
+    setTimeout(() => btn.classList.remove('flash'), 500);
+    const targetId = btn.getAttribute('data-tab');
+    weaponContents.forEach(sec => {
+      if (sec.id === targetId) {
+        gsap.to('.weapon-tab-content.active', {
+          opacity: 0,
+          duration: 0.3,
+          onComplete: () => {
+            weaponContents.forEach(s => s.classList.remove('active'));
+            sec.classList.add('active');
+            gsap.fromTo(sec, { opacity: 0 }, { opacity: 1, duration: 0.4 });
+          }
+        });
+      }
+    });
+  });
+});
+
+// 動畫：標籤列進場
+window.addEventListener('load', () => {
+  gsap.to('.weapon-tabs', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', delay: 0.4 });
+});
+// 🟡 武器搜尋 + 自動跳轉功能（修正版）
+const searchInput = document.getElementById('weaponSearchInput');
+if (searchInput) {
+  searchInput.addEventListener('input', () => {
+    const keyword = searchInput.value.trim().toLowerCase();
+    const allTabs = document.querySelectorAll('.weapon-tab-content');
+    let found = false;
+
+    // 沒輸入：重置並回到預設徒手類
+    if (!keyword) {
+      allTabs.forEach(tab => tab.querySelectorAll('tbody tr').forEach(r => r.style.display = ''));
+      // 切回預設
+      const defaultTab = document.getElementById('unarmed');
+      weaponContents.forEach(s => s.classList.remove('active'));
+      defaultTab.classList.add('active');
+      weaponButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === 'unarmed'));
+      gsap.to(defaultTab, { opacity: 1, duration: 0.4 });
+      return;
+    }
+
+    // 逐表格搜尋
+    for (const tab of allTabs) {
+      const rows = tab.querySelectorAll('tbody tr');
+      let matchCount = 0;
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const match = text.includes(keyword);
+        row.style.display = match ? '' : 'none';
+        if (match) {
+          matchCount++;
+          // 高亮動畫（如有加 CSS）
+          row.classList.add('highlight');
+          setTimeout(() => row.classList.remove('highlight'), 1000);
+        }
+      });
+
+      // 第一個找到結果的分頁 → 切過去
+      if (matchCount > 0 && !found) {
+        weaponContents.forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        gsap.fromTo(tab, { opacity: 0 }, { opacity: 1, duration: 0.4 });
+
+        const tabId = tab.id;
+        weaponButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+        found = true;
+      }
+    }
+
+    // 沒找到 → 提示並維持當前分頁
+    if (!found) {
+      searchInput.style.boxShadow = '0 0 10px red';
+      setTimeout(() => (searchInput.style.boxShadow = ''), 600);
+      const activeTab = document.querySelector('.weapon-tab-content.active');
+      if (activeTab) activeTab.querySelectorAll('tbody tr').forEach(r => r.style.display = '');
+    }
+  });
+}
+
+// 切換子分頁時，清空搜尋並重置列顯示
+weaponButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    const active = document.querySelector('.weapon-tab-content.active');
+    if (active) active.querySelectorAll('tbody tr').forEach(r => (r.style.display = ''));
+  });
+});
+
+// 🟡 切換子分頁時清空搜尋
+weaponButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (searchInput) searchInput.value = '';
+    const rows = document.querySelectorAll('.weapon-tab-content.active tbody tr');
+    rows.forEach(r => (r.style.display = ''));
+  });
+});
+
+// === 保險開窗器：確保總是全視窗置中、且鎖住底層滾動 ===
+function openWeaponPopup(popupId) {
+  const popup = document.getElementById(popupId);
+  if (!popup) return;
+
+  // 1) 確保在 <body> 直屬（避免受分頁容器定位影響）
+  if (popup.parentElement !== document.body) {
+    document.body.appendChild(popup);
+  }
+
+  // 2) 開啟 + 鎖住頁面滾動
+  popup.classList.add('active');
+  document.body.classList.add('modal-open');
+
+  // 3) 置中動畫（可選）
+  gsap.fromTo(popup.querySelector('.weapon-popup-content'),
+    { y: -12, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.25, ease: 'power2.out' }
+  );
+}
+
+function closeWeaponPopup(popupId) {
+  const popup = document.getElementById(popupId);
+  if (!popup) return;
+  popup.classList.remove('active');
+  document.body.classList.remove('modal-open');
+}
+
+// 針對特定武器名稱掛事件（馬夸維爾特範例）
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.weapon-table td:first-child').forEach(cell => {
+    const text = cell.textContent.trim();
+    if (text.includes('馬夸維爾特') || text.includes('Mācuahuitl')) {
+      cell.classList.add('clickable-weapon');
+      cell.addEventListener('click', () => openWeaponPopup('popup-maca'));
+    }
+  });
+
+  // 關閉方式：按 X、點背景、按 ESC
+  const popup = document.getElementById('popup-maca');
+  if (popup) {
+    popup.querySelector('.popup-close')?.addEventListener('click', () => closeWeaponPopup('popup-maca'));
+    popup.querySelector('.weapon-popup-bg')?.addEventListener('click', () => closeWeaponPopup('popup-maca'));
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeWeaponPopup('popup-maca');
+  });
+});
+
+
+</script><script>
+// === GSAP 動畫完成後移除 main 的 transform，避免 fixed 定位錯誤 ===
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const main = document.querySelector('main');
+    if (main && main.style.transform) {
+      main.style.transform = 'none';
+    }
+  }, 1500);
+});
+</script>
+<!-- auto-added popup: 銅斧 Itztōpīlli -->
+<div class="weapon-popup" id="popup-copper-axe">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="銅斧 Itztōpīlli" src="images/gear/weapon_copper_axe.png"/>
+<h3>銅斧 Itztōpīlli</h3>
+<p>這種武器的設計與標準斧頭相似，但一側有一個鈍的突出物，而不是第二個刀片。一般來說，鋒利的邊緣用於戰鬥，但如果持有者選擇，鈍的邊緣可以用於鈍擊。</p>
+</div>
+</div>
+<!-- auto-added popup: 硬木棒 Cuahuitl -->
+<div class="weapon-popup" id="popup-hardwood-club">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="硬木棒 Cuahuitl" src="images/gear/Cuahuitl.png"/>
+<h3>硬木棒 Cuahuitl</h3>
+<p>這種簡單的短棒通常由某種硬木製成，並具有龍舌蘭植物葉子的形狀。</p>
+</div>
+</div>
+<!-- auto-added popup: 碎骨棒 Cuauholōlli -->
+<div class="weapon-popup" id="popup-boneclub">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="碎骨棒 Cuauholōlli" src="images/gear/Cuauholōlli.png"/>
+<h3>碎骨棒 Cuauholōlli</h3>
+<p>從外觀上看，這件武器與狼牙棒很相似，製作起來也很簡單，但威力也相當大。手柄由木頭製成，頂部裝有石頭、木頭或銅球。</p>
+</div>
+</div>
+<!-- auto-added popup: 刃棒 Huitzauhqui -->
+<div class="weapon-popup" id="popup-edged-club">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="刃棒 Huitzauhqui" src="images/gear/Huitzauhqui.png"/>
+<h3>刃棒 Huitzauhqui</h3>
+<p>這種武器在製造時就用於近戰攻擊，是特殊的扁長大木棍，有時側面會鑲嵌著黑曜石碎片。</p>
+</div>
+</div>
+<!-- auto-added popup: 馬卡短劍 Mācuāhuitzōctli -->
+<div class="weapon-popup" id="popup-maca-short">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="馬卡短劍 Mācuāhuitzōctli" src="images/gear/weapon_maca_short.png"/>
+<h3>馬卡短劍 Mācuāhuitzōctli</h3>
+<p>馬卡劍的變體，比起一般馬卡劍略短些，長度略多於一英尺半。四個突起和一個尖端從末端突出，持劍者可以使用尖端來造成穿刺傷害，而不是正常的揮砍傷害。</p>
+</div>
+</div>
+<!-- auto-added popup: 木矛 Tepoztōpīlli -->
+<div class="weapon-popup" id="popup-wood-spear">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="木矛 Tepoztōpīlli" src="images/gear/Tepoztōpīlli.png"/>
+<h3>木矛 Tepoztōpīlli</h3>
+<p>繼 馬夸維爾特 mācuahuitl 之後，這種類似矛的武器是馬茲提卡戰士中最常用的武器。它的頭部有一個非常寬的邊緣，沿著頭部的邊緣都嵌入了鉛石碎片。</p>
+</div>
+</div>
+<!-- auto-added popup: 黑曜石小刀 Tecpatl -->
+<div class="weapon-popup" id="popup-obsidian-knife">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="黑曜石小刀 Tecpatl" src="images/gear/Tecpatl.png"/>
+<h3>黑曜石小刀 Tecpatl</h3>
+<p>這把長的雙刃武器有一個精緻的石頭或木柄，總長七到九英寸。這種武器最常用於祭祀。</p>
+</div>
+</div>
+<!-- auto-added popup: 投石繩 Tēmātlatl -->
+<div class="weapon-popup" id="popup-sling">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="投石繩" src="images/gear/Tēmātlatl.png"/>
+<h3>投石繩 Tēmātlatl</h3>
+<p>由龍舌蘭纖維製成的吊帶。馬茲提卡人使用手工成型的黏土球，裡面裝滿鋸齒狀的黑曜石塊作為彈藥。當黏土球破碎時，黑曜石會造成實際的揮砍傷害，而不是普通投石索的鈍擊傷害。</p>
+</div>
+</div>
+<!-- auto-added popup: 圓盾 Chīmalli -->
+<div class="weapon-popup" id="popup-round-shield">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="圓盾 Chīmalli" src="images/gear/Chīmalli.png"/>
+<h3>圓盾 Chīmalli</h3>
+<p>這些盾牌幾乎都是馬茲提卡戰士獨有的。它們由不同的材料製成，但最常見的是玉米穗。這些盾牌通常裝飾有鮮豔的羽毛。有些並不用於戰爭，而只是裝飾。這些chīmalli 被稱為māhuizzoh。</p>
+</div>
+</div>
+<!-- auto-added popup: 投槍器 Atlatl -->
+<div class="weapon-popup" id="popup-atlatl">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="投槍器 Atlatl" src="images/gear/atlatl.png"/>
+<h3>投槍器 Atlatl</h3>
+<p>在馬茲提卡語言中，它的字面意思是“延伸的手臂”。通常，這種武器用於投擲被稱為“tlacochtli”的標槍，其力量和射程比用手投擲的距離更大。它也可以用來投擲稱為 yāōmītl 的箭。</p>
+</div>
+</div>
+<!-- auto-added popup: 吹箭筒 Tlacalhuazcuahuitl -->
+<div class="weapon-popup" id="popup-blowgun">
+<div class="weapon-popup-bg"></div>
+<div class="weapon-popup-content">
+<button class="popup-close">✕</button>
+<img alt="吹箭筒 Tlacalhuazcuahuitl" src="images/gear/Tlacalhuazcuahuitl.png"/>
+<h3>吹箭筒 Tlacalhuazcuahuitl</h3>
+<p>這種吹箭筒由空心簧片製成，幾乎總是使用有毒的飛鏢作為彈藥。飛鏢本身是由削尖的木頭製成，上面覆蓋著棉花。這是馬茲提卡半身人部落最愛的武器。</p>
+</div>
+</div>
+
+<script>
+// === 通用關閉功能（覆蓋舊版或補缺失） ===
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('weapon-popup-bg')) {
+    const popup = e.target.closest('.weapon-popup');
+    popup.classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+  if (e.target.classList.contains('popup-close')) {
+    const popup = e.target.closest('.weapon-popup');
+    popup.classList.remove('active');
+    document.body.classList.remove('modal-open');
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.weapon-popup.active').forEach(popup => {
+      popup.classList.remove('active');
+    });
+    document.body.classList.remove('modal-open');
+  }
+});
+</script>
+<script>
+// === 返回按鈕功能 ===
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('back-to-top') || e.target.id === 'backToTop') {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+});
+</script>
+<script>
+// === 五分頁主導覽控制 ===
+(function () {
+  const btns = document.querySelectorAll('.gear-tabs .tab-btn');
+  const sections = {
+    weight: document.getElementById('weight'),
+    weapons: document.getElementById('weapons'),
+    armor: document.getElementById('armor'),
+    helmets: document.getElementById('helmets'),
+    instruments: document.getElementById('instruments'),
+    items: document.getElementById('items'),
+  };
+
+  function clearActive() {
+    btns.forEach(b => b.classList.remove('active'));
+    Object.values(sections).forEach(s => s && s.classList.remove('active'));
+  }
+
+  function fadeIn(el) {
+    if (!el) return;
+    if (window.gsap) {
+      gsap.fromTo(el, {opacity: 0}, {opacity: 1, duration: 0.4, ease: 'power2.out'});
+    } else {
+      el.style.opacity = 1;
+    }
+  }
+
+  function showTab(key) {
+    clearActive();
+
+    btns.forEach(b => {
+      const target = b.getAttribute('data-tab');
+      if (target === key) b.classList.add('active');
+    });
+
+    switch (key) {
+      case 'weight':
+        sections.weight?.classList.add('active');
+        fadeIn(sections.weight);
+        break;
+      case 'weapons':
+        sections.weapons?.classList.add('active');
+        fadeIn(sections.weapons);
+        break;
+      case 'armor-helmets':
+        sections.armor?.classList.add('active');
+        sections.helmets?.classList.add('active');
+        fadeIn(sections.armor);
+        fadeIn(sections.helmets);
+        break;
+      case 'instruments':
+        sections.instruments?.classList.add('active');
+        fadeIn(sections.instruments);
+        break;
+      case 'items':
+        sections.items?.classList.add('active');
+        fadeIn(sections.items);
+        break;
+    }
+  }
+
+  // 綁定按鈕事件
+  btns.forEach(b => {
+    b.addEventListener('click', () => {
+      const key = b.getAttribute('data-tab');
+      showTab(key);
+    });
+  });
+
+  // 初始化顯示（預設為「負重規則」）
+  const initBtn = document.querySelector('.gear-tabs .tab-btn.active');
+  showTab(initBtn ? initBtn.getAttribute('data-tab') : 'weight');
+})();
+</script>
+
+
+<div class="weapon-popup" id="popup-armor-item"><div class="weapon-popup-bg"></div><div class="weapon-popup-content"><button class="popup-close">✕</button><img alt="獸皮甲" src="images/armor_item.jpg"/><h3>獸皮甲</h3><p>抵抗鈍擊傷害時，護甲值 +2。</p></div></div><div class="weapon-popup" id="popup-armor-item"><div class="weapon-popup-bg"></div><div class="weapon-popup-content"><button class="popup-close">✕</button><img alt="鎖子甲" src="images/armor_item.jpg"/><h3>鎖子甲</h3><p>閃避、隱匿劣勢。抵抗揮砍傷害時，護甲值 +2。</p></div></div><div class="weapon-popup" id="popup-armor-item"><div class="weapon-popup-bg"></div><div class="weapon-popup-content"><button class="popup-close">✕</button><img alt="板甲" src="images/armor_item.jpg"/><h3>板甲</h3><p>體操、閃避、隱匿劣勢。</p></div></div><div class="weapon-popup" id="popup-armor-item"><div class="weapon-popup-bg"></div><div class="weapon-popup-content"><button class="popup-close">✕</button><img alt="開面頭盔" src="images/armor_item.jpg"/><h3>開面頭盔</h3><p>察覺劣勢。</p></div></div><div class="weapon-popup" id="popup-armor-item"><div class="weapon-popup-bg"></div><div class="weapon-popup-content"><button class="popup-close">✕</button><img alt="全筒頭盔" src="images/armor_item.jpg"/><h3>全筒頭盔</h3><p>察覺、遠程攻擊劣勢。</p></div></div>
+
+
+
+
+
+
+<script>
+// === Unified Popup Controller (Final Fixed v3) ===
+function openWeaponPopup(id){
+  const popup=document.getElementById(id);
+  if(!popup)return;
+  popup.classList.add('active');
+  document.body.classList.add('modal-open');
+  document.body.style.overflow='hidden';
+  const c=popup.querySelector('.weapon-popup-content');
+  if(window.gsap&&c){
+    try{gsap.fromTo(c,{y:-16,opacity:0},{y:0,opacity:1,duration:0.3,ease:'power2.out'});}catch(e){}
+  }
+}
+function closeWeaponPopup(){
+  document.querySelectorAll('.weapon-popup.active').forEach(p=>p.classList.remove('active'));
+  document.body.classList.remove('modal-open');
+  document.body.style.overflow='';
+}
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('weapon-popup-bg')||e.target.classList.contains('popup-close'))closeWeaponPopup();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeWeaponPopup();});
+
+const POPUP_MAP={
+  '馬夸維爾特':'popup-maca','Mācuahuitl':'popup-maca',
+  '銅斧':'popup-copper-axe','Itztōpīlli':'popup-copper-axe',
+  '硬木棒':'popup-hardwood-club','Cuahuitl':'popup-hardwood-club',
+  '碎骨棒':'popup-boneclub','Cuauholōlli':'popup-boneclub',
+  '刃棒':'popup-edged-club','Huitzauhqui':'popup-edged-club',
+  '馬卡短劍':'popup-maca-short','Mācuāhuitzōctli':'popup-maca-short',
+  '木矛':'popup-wood-spear','Tepoztōpīlli':'popup-wood-spear',
+  '黑曜石小刀':'popup-obsidian-knife','Tecpatl':'popup-obsidian-knife',
+  '投石繩':'popup-sling','Tēmātlatl':'popup-sling',
+  '圓盾':'popup-round-shield','Chīmalli':'popup-round-shield',
+  '投槍器':'popup-atlatl','Atlatl':'popup-atlatl',
+  '吹箭筒':'popup-blowgun','Tlacalhuazcuahuitl':'popup-blowgun'
+,
+  '投射標槍':'popup-tlacochtli','Tlacochtli':'popup-tlacochtli'
+,
+  '戰弓':'popup-tlahhuitolli','Tlahhuītōlli':'popup-tlahhuitolli'
+};
+
+(function(){
+  function bindAllPopups(){
+    document.querySelectorAll('.weapon-table tbody tr td:first-child').forEach(td=>{
+      const raw=(td.textContent||'').trim();
+      if(!raw)return;
+      let pid=null;
+      const clickable=td.querySelector('.clickable-weapon');
+      if(clickable&&clickable.getAttribute('data-popup-id'))pid=clickable.getAttribute('data-popup-id');
+      if(!pid){
+        for(const key in POPUP_MAP){
+          if(raw.includes(key)){pid=POPUP_MAP[key];break;}
+        }
+      }
+      if(!pid)return;
+      let target=clickable;
+      if(!target){
+        target=document.createElement('span');
+        target.textContent=raw;
+        target.classList.add('clickable-weapon');
+        td.textContent='';
+        td.appendChild(target);
+      }
+      if(target.dataset.bound)return;
+      target.dataset.bound='1';
+      target.addEventListener('click',()=>openWeaponPopup(pid),{passive:true});
+    });
+  }
+  document.addEventListener('DOMContentLoaded',bindAllPopups);
+  window.addEventListener('load',bindAllPopups);
+  bindAllPopups();
+  document.addEventListener('click',e=>{
+    const tab=e.target.closest('.gear-tabs .tab-btn');
+    if(tab)setTimeout(bindAllPopups,200);
+  });
+})();
+</script>
+
+
+<!-- auto-added popup: 投射標槍 Tlacochtli -->
+<div class="weapon-popup" id="popup-tlacochtli">
+  <div class="weapon-popup-bg"></div>
+  <div class="weapon-popup-content">
+    <button class="popup-close">✕</button>
+    <img src="images/gear/Tlacochtli.png" alt="投射標槍 Tlacochtli"/>
+    <h3>投射標槍 Tlacochtli</h3>
+    <p>以輕木與黑曜石尖製成的投射標槍，既可徒手擲出，也可搭配投槍器（Atlatl）使用以獲得更遠的射程與更大的穿刺力。獵手與斥候常成束攜帶，用於先制打擊或逼退敵方陣形。</p>
+  </div>
+</div>
+
+
+<!-- auto-added popup: 戰弓 Tlahhuītōlli -->
+<div class="weapon-popup" id="popup-tlahhuitolli">
+  <div class="weapon-popup-bg"></div>
+  <div class="weapon-popup-content">
+    <button class="popup-close">✕</button>
+    <img src="images/gear/Tlahhuitolli.png" alt="戰弓 Tlahhuītōlli"/>
+    <h3>戰弓 Tlahhuītōlli</h3>
+    <p>以堅木與筋腱製成的戰弓，是部族弓手的主要遠程武器。弓身常飾以羽毛與玉石，象徵榮耀與神聖的狩獵祝福。</p>
+  </div>
+</div>
+
+<script>
+// === 「其他裝備＆物品」分頁專用互動系統 (含搜尋高亮) ===
+
+// 🟡 子分頁切換
+const itemButtons = document.querySelectorAll('#item-tabs .weapon-btn');
+const itemContents = document.querySelectorAll('#items .weapon-tab-content');
+
+itemButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('active')) return;
+
+    // 清除舊的 active 狀態
+    itemButtons.forEach(b => b.classList.remove('active'));
+    itemContents.forEach(c => c.classList.remove('active'));
+
+    // 啟用新分頁
+    btn.classList.add('active');
+    const targetId = btn.getAttribute('data-tab');
+    const newTab = document.getElementById(targetId);
+    if (newTab) {
+      newTab.classList.add('active');
+      gsap.fromTo(newTab, {opacity: 0}, {opacity: 1, duration: 0.4});
+    }
+
+    // 清空搜尋欄並重置顯示
+    const searchInput = document.getElementById('itemSearchInput');
+    if (searchInput) searchInput.value = '';
+    newTab?.querySelectorAll('tbody tr').forEach(r => r.style.display = '');
+  });
+});
+
+// 🟡 搜尋功能（含金光閃爍高亮）
+const itemSearchInput = document.getElementById('itemSearchInput');
+if (itemSearchInput) {
+  itemSearchInput.addEventListener('input', () => {
+    const keyword = itemSearchInput.value.trim().toLowerCase();
+    let found = false;
+
+    const allTabs = document.querySelectorAll('#items .weapon-tab-content');
+
+    // 清空搜尋
+    if (!keyword) {
+      allTabs.forEach(tab => tab.querySelectorAll('tbody tr').forEach(r => r.style.display = ''));
+      itemContents.forEach(s => s.classList.remove('active'));
+      const defaultTab = document.getElementById('clothing');
+      defaultTab?.classList.add('active');
+      itemButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === 'clothing'));
+      gsap.to(defaultTab, {opacity: 1, duration: 0.4});
+      return;
+    }
+
+    for (const tab of allTabs) {
+      const rows = tab.querySelectorAll('tbody tr');
+      let matchCount = 0;
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const match = text.includes(keyword);
+        row.style.display = match ? '' : 'none';
+        if (match) {
+          matchCount++;
+          row.classList.add('highlight');
+          setTimeout(() => row.classList.remove('highlight'), 1000);
+        }
+      });
+
+      if (matchCount > 0 && !found) {
+        itemContents.forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        gsap.fromTo(tab, {opacity: 0}, {opacity: 1, duration: 0.4});
+        const tabId = tab.id;
+        itemButtons.forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+        found = true;
+      }
+    }
+
+    if (!found) {
+      itemSearchInput.style.boxShadow = '0 0 10px red';
+      setTimeout(() => (itemSearchInput.style.boxShadow = ''), 600);
+    }
+  });
+}
+
+// 🟡 初始化動畫
+window.addEventListener('load', () => {
+  gsap.to('#item-tabs', {opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', delay: 0.5});
+});
+
+// ✨ 搜尋結果高亮動畫（與武器一致）
+const style = document.createElement('style');
+style.textContent = `
+@keyframes highlightFlashItem {
+  0% { background: rgba(255,215,0,0.3); }
+  100% { background: transparent; }
+}
+#items .weapon-table tbody tr.highlight {
+  animation: highlightFlashItem 1s ease;
+}
+`;
+document.head.appendChild(style);
+</script>
+
+<script>
+// === 通用表格排序系統（適用所有 .weapon-table） ===
+
+// 將價格或重量等欄位文字轉為可比較數值
+function parseValue(value, columnIndex) {
+  if (!value) return 0;
+  value = value.trim();
+
+  // 價格欄（第2欄）
+  if (columnIndex === 1) {
+    let num = parseFloat(value.replace(/[^\d.]/g, '')) || 0;
+    if (value.includes('金')) return num * 100;
+    if (value.includes('銀')) return num * 10;
+    if (value.includes('銅')) return num;
+    return num;
+  }
+
+  // 重量欄（第3欄）
+  if (columnIndex === 2) {
+    const n = parseFloat(value.replace(/[^\d.]/g, ''));
+    return isNaN(n) ? 0 : n;
+  }
+
+  // 其他欄位按字母排序
+  return value.toLowerCase();
+}
+
+// 針對每張表格啟用排序功能
+document.querySelectorAll('.weapon-table').forEach(table => {
+  const headers = table.querySelectorAll('th');
+  headers.forEach((th, index) => {
+    th.style.cursor = 'pointer';
+    th.title = '點擊以排序';
+    let ascending = true;
+
+    th.addEventListener('click', () => {
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+
+      // 移除其他表頭的排序標記
+      headers.forEach(h => h.classList.remove('sorted-asc', 'sorted-desc'));
+
+      // 排序邏輯
+      rows.sort((a, b) => {
+        const A = parseValue(a.children[index]?.textContent, index);
+        const B = parseValue(b.children[index]?.textContent, index);
+        if (typeof A === 'number' && typeof B === 'number') {
+          return ascending ? A - B : B - A;
+        }
+        return ascending
+          ? A.toString().localeCompare(B)
+          : B.toString().localeCompare(A);
+      });
+
+      // 重新附加排序後的列
+      rows.forEach(r => tbody.appendChild(r));
+
+      // 顯示箭頭提示
+      th.classList.add(ascending ? 'sorted-asc' : 'sorted-desc');
+      ascending = !ascending;
+    });
+  });
+});
+
+// 排序箭頭樣式（全站通用）
+const styleSort = document.createElement('style');
+styleSort.textContent = `
+.weapon-table th.sorted-asc::after {
+  content: " ▲";
+  color: gold;
+}
+.weapon-table th.sorted-desc::after {
+  content: " ▼";
+  color: gold;
+}
+.weapon-table th:hover {
+  color: var(--gold);
+  transition: color 0.2s;
+}
+`;
+document.head.appendChild(styleSort);
+</script>
+
+<!-- 🎶 樂器詳細介紹彈窗 -->
+<div id="popup-overlay" class="popup-overlay" onclick="closePopup()"></div>
+
+<!-- 長鼓 -->
+<div id="popup-Teponaztli" class="popup">
+  <img src="images/gear/Teponaztli.png" alt="Teponaztli">
+  <h3>長鼓 Teponaztli</h3>
+  <p>中空的木製長鼓，以木槌敲擊產生低沉共鳴的聲音。可強化音樂家能力，使其效果範圍提升至 20 米。</p>
+</div>
+
+<!-- 海貝號角 -->
+<div id="popup-Cocolli" class="popup">
+  <img src="images/gear/Cocolli.png" alt="Cocolli">
+  <h3>海貝號角 Cocolli</h3>
+  <p>由大型海螺製成的號角，吹響時能遠播千里。音樂家能力的效果範圍提升至 100 米。</p>
+</div>
+
+<!-- 長笛 -->
+<div id="popup-Acapitztli" class="popup">
+  <img src="images/gear/Tlapitzalli.png" alt="Acapitztli">
+  <h3>長笛 Tlapitzalli</h3>
+  <p>由陶瓷、木材、黏土或骨頭等材料製成，通常裝飾有神靈圖像或抽象設計。這些長笛可以有多個腔室，有時由玉石等珍貴材料製成。當音樂家觸發優勢效果時，WP 消耗降低至 2。</p>
+</div>
+
+<!-- 死亡哨 -->
+<div id="popup-DeathWhistle" class="popup">
+  <img src="images/gear/DeathWhistle.png" alt="Death Whistle">
+  <h3>死亡哨 Death Whistle</h3>
+  <p>外形如頭骨的陶哨，吹出如鬼哭般的聲音。音樂家能力只能觸發劣勢效果，但範圍提升至 50 米，且附帶一次恐懼攻擊。</p>
+</div>
+
+<!-- 四管笛 -->
+<div id="popup-Flute4" class="popup">
+  <img src="images/gear/Flute4.png" alt="4-barrelled flute">
+  <h3>四管笛 4-barrelled flute</h3>
+  <p>由陶瓷、木材、黏土或骨頭等材料製成，通常裝飾有神靈圖像或抽象設計。音色層次豐富。音樂家能力的 WP 消耗降低至 1，效果範圍提升至 50 米。</p>
+</div>
+
+<!-- 種子莢鈴 -->
+<div id="popup-Yoyotl" class="popup">
+  <img src="images/gear/Yoyotl.png" alt="Yoyotl">
+  <h3>種子莢鈴 Yoyotl</h3>
+  <p>將乾燥種子莢串聯成串，搖動時發出沙沙聲。音樂家能力的效果範圍提升至 15 米。</p>
+</div>
+
+<!-- 骨銼 -->
+<div id="popup-Omichicahuaztli" class="popup">
+  <img src="images/gear/Omichicahuaztli.png" alt="Omichicahuaztli">
+  <h3>骨銼 Omichicahuaztli</h3>
+  <p>以長骨刻槽製成，摩擦時發出低沉顫音。音樂家能力觸發劣勢效果時，WP 消耗降低至 2。</p>
+</div>
+
+<!-- 彈窗控制腳本 -->
+<script>
+function openPopup(id) {
+  document.getElementById('popup-overlay').style.display = 'block';
+  document.getElementById('popup-' + id).style.display = 'block';
+  gsap.fromTo('#popup-' + id, {scale: 0.9, opacity: 0}, {scale: 1, opacity: 1, duration: 0.3, ease: 'power2.out'});
+}
+function closePopup() {
+  document.getElementById('popup-overlay').style.display = 'none';
+  document.querySelectorAll('.popup').forEach(p => p.style.display = 'none');
+}
+</script>
+
+<!-- 樣式 -->
+<style>
+.popup-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  z-index: 900;
+}
+.popup {
+  display: none;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(20,20,20,0.95);
+  border: 1px solid var(--gold);
+  padding: 24px;
+  border-radius: 12px;
+  z-index: 901;
+  width: 420px;
+  text-align: center;
+  box-shadow: 0 0 12px rgba(0,0,0,0.6);
+}
+.popup img {
+  width: 100%;
+  max-width: 340px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid var(--gold);
+}
+.popup h3 {
+  color: var(--gold);
+  m
+
+/* === 導覽列按鈕樣式 === */
+.gear-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0 25px 0;
+  flex-wrap: wrap;
+}
+
+.gear-tabs .tab-btn {
+  position: relative;
+  background: rgba(20,20,20,0.8);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  letter-spacing: 1px;
+}
+
+/* Hover 效果：羽光流動 */
+.gear-tabs .tab-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,215,0,0.45), transparent);
+  transition: all 0.5s ease;
+}
+
+.gear-tabs .tab-btn:hover::before {
+  left: 100%;
+}
+
+.gear-tabs .tab-btn:hover {
+  color: #fff8cc;
+  box-shadow: 0 0 10px rgba(255,215,0,0.5);
+  transform: translateY(-1px);
+}
+
+/* Active 狀態：金光微閃 + 外框強化 */
+.gear-tabs .tab-btn.active {
+  background: rgba(255,215,0,0.15);
+  color: #fff9d9;
+  box-shadow: 0 0 8px rgba(255,215,0,0.4);
+  border-color: #ffd700;
+  animation: pulseGold 2s infinite ease-in-out;
+}
+
+/* 閃光呼吸動畫 */
+@keyframes pulseGold {
+  0% { box-shadow: 0 0 8px rgba(255,215,0,0.4); }
+  50% { box-shadow: 0 0 15px rgba(255,215,0,0.8); }
+  100% { box-shadow: 0 0 8px rgba(255,215,0,0.4); }
+}
+
+
+</body>
+</html>

@@ -1,0 +1,210 @@
+/*
+ * 基礎樣式表
+ *
+ * 這個檔案定義了整個網站的基礎外觀，包含背景色、字型、排版、
+ * 導覽列、表單及互動按鈕的樣式。風格參考了使用者提供的新網站，
+ * 採用淺色主題配合深色強調色，並保持簡潔易讀。
+ */
+
+/* 基本全局設定 */
+html {
+  box-sizing: border-box;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+:root {
+  --gold: #c9a35a;
+  --jade: #0e4b3a;
+  --ink: #1a1a1a;
+  --paper: #f5e9c9;
+}
+
+/* ===== 基本設定 ===== */
+html {
+  box-sizing: border-box;
+  font-family: 'Noto Sans TC', sans-serif;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* ===== 背景與字體色 ===== */
+body {
+  margin: 0;
+  padding: 0;
+  background: #081a14; /* 與首頁一致的暗色背景 */
+  color: var(--paper);
+  line-height: 1.75;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ===== 導覽列（沿用金綠主題） ===== */
+.navbar, .menu, .global-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  border-bottom: 2px solid var(--gold);
+  padding: 8px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(5px);
+}
+.global-nav button {
+  border: none;
+  background: transparent;
+  color: var(--paper);
+  font-weight: 700;
+  margin: 6px 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .25s;
+}
+.global-nav button:hover,
+.global-nav button.active {
+  color: #1a1a1a;
+  background: var(--gold);
+}
+
+
+/* ===== 標題 ===== */
+h1, h2, h3 {
+  color: var(--gold);
+  font-family: 'Quatl', serif;
+  letter-spacing: 1px;
+}
+
+/* ===== 區塊與卡片 ===== */
+.container, .section, .stage {
+  background: rgba(0, 0, 0, 0.55);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 20px auto;
+  max-width: 1000px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== 表格 ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--paper);
+}
+th, td {
+  border: 1px solid rgba(201,163,90,0.4);
+  padding: 8px;
+}
+th {
+  background: rgba(255,255,255,0.08);
+  color: var(--gold);
+}
+
+/* ===== 按鈕 ===== */
+.btn {
+  background: rgba(255,255,255,0.1);
+  color: var(--paper);
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all .25s;
+}
+.btn:hover {
+  background: var(--gold);
+  color: #1a1a1a;
+}
+
+/* ===== 區段標題文字 ===== */
+section > h2, section > h3 {
+  border-left: 5px solid var(--gold);
+  padding-left: 10px;
+  margin-top: 20px;
+}
+
+/* ===== 表單 ===== */
+input, select, textarea {
+  background: rgba(255,255,255,0.08);
+  color: var(--paper);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 8px;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(201,163,90,0.4);
+}
+
+/* ===== 滾動條（自訂金色風格） ===== */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--gold);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.25);
+}
+
+/* ===== 補充：維持原有職業頁按鈕、內容區等 ===== */
+.class-detail .extra-left, .class-detail .extra-right {
+  background: rgba(255,255,255,0.05);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--gold);
+}
+.shaman-tabs button, .scholar-tabs button {
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--paper);
+}
+.shaman-tabs button.active, .scholar-tabs button.active {
+  background: var(--gold);
+  color: #1a1a1a;
+}
+
+}
+
+/* 只針對學者職業時套用 */
+.prof-preview h2:contains("學者") ~ .detail-section .center3 {
+  text-align: left !important;
+}
+
+/* 🔸 給薩滿與學者的專用樣式，避免與右欄衝突 */
+.shaman-tabs, .scholar-tabs {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.shaman-tabs button, .scholar-tabs button {
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--paper);
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.shaman-tabs button.active, .scholar-tabs button.active {
+  background: var(--gold);
+  color: #1a1a1a;
+}
+
+.shaman-content, .scholar-content {
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  border-radius: 6px;
+}

@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英雄能力 HEROIC ABILITIES</title>
+<link rel="stylesheet" href="navbar.css">
+<link rel="stylesheet" href="background.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script defer src="navbar.js"></script>
+<script defer src="background.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.cdnfonts.com/css/quatl" rel="stylesheet">
+<style>
+:root { --gold:#c9a35a; }
+body { font-family:'Noto Sans TC',sans-serif; color:#f1e8d6; }
+header{ text-align:left; padding:40px 40px 10px; }
+header h1{ font-family:"Quatl",serif; font-size:2rem; color:var(--gold); }
+.divider{width:100%;height:80px;margin-top:0;background:url('images/aztec-divider.png') repeat-x;background-size:auto 200%;opacity:.9;}
+.subnav{display:flex;justify-content:center;gap:16px;margin:20px 0;}
+.tab-btn{background:rgba(201,163,90,0.15);color:var(--gold);border:1px solid var(--gold);border-radius:8px;padding:8px 20px;cursor:pointer;transition:all .3s;}
+.tab-btn.active{background:var(--gold);color:#000;}
+.tab-content { display:none; padding:20px 28px; border-radius:12px; margin:0 auto; max-width:1100px; }
+.tab-content.active{display:block;}
+.ability-nav{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;}
+.ability-btn{border-radius:6px;padding:6px 14px;font-size:1.0rem;cursor:pointer;transition:all .3s;border:1px solid currentColor;background:transparent;}
+.ability-detail{display:none;padding:20px;background:rgba(0,0,0,0.3);border-radius:10px;border:1px solid var(--gold);margin-top:10px;line-height:1.8;}
+.ability-detail.active{display:block;}
+
+
+/* ✅ 一排 6 顆互動按鈕統一設計 */
+.ability-nav {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 每排 6 顆 */
+  gap: 12px; /* 間距 */
+  justify-items: center;
+  margin-bottom: 20px;
+}
+
+.ability-btn {
+  width: 100%;        /* 由 grid 控制寬度 */
+  height: 48px;       /* 統一高度 */
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 900px) {
+  .ability-nav {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .ability-nav {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Hover / Active 效果 */
+.ability-btn:hover,
+.ability-btn.active {
+  background: rgba(201,163,90,0.25);
+  box-shadow: 0 0 12px rgba(201,163,90,0.8);
+  transform: scale(1.05);
+}
+
+/* 四分類淡色差 */
+#general .ability-btn { color: #c9a35a; }
+#combat .ability-btn { color: #a85754; }
+#explore .ability-btn { color: #3b8b5a; }
+#social .ability-btn { color: #5277c1; }
+/* ⬆ 返回按鈕同樣技能樹風格 */
+#backToTop {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 23px;
+  border: 1px solid var(--gold);
+  background: rgba(0,0,0,0.4);
+  color: var(--gold);
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(3px);
+  transition: all 0.4s ease;
+  opacity: 0;
+}
+#backToTop.show {
+  display: flex;
+  opacity: 1;
+}
+#backToTop:hover {
+  background: rgba(201,163,90,0.25);
+  box-shadow: 0 0 14px rgba(201,163,90,0.8);
+  transform: scale(1.05);
+  color: #fffbe8;
+}
+
+
+/* 返回按鈕 */
+#backToTop{position:fixed;bottom:40px;right:40px;width:auto;height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--gold);
+background:rgba(201,163,90,0.25);color:var(--gold);font-size:1rem;cursor:pointer;box-shadow:0 0 10px rgba(201,163,90,0.4);
+display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px);transition:all .4s ease;}
+#backToTop:hover{background:var(--gold);color:#000;box-shadow:0 0 16px rgba(201,163,90,0.8);}
+
+/* ✅ 能力內容排版優化 */
+.ability-detail {
+  background: rgba(15, 15, 15, 0.55);
+  backdrop-filter: blur(3px);
+  border: 1px solid rgba(201,163,90,0.6);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-top: 14px;
+  line-height: 1.8;
+  box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  color: #f5e9d4;
+}
+.ability-detail h3 {
+  color: var(--gold);
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+.ability-detail p {
+  margin: 8px 0;
+  text-indent: 1em;
+}
+.ability-detail strong {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+</style>
+</head>
+<body>
+<div id="site-navbar"></div>
+<header>
+<h1>英雄能力</h1>
+<ul>
+<li>除了薩滿外，其他職業在創角時都會獲得一項英雄能力。</li>
+<li>當你將一項技能等級第一次提升至 18 時，可以獲得一項自選英雄能力。</li>
+<li>完成驚人壯舉或達到里程碑時，GM 可獎勵英雄能力。</li>
+<li>獲得新能力前，必須滿足其先決條件（創角時除外）。</li>
+</ul>
+<nav class="subnav">
+  <button class="tab-btn active" data-tab="general">通用</button>
+  <button class="tab-btn" data-tab="combat">戰鬥</button>
+  <button class="tab-btn" data-tab="explore">探索</button>
+  <button class="tab-btn" data-tab="social">社交</button>
+</nav>
+</header>
+<div class="divider"></div>
+<section id="general" class="tab-content active">
+<h2 style="color:#c9a35a">通用英雄能力</h2>
+<div class="ability-nav">
+
+<button class="ability-btn" data-ability="FastHealer">快速恢復</button>
+<button class="ability-btn" data-ability="Fearless">無畏</button>
+<button class="ability-btn" data-ability="Focused">專注</button>
+<button class="ability-btn" data-ability="Robust">健壯</button>
+<button class="ability-btn" data-ability="Intuition">直覺思考</button>
+<button class="ability-btn" data-ability="MagicTalent">魔法天賦</button>
+<button class="ability-btn" data-ability="MasterBlacksmith">鍛匠大師</button>
+<button class="ability-btn" data-ability="MasterCarpenter">木匠大師</button>
+<button class="ability-btn" data-ability="MasterTanner">皮匠大師</button>
+<button class="ability-btn" data-ability="MasterPluma">羽匠大師</button>
+<button class="ability-btn" data-ability="MasterChef">大廚</button>
+<button class="ability-btn" data-ability="SongofRest">紓壓曲</button>
+<button class="ability-btn" data-ability="HymntoGod">頌神曲</button>
+<button class="ability-btn" data-ability="FieldTeaching">現場教學</button>
+<button class="ability-btn" data-ability="ExperienceSharing">經驗分享</button>
+<button class="ability-btn" data-ability="Catlike">輕身落地</button>
+<button class="ability-btn" data-ability="Companion">動物夥伴</button>
+<button class="ability-btn" data-ability="EagleEye">鷹眼</button>
+<button class="ability-btn" data-ability="InformationBroker">情報掮客</button>
+<button class="ability-btn" data-ability="ChinampaCraft">浮田耕藝</button>
+<button class="ability-btn" data-ability="AquaticProwess">水獵巧技</button>
+</div><div id="ability-content">
+
+        <div class="ability-detail" id="FastHealer">
+          <h3 style="color:#c9a35a">快速恢復 Fast Healer</h3>
+          <p><strong>先決條件：</strong> -</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你在短休時可以額外恢復 1D6 HP。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Fearless">
+          <h3 style="color:#c9a35a">無畏 Fearless</h3>
+          <p><strong>先決條件：</strong> -</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你在抵抗恐懼的意志檢定獲得 1 個優勢。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Focused">
+          <h3 style="color:#c9a35a">專注 Focused</h3>
+          <p><strong>先決條件：</strong> -</p>
+          <p><strong>消耗WP：</strong> -</p>
+          <p>你的最大 WP 永久提升 2 點。</p><p>你可以重複選擇此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Robust">
+          <h3 style="color:#c9a35a">健壯 Robust</h3>
+          <p><strong>先決條件：</strong> -</p>
+          <p><strong>消耗WP：</strong> -</p>
+          <p>你的最大 HP 永久提升 2 點。</p><p>你可以重複選擇此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Intuition">
+          <h3 style="color:#c9a35a">直覺思考 Intuition</h3>
+          <p><strong>先決條件：</strong> 祕聞傳說 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>當面臨困難抉擇時，你可以發動此能力，直接詢問 GM 一個問題，並得到一個有用的答案。</p><p>該答案代表你的廣泛知識，僅有助於你的決策，無法揭示所有需要知道的事情。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MagicTalent">
+          <h3 style="color:#c9a35a">魔法天賦 Magic Talent</h3>
+          <p><strong>先決條件：</strong> -</p>
+          <p><strong>消耗WP：</strong> -</p>
+          <p>你有魔法的天賦，可以學習新的魔法流派（法術仍然要分開學習）。</p><p>學習法術的方式請參考「魔法」文件的學習魔法。</p><p>你可以重複選擇此能力，每次選擇你想學習的新流派。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MasterBlacksmith">
+          <h3 style="color:#c9a35a">鍛匠大師 Master Blacksmith</h3>
+          <p><strong>先決條件：</strong> 工藝 12</p>
+          <p><strong>消耗WP：</strong> 見描述</p>
+          <p>此能力需要鍛匠工具。你可以利用鍛匠工具做以下的事情：</p>
+          <ul>
+          <li>在一刻時間內，你可以消耗 3 WP，銳化一把帶有黑曜石刀刃或尖端的武器。當使用銳化武器進行攻擊時，目標的護甲值會視為降低 2 點。一旦在戰鬥中使用銳化武器進行過攻擊或格擋，銳化效果會在該戰鬥結束後終止。</li>
+          <li>在一班時間內，你可以嘗試從裝備列表中打造一把黑曜石武器。這個過程需要重量為 1 的黑曜石。消耗的 WP 等於物品的金幣價格（向上取整）。若你沒有足夠的 WP，你可以將工作分成好幾班的時間來處理。</li>
+          <li>或者，你可以使用蒐集到的材料試圖強化黑曜石裝備的效果（詳見「鍛造與強化」章節）。當一班時間結束後，進行一次【工藝】檢定，檢定結果將決定你這次的強化結果。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MasterCarpenter">
+          <h3 style="color:#c9a35a">木匠大師 Master Carpenter</h3>
+          <p><strong>先決條件：</strong> 工藝 12</p>
+          <p><strong>消耗WP：</strong> 見描述</p>
+          <p>你可以利用木匠工具做以下的事情：</p>
+          <ul>
+          <li>以一個動作，你可以消耗1 WP 對門、牆壁或其他無生命物體造成 1d12 傷害（無視護甲值）。</li>
+          <li>在一班時間內，你可以嘗試從裝備列表中打造一個木製物品，例如棍棒、長棍。這個過程需要重量為 1 的木頭。消耗的 WP 等於物品的金幣價格（向上取整）。</li>
+          <li>或者，你可以使用蒐集到的材料試圖強化木材裝備的效果（詳見「鍛造與強化」章節）。當一班時間結束後，進行一次【工藝】檢定，檢定結果將決定你這次的強化結果。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MasterTanner">
+          <h3 style="color:#c9a35a">皮匠大師 Master Tanner</h3>
+          <p><strong>先決條件：</strong> 工藝 12</p>
+          <p><strong>消耗WP：</strong> 見描述</p>
+          <p>此能力需要皮匠工具。你可以利用皮匠工具做以下的事情：</p>
+          <ul>
+          <li>你可以嘗試從將一隻動物或怪物的皮做成一套獸皮甲。該皮甲的護甲值等於野獸護甲值的一半（向上取整），至少為 1。這個過程耗時一班時間，消耗的 WP 等於物品的護甲值。</li>
+          <li>或者，你可以使用蒐集到的材料試圖強化毛皮裝備的效果（詳見「鍛造與強化」章節）。當一班時間結束後，進行一次【工藝】檢定，檢定結果將決定你這次的強化結果。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MasterPluma">
+          <h3 style="color:#c9a35a">羽匠大師 Master Pluma</h3>
+          <p><strong>先決條件：</strong> 工藝 12</p>
+          <p><strong>消耗WP：</strong> 見描述</p>
+          <p>此能力需要織布工具。你可以利用織布工具做以下的事情：</p>
+          <ul>
+          <li>在一班時間內，你可以嘗試從裝備列表中打造一套服裝。這個過程需要重量為 1 的植物纖維或羽毛。消耗的 WP 等於物品的金幣價格（向上取整）。若你沒有足夠的 WP，你可以將工作分成好幾班的時間來處理。</li>
+          <li>或者，你可以試圖製作羽毛護身符，這些護身符有特殊的效果（詳見「鍛造與強化」章節），可以當成單獨的飾品配戴，也可以再加工到服裝上。當一班時間結束後，進行一次【工藝】檢定，檢定結果將決定你這次的打造結果。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MasterChef">
+          <h3 style="color:#c9a35a">大廚 Master Chef</h3>
+          <p><strong>先決條件：</strong> -</p>
+          <p><strong>消耗WP：</strong> 不定</p>
+          <p>你獲得(創角時受訓)「廚藝」(智力)次要技能。你可以為隊伍製作美味好吃的菜餚而非單純飽腹的糧食。</p><p>現在你烹飪時改為進行「廚藝」檢定。</p><p>每道菜譜有各自所需的時間、WP和食材，成功烹調將製作出有額外增益的食物。</p><p>你一開始可以學會三道初級料理。詳見「農業」章節。<br></p>
+        </div>
+
+        <div class="ability-detail" id="SongofRest">
+          <h3 style="color:#c9a35a">紓壓曲 Song of Rest</h3>
+          <p><strong>先決條件：</strong> 表演 12</p>
+          <p><strong>消耗WP：</strong> -</p>
+          <p>當你進行短休時，你可以使用樂器同時演奏紓壓的音樂來減緩同伴的壓力。</p><p>你可以讓和你一同短休的其他盟友額外回復 1d6 WP。<br></p>
+        </div>
+
+        <div class="ability-detail" id="HymntoGod">
+          <h3 style="color:#c9a35a">頌神曲 Hymn to God</h3>
+          <p><strong>先決條件：</strong> 表演 12 + 祕聞傳說 12</p>
+          <p><strong>消耗WP：</strong> -</p>
+          <p>你精通讚揚神祇的祭文禱詞。</p>
+          <p>每日一次，在適當的地方耗時一刻時間向當日侍神誠心唸頌禱詞，進行表演檢定。若成功，則侍神將會聽到你的祈禱，並降下神賜給整個隊伍。</p><p>降下何種神賜取決於當日的守護侍神。（詳見曆法章節）<br></p>
+        </div>
+
+        <div class="ability-detail" id="FieldTeaching">
+          <h3 style="color:#c9a35a">現場教學 Field Teaching</h3>
+          <p><strong>先決條件：</strong> -</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你可以快速講述知識來幫助所有人。</p><p>當你在協助他人時，你可以協助複數盟友進行同一項檢定。</p><p>但你協助的對象有人檢定失敗的話你陷入憤怒狀態（若你還未憤怒）。<br></p>
+        </div>
+
+        <div class="ability-detail" id="ExperienceSharing">
+          <h3 style="color:#c9a35a">經驗分享 Experience Sharing</h3>
+          <p><strong>先決條件：</strong> -</p>
+          <p><strong>消耗WP：</strong> -</p>
+          <p>在技能成長階段開始前，你可以放棄一項技能成長機會，將自身經驗傳授給其他夥伴，讓最多兩位盟友額外獲得該項技能成長機會，之後正常進行技能成長流程。</p><p>你不能選擇已經標記該技能的盟友。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Catlike">
+          <h3 style="color:#c9a35a">輕身落地 Catlike</h3>
+          <p><strong>先決條件：</strong> 體操 12</p>
+          <p><strong>消耗WP：</strong> 不定</p>
+          <p>你每花費 1 點 WP，計算墜落傷害的 D6 數量就減一顆。</p><p>你可以先進行一次減輕墜落傷害的體操檢定，然後再發動此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Companion">
+          <h3 style="color:#c9a35a">動物夥伴 Companion</h3>
+          <p><strong>先決條件：</strong> 狩獵 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你可以發動此能力，將一隻動物馴服為你的夥伴。</p><p>此過程需耗時一刻時間，且你同時只能擁有一隻動物夥伴。</p><p>只要你待在該動物的自然棲息地，牠就會一直跟著你。</p><p>牠可以為你偵察附近環境，而不需要消耗額外的 WP。</p><p>在戰鬥中，你可以額外消耗 3 WP，命令夥伴攻擊一名敵人（不需要花費你的動作）。<br></p>
+        </div>
+
+        <div class="ability-detail" id="EagleEye">
+          <h3 style="color:#c9a35a">鷹眼 Eagle Eye</h3>
+          <p><strong>先決條件：</strong> 察覺 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你可以看到最遠 200 米外的人或物體，就像在你面前一樣清楚。</p><p>效果持續一刻時間。</p><p>你可以在戰鬥中發動此能力，對超出武器有效射程的目標進行攻擊不會獲得 1 個劣勢。<br></p>
+        </div>
+
+        <div class="ability-detail" id="InformationBroker">
+          <h3 style="color:#c9a35a">情報掮客 Information Broker</h3>
+          <p><strong>先決條件：</strong> 調查 12 + 遊說 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>在重要城邦、市集或貿易路口停留至少一天時間後，你可以發動此能力向 GM 提出一個針對當地的問題，獲得可靠訊息。</p><p>這些訊息可能包括附近部族的動向、危險怪物出沒、政治陰謀或市場需求，實際能獲得什麼資訊由GM決定。<br></p>
+        </div>
+
+        <div class="ability-detail" id="ChinampaCraft">
+          <h3 style="color:#c9a35a">浮田耕藝 Chinampa Craft</h3>
+          <p><strong>先決條件：</strong> 求生 12 + 游泳 12</p>
+          <p><strong>消耗WP：</strong> 不定</p>
+          <p>你獲得(創角時受訓)「浮田術」(智力)次要技能。</p><p>耗費一班時間，你可以在濕地或河湖上建造「簡易小型浮田」，能夠讓你種植少量的作物並收成，提供隊伍所需的糧食。</p><p>實際種植所需消耗的WP和收成時間詳見「農業」章節。<br></p>
+        </div>
+
+        <div class="ability-detail" id="AquaticProwess">
+          <h3 style="color:#c9a35a">水獵巧技 Aquatic Prowess</h3>
+          <p><strong>先決條件：</strong> 狩獵 12 + 游泳 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你擅長在水域裡捕獵，能在水中迅速應對情況。</p><p>．當你嘗試釣魚時，你可以發動此能力來讓狩獵檢定獲得優勢。</p><p>．當你在水中進行近戰攻擊時，你可以發動此能力來避免該次攻擊獲得劣勢。</p><p>．你在水中受到攻擊時，你可以發動此能力使用游泳來取代閃避檢定。",<br></p>
+        </div>
+
+</div></section>
+<section id="combat" class="tab-content">
+<h2 style="color:#a83632">戰鬥英雄能力</h2>
+<div class="ability-nav">
+<button class="ability-btn" data-ability="Veteran">老兵</button>
+<button class="ability-btn" data-ability="Musician">音樂家</button>
+<button class="ability-btn" data-ability="Berserker">狂暴</button>
+<button class="ability-btn" data-ability="Assassin">刺殺</button>
+<button class="ability-btn" data-ability="Backstabbing">背刺</button>
+<button class="ability-btn" data-ability="BattleSong">戰歌</button>
+<button class="ability-btn" data-ability="Defensive">堅強防禦</button>
+<button class="ability-btn" data-ability="DeflectArrow">撥擋箭矢</button>
+<button class="ability-btn" data-ability="DoubleSlash">雙重斬擊</button>
+<button class="ability-btn" data-ability="DualWield">雙持戰鬥</button>
+<button class="ability-btn" data-ability="Dragonslayer">屠龍者</button>
+<button class="ability-btn" data-ability="FastFootwork">迅捷步法</button>
+<button class="ability-btn" data-ability="Guardian">守護者</button>
+<button class="ability-btn" data-ability="IronFist">鐵拳</button>
+<button class="ability-btn" data-ability="LightningFast">閃電速度</button>
+<button class="ability-btn" data-ability="MassiveBlow">強力一擊</button>
+<button class="ability-btn" data-ability="ShieldBlock">舉盾格擋</button>
+<button class="ability-btn" data-ability="ThrowingArm">強力投擲</button>
+<button class="ability-btn" data-ability="TwinShot">雙重射擊</button>
+<button class="ability-btn" data-ability="Weasel">龜縮</button>
+<button class="ability-btn" data-ability="MasterSpellcaster">施法大師</button>
+</div><div id="ability-content">
+
+
+        <div class="ability-detail" id="Veteran">
+          <h3 style="color:#a83632">老兵 Veteran</h3>
+          <p><strong>先決條件：</strong> 任一武器技能 12</p>
+          <p><strong>消耗WP：</strong> 1</p>
+          <p>多年來的實戰經驗，讓你能在戰場上持續把握主動權，不被局勢的混亂所動搖。</p><p>(創角時)你從武器技能裡選擇一項，該武器的技能數值成長1點。</p><p>此外，在每一輪開始時，你可以發動此能力來保留你上一輪的先攻卡，而不抽取新的先攻卡。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Berserker">
+          <h3 style="color:#a83632">狂暴 Berserker</h3>
+          <p><strong>先決條件：</strong> 任一近戰武器技能 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你立即獲得「憤怒」狀態，並立即對最近的敵人進行一次近戰攻擊。</p><p>狂暴持續到戰場上沒有敵人，或你 HP 歸零為止。</p><p>狂暴期間：</p><p>．你的近戰攻擊獲得一個優勢。</p><p>．若你攻擊前額外消耗 1 WP ，該次命中額外造成 +1D4 傷害。</p><p>．擊殺一個敵人後，你可以立刻移動2米。</p><p>．你不能格擋或閃避。</p><p>戰鬥結束之後，你會陷入力竭狀態。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Assassin">
+          <h3 style="color:#a83632">刺殺 Assassin</h3>
+          <p><strong>先決條件：</strong> 小刀 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你的偷襲會額外造成 1D8 傷害。</p><p>此能力可以與「背刺」能力結合。</p><p>你必須在攻擊檢定後、計算傷害前宣告發動此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Backstabbing">
+          <h3 style="color:#a83632">背刺 Backstabbing</h3>
+          <p><strong>先決條件：</strong> 小刀 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>當你對一名敵人進行近戰攻擊時，若該敵人和你的另一個盟友相距 2 米內，你可以發動此能力。</p><p>你的攻擊會視為偷襲，代表敵人無法閃避或格擋、你的攻擊檢定獲得 1 個優勢、傷害骰數增加一顆（例如 1D8 變成 2D8）。</p><p>只有靈巧武器才能發動此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="BattleSong">
+          <h3 style="color:#a83632">戰歌 Battle Song</h3>
+          <p><strong>先決條件：</strong> 表演 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你精通鼓舞士氣和振奮人心的激昂戰歌。</p><p>你可以耗時一刻時間鼓舞隊友，消除其他人的畏縮和沮喪狀態，每個消除的狀態可回復該隊友2WP。</p><p>此外，在戰鬥時，你也可以用一個動作吼出激勵的戰鬥誓言，聽得見你的所有其他同伴立刻自選 1 個狀態消除。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Defensive">
+          <h3 style="color:#a83632">堅強防禦 Defensive</h3>
+          <p><strong>先決條件：</strong> 任一近戰武器技能 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你可以在不消耗該輪動作的情況下嘗試格擋一次攻擊。</p><p>你只能對同一次攻擊嘗試格擋一次，且你無法再對該次攻擊進行閃避或格擋。</p><p>只要你有足夠的 WP，你在同一輪中可以多次發動此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="DeflectArrow">
+          <h3 style="color:#a83632">撥擋箭矢 Deflect Arrow</h3>
+          <p><strong>先決條件：</strong> 任一近戰武器技能 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你可以使用近戰武器格擋遠程攻擊。<br></p>
+        </div>
+
+        <div class="ability-detail" id="DoubleSlash">
+          <h3 style="color:#a83632">雙重斬擊 Double Slash</h3>
+          <p><strong>先決條件：</strong> 斧或劍 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>當你持握揮砍武器時，你可以同時對兩個相距 2 米內的敵人進行一次攻擊。</p><p>你只進行一次攻擊檢定，若成功則同時命中兩個敵人。</p><p>敵人可以分別進行格擋或閃避。</p><p>傷害骰也分開計算。</p><p>此能力可以與「雙持戰鬥」能力結合。<br></p>
+        </div>
+
+        <div class="ability-detail" id="DualWield">
+          <h3 style="color:#a83632">雙持戰鬥 Dual Wield</h3>
+          <p><strong>先決條件：</strong> 任一近戰武器技能 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>此能力只有當你雙手各持握一把單手武器時才能發動。</p><p>你可以在你的戰鬥回合中發動此能力，然後使用你的副手武器進行一次帶有 1 個劣勢的額外攻擊。</p><p>你可以自行決定主手和副手的攻擊順序，但依序處理檢定和傷害。</p><p>此能力可以與「雙重斬擊」能力結合。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Dragonslayer">
+          <h3 style="color:#a83632">屠龍者 Dragonslayer</h3>
+          <p><strong>先決條件：</strong> 任一武器技能 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>對怪物進行的攻擊會額外造成 1D8 傷害。</p><p>你必須在攻擊檢定後、計算傷害前宣告發動此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="FastFootwork">
+          <h3 style="color:#a83632">迅捷步法 Fast Footwork</h3>
+          <p><strong>先決條件：</strong> 閃避 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你可以在不消耗該輪動作的情況下嘗試閃避一次攻擊。</p><p>你只能對同一次攻擊嘗試閃避一次，且你無法再對該次攻擊進行閃避或格擋。</p><p>只要你有足夠的 WP，你在同一輪中可以多次使用此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Guardian">
+          <h3 style="color:#a83632">守護者 Guardian</h3>
+          <p><strong>先決條件：</strong> 斧、棍棒，或劍 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你願意毫不猶豫地為盟友擋下攻擊。</p><p>若你和另一名盟友都與同一名敵人相距 2 米內，當該敵人嘗試攻擊你的盟友時，你可以發動此能力，強迫敵人改為攻擊你。</p><p>此能力可以在你的回合外使用，且不需要花費動作。<br></p>
+        </div>
+
+        <div class="ability-detail" id="IronFist">
+          <h3 style="color:#a83632">鐵拳 Iron Fist</h3>
+          <p><strong>先決條件：</strong> 徒手 12</p>
+          <p><strong>消耗WP：</strong> 1</p>
+          <p>你徒手攻擊的傷害增加 1D6。</p><p>你必須在攻擊檢定後、計算傷害前宣告發動此能力。<br></p>
+        </div>
+
+        <div class="ability-detail" id="LightningFast">
+          <h3 style="color:#a83632">閃電速度 Lightning Fast</h3>
+          <p><strong>先決條件：</strong> 閃避 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>當戰鬥開始抽先攻卡時，你可以抽兩張卡，並選擇想要的其中一張。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MassiveBlow">
+          <h3 style="color:#a83632">強力一擊 Massive Blow</h3>
+          <p><strong>先決條件：</strong> 任一基於力量的武器技能 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>當你使用雙手近戰武器進行攻擊且命中敵人時，你會額外造成 1D8 傷害，但你在該輪無法進行移動。</p><p>你不能在進行攻擊檢定後才發動此能力，也不能在移動後發動。<br></p>
+        </div>
+
+        <div class="ability-detail" id="ShieldBlock">
+          <h3 style="color:#a83632">舉盾格擋 Shield Block</h3>
+          <p><strong>先決條件：</strong> 任一基於力量的武器技能 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>當你使用盾牌進行格擋時，你可以發動此能力讓該次格擋檢定獲得 1 個優勢。</p><p>另外，你也可以使用此能力用盾牌格擋通常無法被格擋的怪物物理攻擊（AOE 由GM判斷）。</p><p>此能力可以和「堅強防禦」能力結合。<br></p>
+        </div>
+
+        <div class="ability-detail" id="ThrowingArm">
+          <h3 style="color:#a83632">強力投擲 Throwing Arm</h3>
+          <p><strong>先決條件：</strong> 任一近戰武器技能 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你可以用驚人的力量將一把近戰武器向一個敵人投擲出去，該敵人與你的距離不能超過你的力量（米）。</p><p>該武器必須是一把單手武器。</p><p>你正常進行攻擊檢定。</p><p>敵人可以正常格擋或閃避。</p><p>無論命中與否，武器都會落在敵人的腳邊。<br></p>
+        </div>
+
+        <div class="ability-detail" id="TwinShot">
+          <h3 style="color:#a83632">雙重射擊 Twin Shot</h3>
+          <p><strong>先決條件：</strong> 弓 12 或 吹箭筒 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>當你使用 弓 或 吹箭筒 進行攻擊時，你可以發動此能力來射出兩支箭矢/吹箭。<br>你可以指定同一個目標、或兩個不同的目標。</p><p>無論如何，都只進行一次帶有 1 個劣勢的攻擊檢定。</p><p>傷害分開計算。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Weasel">
+          <h3 style="color:#a83632">龜縮 Weasel</h3>
+          <p><strong>先決條件：</strong> 閃避 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>當你被攻擊時，若有另一名 PC 在你 2 米內，你可以發動此能力，讓該 PC 代替你被攻擊。</p><p>此能力對 AOE 攻擊無效，且你必須在嘗試任何閃避或格擋前發動此能力。</p><p>代替你被攻擊的新目標可以正常嘗試閃避或格擋。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Musician">
+          <h3 style="color:#a83632">音樂家 Musician</h3>
+          <p><strong>先決條件：</strong> 表演 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你動人的聲音可以鼓舞你的盟友或挫敗你的敵人。</p><p>發動此能力（一個動作）可以讓 10 米內所有盟友的所有檢定獲得 1 個優勢，或讓相同範圍內的所有敵人獲得 1 個劣勢（選擇其中一種）。</p><p>效果持續到你下一個回合開始。</p><p>你可以使用樂器來增加此能力的範圍，或減少 WP 的消耗量（參考裝備的樂器說明）。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MasterSpellcaster">
+          <h3 style="color:#a83632">施法大師 Master Spellcaster</h3>
+          <p><strong>先決條件：</strong> 任一魔法流派 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>若你在你的回合中發動此能力，你可以用一個動作施放兩個不同的法術。</p><p>你可以在施放第一個法術後再發動此能力。<br></p>
+        </div>
+
+</div></section>
+<section id="explore" class="tab-content">
+<h2 style="color:#1b5e3c">探索英雄能力</h2>
+<div class="ability-nav">
+<button class="ability-btn" data-ability="Contortionist">軟骨功</button>
+<button class="ability-btn" data-ability="LoneWolf">孤狼</button>
+<button class="ability-btn" data-ability="MonsterHunter">怪物獵人</button>
+<button class="ability-btn" data-ability="Pathfinder">尋路者</button>
+<button class="ability-btn" data-ability="Quartermaster">軍需官</button>
+<button class="ability-btn" data-ability="SeaLegs">親水泳將</button>
+<button class="ability-btn" data-ability="TreasureHunter">尋寶獵人</button>
+<button class="ability-btn" data-ability="MasterGatherer">採集大師</button>
+<button class="ability-btn" data-ability="MasterTrap">陷阱大師</button>
+<button class="ability-btn" data-ability="CaravanMaster">商隊領袖</button>
+
+
+</div><div id="ability-content">
+
+        <div class="ability-detail" id="Contortionist">
+          <h3 style="color:#1b5e3c">軟骨功 Contortionist</h3>
+          <p><strong>先決條件：</strong> 體操 12</p>
+          <p><strong>消耗WP：</strong> 1</p>
+          <p>當你嘗試掙脫枷鎖或擠過一個狹窄的空間時，你可以發動此能力讓體操檢定會獲得 1 個優勢。<br></p>
+        </div>
+
+        <div class="ability-detail" id="LoneWolf">
+          <h3 style="color:#1b5e3c">孤狼 Lone Wolf</h3>
+          <p><strong>先決條件：</strong> 求生 12</p>
+          <p><strong>消耗WP：</strong> -</p>
+          <p>當你在野外進行長休時，你紮營的求生檢定獲得 1 個優勢。</p><p>此效果只對你有效。<br></p>
+        </div>
+
+       <div class="ability-detail" id="MonsterHunter">
+          <h3 style="color:#1b5e3c">怪物獵人 Monster Hunter</h3>
+          <p><strong>先決條件：</strong> 野獸知識 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>若遇到岔路，你可以發動此能力，知曉哪個方向有危險的敵人。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Pathfinder">
+          <h3 style="color:#1b5e3c">尋路者 Pathfinder</h3>
+          <p><strong>先決條件：</strong> 求生 12</p>
+          <p><strong>消耗WP：</strong> 1</p>
+          <p>當你試圖在荒野中尋找正確的方向時，你的求生檢定獲得 1 個優勢。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Quartermaster">
+          <h3 style="color:#1b5e3c">軍需官 Quartermaster</h3>
+          <p><strong>先決條件：</strong> 求生 12</p>
+          <p><strong>消耗WP：</strong> 1</p>
+          <p>你很擅長尋找適合的紮營地點。</p><p>當你在旅行中嘗試紮營時，你的求生檢定會獲得 1 個優勢。<br></p>
+        </div>
+
+        <div class="ability-detail" id="SeaLegs">
+          <h3 style="color:#1b5e3c">親水泳將 Sea Legs</h3>
+          <p><strong>先決條件：</strong> 游泳 12</p>
+          <p><strong>消耗WP：</strong> 1</p>
+          <p>當你處於至少及腰的水中時，你可以發動此能力讓你的游泳檢定獲得 1 個優勢。<br></p>
+        </div>
+
+        <div class="ability-detail" id="TreasureHunter">
+          <h3 style="color:#1b5e3c">尋寶獵人 Treasure Hunter</h3>
+          <p><strong>先決條件：</strong> 交易 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>若遇到岔路，你可以發動此能力，知曉哪個方向藏有巨大財寶。<br></p>
+        </div>
+
+        <div class="ability-detail" id="MasterGatherer">
+          <h3 style="color:#1b5e3c">採集大師 Master Gatherer</h3>
+          <p><strong>先決條件：</strong> 求生 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你對於如何採集植物可食用的部分瞭如指掌。</p><p>當你在旅行中嘗試採集食物成功時，你可以發動此能力額外獲得1D4份生食(需要煮熟的植物根莖等)。<br></p>
+        </div>
+
+ <div class="ability-detail" id="MasterTrap">
+  <h3 style="color:#1b5e3c">陷阱大師 Master Trap</h3>
+  <p><strong>先決條件：</strong> 求生 12 + 狩獵 12</p>
+  <p><strong>消耗WP：</strong> 見描述</p>
+  <p>當你在森林中時，你可以耗時一刻時間蒐集材料，並在你指定的地點設置陷阱。花費的WP和陷阱作用詳見下表。</p>
+
+  <ul>
+    <li><strong>圈套陷阱</strong>（WP: 2）</li>
+    <ul class="sub-list">
+      <li>用纖維繩（龍舌蘭纖維、藤蔓）做成繩圈，固定在樹根或木樁上，連接觸發機關。</li>
+      <li>每當有生物觸發陷阱時，需進行閃避檢定，失敗視為被擒抱。繩子可以被割斷。</li>
+    </ul>
+
+    <li><strong>囚籠陷阱</strong>（WP: 2）</li>
+    <ul class="sub-list">
+      <li>用藤蔓或木條製成簡易籠子，內部放置誘餌。</li>
+      <li>一旦觸動機關，籠子扣下並鎖住獵物，使目標「被困」在籠內，行動受限，只能嘗試破壞或推翻籠子。</li>
+    </ul>
+
+    <li><strong>陷坑陷阱</strong>（WP: 3）</li>
+    <ul class="sub-list">
+      <li>挖一個偽裝的深坑，底部插入削尖的木樁，再用樹葉或泥土覆蓋。</li>
+      <li>每當有生物觸發陷阱時，需進行閃避檢定，失敗將跌入 3 米陷坑，並受到 2D4 穿刺傷害。</li>
+    </ul>
+
+    <li><strong>落石陷阱</strong>（WP: 3）</li>
+    <ul class="sub-list">
+      <li>用繩索懸掛一塊巨石，設計觸發點讓石頭砸落。</li>
+      <li>每當有生物觸發陷阱時，需進行閃避檢定，失敗被擊倒伏地，並受到 2D6 鈍擊傷害。</li>
+    </ul>
+
+    <li><strong>藤鞭陷阱</strong>（WP: 3）</li>
+    <ul class="sub-list">
+      <li>將彈力強的細樹枝或藤條拉緊，綁上尖刺或石頭，觸發後迅速彈出。</li>
+      <li>每當有生物觸發陷阱時，需進行閃避檢定，失敗被擊飛 2D6 米，並受到等量揮砍傷害。</li>
+    </ul>
+  </ul>
+</div>
+
+        <div class="ability-detail" id="CaravanMaster">
+          <h3 style="color:#1b5e3c">商隊領袖 Caravan Master</h3>
+          <p><strong>先決條件：</strong> 求生 12 + 遊說 12</p>
+          <p><strong>消耗WP：</strong> 3</p>
+          <p>你熟悉商路捷徑，能縮短長途旅行所需時間，並在遭遇危險時能迅速指揮眾人應對。</p><p>當隊伍在荒野上長途旅行（兩天以上的路程）時，你可以發動此能力來縮短1d4班的路程。</p><p>此外，若旅行過程中的探路檢定失敗而遇到危險時，你可以發動此能力來讓所有人面對危險的檢定獲得一個優勢。<br></p>
+        </div>
+
+</div></section>
+<section id="social" class="tab-content">
+<h2 style="color:#335a91">社交英雄能力</h2>
+<div class="ability-nav">
+
+<button class="ability-btn" data-ability="Disguise">易容</button>
+<button class="ability-btn" data-ability="Insight">察言觀色</button>
+</div><div id="ability-content">
+
+       <div class="ability-detail" id="Disguise">
+          <h3 style="color:#335a91">易容 Disguise</h3>
+          <p><strong>先決條件：</strong> 欺瞞 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你精通偽裝的技術，可以輕易地假扮成別人的外觀。</p><p>在經過一刻時間的喬裝後，你可以假扮另一個人的外觀、聲音和行為。</p><p>你的族裔必須與偽裝目標相同。</p><p>若偽裝目標的熟人在 10 米內看到你，他可以進行一次察覺檢定來試圖拆穿你。<br></p>
+        </div>
+
+        <div class="ability-detail" id="Insight">
+          <h3 style="color:#335a91">察言觀色 Insight</h3>
+          <p><strong>先決條件：</strong> 遊說 12 + 察覺 12</p>
+          <p><strong>消耗WP：</strong> 2</p>
+          <p>你對人心的觀察遠超常人。在你與另一個人的談話中，你可以發動此能力進行察覺檢定。依照檢定結果，你可獲得下列一項或多項資訊（大成功則全部獲得）：</p><p>．失敗/成功：對方目前的情緒（害怕、緊張、焦躁、誠懇、傲慢等）。</p><p>．成功：對方是否在說謊。</p><p>．成功：對方對你／某人／某事的真實態度（敵意、戒心、好感、利益）。</p><p>．大成功：你能判斷對方潛在的動機或弱點（例如「他在保護某人」、「他在隱瞞交易」、「他受金錢驅使」）。</p>
+        </div>
+
+
+</div></section>
+<button id="backToTop">⬆ 返回</button>
+<script>
+const tabs=document.querySelectorAll('.tab-btn');
+const contents=document.querySelectorAll('.tab-content');
+tabs.forEach(btn=>{btn.addEventListener('click',()=>{
+  tabs.forEach(b=>b.classList.remove('active'));
+  contents.forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.tab).classList.add('active');
+});});
+const abilityBtns=document.querySelectorAll('.ability-btn');
+const abilityDetails=document.querySelectorAll('.ability-detail');
+abilityBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const parent=btn.closest('.tab-content');
+    parent.querySelectorAll('.ability-btn').forEach(b=>b.classList.remove('active'));
+    parent.querySelectorAll('.ability-detail').forEach(d=>d.classList.remove('active'));
+    btn.classList.add('active');
+    parent.querySelector('#'+btn.dataset.ability).classList.add('active');
+  });
+});
+// 返回上方按鈕
+const backToTop=document.getElementById('backToTop');
+window.addEventListener('scroll', () => {
+  if(window.scrollY > 300) {
+    backToTop.classList.add('show');
+  } else {
+    backToTop.classList.remove('show');
+  }
+});
+backToTop.addEventListener('click',()=>{
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+window.addEventListener("load", () => {
+  // 頁面進場動畫
+  gsap.from("header h1", { y: -40, opacity: 0, duration: 0.8, ease: "power2.out" });
+  gsap.from(".subnav", { y: 30, opacity: 0, duration: 0.8, delay: 0.3, ease: "power2.out" });
+  gsap.from("#general .ability-btn", {
+    y: 20, opacity: 0, stagger: 0.05, duration: 0.5, delay: 0.6, ease: "power2.out"
+  });
+
+  // 分頁切換動畫（含標題淡入）
+  const tabs = document.querySelectorAll(".tab-btn");
+  const contents = document.querySelectorAll(".tab-content");
+
+  tabs.forEach(btn => {
+    btn.addEventListener("click", () => {
+      tabs.forEach(b => b.classList.remove("active"));
+      contents.forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+
+      const target = document.getElementById(btn.dataset.tab);
+      // ✅ 自動滾回頂部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (!target) return;
+      target.classList.add("active");
+
+      gsap.to(contents, { opacity: 0, duration: 0.2 });
+      gsap.fromTo(target, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" });
+      gsap.fromTo(target.querySelector("h2"), { y: -10, opacity: 0 }, {
+        y: 0, opacity: 1, duration: 0.4, delay: 0.1, ease: "power2.out"
+      });
+      gsap.fromTo(target.querySelectorAll(".ability-btn"), { y: 20, opacity: 0 }, {
+        y: 0, opacity: 1, stagger: 0.05, duration: 0.4, delay: 0.2, ease: "power2.out"
+      });
+    });
+  });
+
+  // 返回按鈕控制
+  const backToTop = document.getElementById("backToTop");
+  if (backToTop) {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) backToTop.classList.add("show");
+      else backToTop.classList.remove("show");
+    });
+    backToTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+  }
+});
+</script>
+
+</body></html>

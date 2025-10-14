@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<link rel="stylesheet" href="navbar.css">
+<script defer src="navbar.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<link rel="stylesheet" href="background.css">
+<script defer src="background.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>族裔介紹 - 馬茲提卡</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/quatl" rel="stylesheet">
+  <style>
+    :root { --gold:#c9a35a; --jade:#0e4b3a; --ink:#1a1a1a; --paper:#f5e9c9; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body { font-family:'Noto Sans TC',sans-serif; color:#f1e8d6; margin:0; padding:0; }
+
+header{
+  text-align:left;                     /* ✅ 改為靠左 */
+  padding:40px 40px 20px;              /* 微調內距 */
+  background: center/cover no-repeat;
+  border-bottom:none;                  /* ✅ 拿掉底部邊線 */
+  box-shadow:none;                     /* ✅ 移除陰影，讓它更自然地融合下面 */
+}
+
+    header h1 {
+      font-family:'Quatl',serif;
+      font-size:clamp(40px,6vw,78px);
+      background:linear-gradient(180deg,#fff8d4,#e1c58a,#b98a38);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      text-shadow:0 0 12px rgba(201,163,90,.5);
+    }
+    header p { margin-top:8px;font-size:1.1rem;color:#fffbe8; }
+
+    .divider {
+      width:100%; height:80px; margin:18px 0 0;
+      background:url('images/aztec-divider.png') repeat-x;
+      background-size:auto 200%; opacity:.9;
+    }
+
+    .race-buttons { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin:20px auto; max-width:1000px;}
+    .race-buttons button { padding:10px 14px; border:2px solid var(--gold); border-radius:8px;
+      background:rgba(255,255,255,0.08); color:var(--paper); font-weight:700; cursor:pointer;
+      transition:background .25s,color .25s,transform .25s; }
+    .race-buttons button:hover,.race-buttons button.active { background:var(--gold); color:#1a1a1a; transform:scale(1.05); }
+
+    .race-preview { max-width:1200px; margin:28px auto; padding:28px;
+      background:rgba(0,0,0,.55); border:6px double var(--gold); border-radius:20px;
+       }
+    .race-preview img { width:100%; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.4);
+      opacity:0; transition:opacity 0.8s ease; }
+    .race-preview img.show { opacity:1; }
+    .race-preview .desc { line-height:1.75; padding-right:10px; }
+
+    /* 下層區域（三格：上置中、下左右） */.subrace-tabs { margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; }
+    .subrace-tabs button { padding:4px 8px; border:1px solid var(--gold); background:transparent; color:var(--paper); cursor:pointer; }
+    .subrace-tabs button.active { background:var(--gold); color:#1a1a1a; }
+    .subrace-content { margin-top:10px; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; }
+
+    /* 新增的文字樣式 */
+    .ability-title { color: var(--gold); font-weight: bold; }
+    .wp { color: #ffd56a; font-style: italic; }
+
+.top-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  padding: 15px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 8px;
+  margin-bottom: 20px;
+box-shadow: 0 0 10px rgba(201,163,90,0.3);
+}
+.detail-section {
+}
+.top-section img {
+  width: 100%;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.top-section img.show { opacity: 1; }
+
+.detail-section {
+  padding: 15px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+}
+  .race-detail{
+  margin-top:20px;
+  display:grid;
+  grid-template-areas:
+    "center center"
+    "left   right";
+  grid-template-columns: 1fr 1fr;
+  gap:20px;
+}
+/* three areas */
+.race-detail .center,
+.race-detail .left,
+.race-detail .right{
+  background:rgba(255,255,255,0.05);
+  padding:12px;
+  border-radius:8px;
+  border:1px solid var(--gold);
+}
+.race-detail .center{ grid-area:center; text-align:center; }
+.race-detail .left{ grid-area:left; }
+.race-detail .right{ grid-area:right; }
+
+/* === 書籤返回標籤（帶淡入淡出動畫）=== */
+.bookmark-tab {
+  position: fixed;
+  right: 40px;
+  bottom: 80px;
+  background: rgba(0,0,0,0.45);
+  color: var(--gold);
+  font-weight: 700;
+  border: 2px solid var(--gold);
+  border-radius: 6px 6px 0 0;
+  padding: 10px 18px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.4);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+  z-index: 998;
+  letter-spacing: 1px;
+  pointer-events: none; /* 預設不可點 */
+}
+
+.bookmark-tab.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.bookmark-tab:hover {
+  background: rgba(201,163,90,0.25);
+  color: #fffbe8;
+  transform: translateY(-3px);
+  box-shadow: 0 0 12px rgba(255,230,150,0.8);
+}
+
+
+</style>
+</head>
+<body>
+<div id="site-navbar"></div>
+  <header>
+    <p><span class="ability-title">族裔能力：</span>每個族裔都至少擁有一個獨特的族裔能力。大多數情況下，使用族裔能力需要消耗意志值（WP）。<br>
+    <span class="ability-title">語言：</span>所有 PC 都會說通用語。PC 遇到的大多數智慧生物也都聽得懂通用語。<br>非人類種族通常有自己的母語。若想理解其他語言或辨識難懂的文字，需進行語言技能檢定。<br>
+    <span class="ability-title">體型：</span>中型生物可以阻擋 2×2 米的區域，可以擠進最窄半米寬的通道。小型生物無法阻擋任何區域，可以擠進非常小的通道。</p>
+  </header>
+
+  <div class="divider"></div>
+
+  <div class="race-buttons" id="race-buttons"></div>
+
+  <div class="race-preview">
+    
+    <div class="desc" id="race-desc"></div>
+  </div>
+
+  <script>
+    const raceList=[
+  { key:'人類',
+    img:'images/race/Humans.png',
+    text:`在馬茲提卡大陸上，人類是最廣泛分布的族裔，佔了總人口的六至七成。他們的特徵並非強壯的身軀或長壽的血統，而是無與倫比的適應力與堅韌。在荒蕪的高原、潮濕的沼澤、叢林深處或沿海城邦，都能找到人類的身影。他們能與野蠻的野獸搏鬥，也能在嚴苛的環境下建立農田與城邦，靠智慧與團結延續文明。<br><br>眾多部落和城邦對於人類的起源各有說法，但最廣為流傳的神話源於偉大的太陽神庫庫爾。傳說中，諸神嘗試以泥土、木頭和黃金塑造生命，卻無一能滿足祂們的期望。唯有庫庫爾願以犧牲為代價，揮舞馬夸維爾特割下自己的手指，墜落於大地後化為會行走、能言語的人類。人類因此背負著崇敬與獻祭的使命，被視為最能與神祇相連的族群。<br><br>然而，人類並非單一面貌。北方的狗民、叢林裡的綠民、科技城邦帕伊特和戰士國度庫塔卡等，不同地方的人種展現出不同的膚色、服飾與文化。對冒險者而言，人類既可能是最可靠的同伴，也可能是最危險的敵人。`,
+    detail:`
+      <div class="center"><h3>基礎移動力：10</h3></div>
+      <div class="left">
+        <h3><span class="ability-title">【通權達變 Adaptive】</span></h3>
+        <p><span class="wp">．WP：3</span><br>
+        當你進行技能檢定時，你可以選擇使用其他技能進行檢定。你必須合理地描述你是如何使用另一項技能。</p>
+      </div>
+    `,
+    subraces:{
+      "馬茲提卡人":`典型的馬茲提卡男人或女人有著濃鬱的棕色膚色和烏黑細密的頭髮。<br>最初，這些人來自北部荒野，但被他們的黑暗之神扎爾特克帶到了內克薩爾山谷。從那時起，他們的語言（馬茲提卡語，曾被稱為內克薩爾語）、文化和觀點遍布整個大陸。馬茲提卡語成為通用語言。<br><br>
+      <span class="ability-title">屬性加成：</span> 你的初始 <span class="wp">意志+1</span>。（上限為18）`,
+      "帕伊特人":`帕伊特人的膚色和髮色與馬茲提卡人相似，但身體普遍較柔軟。眼睛顏色與膚色相較其他人種為淺。<br>帕伊特人往往身材矮小、肌肉發達，並且擁有深厚的學識、藝術和天文學傳統。他們主要佔領了馬茲提卡東部的帕伊特和遠帕伊特的叢林。<br><br>
+      <span class="ability-title">屬性加成：</span> 你的初始 <span class="wp">智力+1</span>。（上限為18）`,
+      "庫塔卡人":`庫塔卡人在外表上與馬茲提克人有許多相似之處，但通常更高、肌肉更發達。他們從出生起就被培養成戰士，世世代代最弱的人都被留在荒野中死去（甚至不適合獻祭）。<br><br>
+      <span class="ability-title">屬性加成：</span> 你的初始 <span class="wp">力量+1</span>。（上限為18）`,
+      "伊察人":`伊察人是一群熱愛玩樂、性格溫和的民族，他們主要生活在遠帕伊特的叢林中。他們又矮又瘦，通常自給自足且謙虛。在叢林中的小村莊之外，伊察人仍然少見。<br><br>
+      <span class="ability-title">屬性加成：</span> 你的初始 <span class="wp">魅力+1</span>。（上限為18）`,
+      "狗民":`狗民是北方荒野、荒地和沙漠中的野蠻人。他們的頭髮長，身材瘦削，皮膚可以說是銅色而不是棕色。狗民被馬茲提卡人迫害了幾個世紀，他們很少提供任何善意作為回報。<br>狗民對他們共享共同土地的矮人抱持著好奇的迷信，儘管他們不是盟友，但他們傾向於不干涉矮人。然而，衝突和誤解確實會發生。<br>狗民信仰當地的動物和祖先的靈魂。他們不理解神的概念。狗民說自己的語言，偶爾也說瓦克里語。<br><br>
+      <span class="ability-title">屬性加成：</span> 你的初始 <span class="wp">體質+1</span>。（上限為18）`,
+      "綠民":`綠民生活在馬茲提卡最南方的叢林中，儘管他們的一些身體特徵可以在科蘭的城市找到。他們是叢林中的高個子民族，通常以樸實的色調和油漆裝飾。他們的膚色是棕色的，但不像北方鄰居那麼黑。綠民在進入圖坎這樣的城市的極少數情況下很容易被認出。<br>他們極力保護自己的隱私，是部落社會的熟練弓箭手。<br><br>
+      <span class="ability-title">屬性加成：</span> 你的初始 <span class="wp">敏捷+1</span>。（上限為18）`
+    }
+  },
+  { key:'半身人',
+    img:'images/race/Halfling.png',
+    text:`半身人是一支既神秘又難以忽視的族群。傳說他們源於不朽紀元的女神基爾茲，是祂在大地與叢林間留下的孩子。他們個頭嬌小，卻極為靈活，與茂密的叢林環境融為一體，天生擅長隱蔽與迴避，使他們能在巨獸橫行的荒野中安然生存。<br><br>許多半身人生活於叢林深處的部落中，依舊遵循著古老的習俗。他們精於使用植物與毒藥，最著名的是「庫拉里」，這種能迅速麻痺獵物的毒素常被塗抹在戰弓與吹箭的箭刃上。憑藉這些技巧，他們能夠在以弱勝強的狩獵與戰鬥中立於不敗。這些部落對外來者多抱持戒心，甚至敵意，將叢林視為他們的神聖領土。<br><br>然而，仍有不少半身人選擇與人類社會融合，在村鎮或城邦中建立新的生活。他們常被視為靈巧的獵人、可靠的嚮導，或是熟稔草藥與工藝的匠人。無論身處叢林或城邦，半身人以樂觀與堅韌聞名，他們在看似脆弱的外表下，蘊藏著無可忽視的力量與智慧。`,
+    detail:`
+      <div class="center"><h3>基礎移動力：8</h3></div>
+      <div class="left">
+        <h3><span class="ability-title">【動如脫兔 Hard to Catch】</span></h3>
+        <p><span class="wp">．WP：3</span><br>
+        當你閃避攻擊時，你可以發動此能力，讓你的閃避檢定獲得 1 個優勢。</p>
+      </div>
+      <div class="right">
+        <h3><span class="ability-title">【庫拉里製作 Kurari Making】</span></h3>
+        <p><span class="wp">．WP：不定</span><br>
+       你懂得怎麼製作麻痺毒藥－庫拉里的方法。你獲得並受訓次要技能<span class="wp">【庫拉里】(智力)</span>，可花一班時間製作1-3劑庫拉里毒藥(每劑1重量)：<br><br>．2點WP可製作1劑弱效麻痺毒藥。<br>．4點WP可製作1劑中效麻痺毒藥。<br>．6點WP可製作1劑強效麻痺毒藥。<br><br>在戰鬥中，可用一個動作將毒藥抹在武器上並同時進行攻擊。</p>
+      </div>
+    `,
+    subraces:{}
+  },
+  { key:'精靈',
+    img:'images/race/Elf.png',
+    text:`在馬茲提卡的傳說與神話中，精靈是一支古老而神秘的族裔。他們擁有修長的耳朵與異於常人的膚色：有些如泥土般溫潤，有些粗糙似樹皮，還有些閃耀著金屬光澤。這些特徵使許多人推測，精靈或許是諸神在創造人類前的「試驗之作」，那些不完整卻帶有神性印記的存在。<br><br>精靈自稱已在大陸上隱居數千年，居住於人跡罕至的深林、山谷與荒原之中。他們的社群往往難以被外界發現，卻在自然環境中留下了獨特的印記：藤蔓纏繞的石殿、月光下閃耀的祭壇、以及傳唱古老語言的歌聲。直到近代，隨著諸神傳聞再度歸來，他們才逐漸與其他種族接觸，帶著一種既疏離又令人難以抗拒的優雅。<br><br>在一般人眼中，精靈既可能是知識與古老智慧的傳遞者，也可能是隱藏目的的觀察者。他們冷靜而優雅，行事深思熟慮，與自然世界有著難以言喻的聯繫。究竟精靈的真正使命是守護大陸，還是為某個古老的契約服務，沒有人能確定。`,
+    detail:`
+      <div class="center"><h3>基礎移動力：10</h3></div>
+      <div class="left">
+        <h3><span class="ability-title">【心如止水 Inner Peace】</span></h3>
+        <p><span class="wp">．WP：-</span><br>
+        你可以在短休時進行深度冥想。你可以額外回復 1D6 HP 和 1D6 WP，並恢復一個狀態。<br>你在冥想期間完全無法回應周遭世界，甚至無法被喚醒。</p>
+      </div>
+    `,
+    subraces:{
+      "土精靈":`土精靈膚色和大地的顏色相近，個性溫和沉穩，身體相當柔軟，有一定的可塑性。<br><br>
+        <h3><span class="ability-title">【泥土皮膚 Mudskin】</span></h3> <p><span class="wp">．WP：-</span><br>當你受到鈍擊傷害且未穿護甲（頭盔除外）時，視為有 2 點護甲；
+但受到霜凍傷害時會損失 <span class="wp">1d3 WP</span>。<br>`,
+      "木精靈":`木精靈擁有和樹皮一樣的膚質，個性較為木訥老實。<br><br>
+        <h3><span class="ability-title">【樹質皮膚 Barkskin】</span></h3> <p><span class="wp">．WP：-</span><br>當你受到穿刺傷害且未穿護甲（頭盔除外）時，視為有 2 點護甲；
+但受到火焰傷害時會損失 <span class="wp">1d3 WP</span>。<br>`,
+      "金精靈":`金精靈膚色呈現金黃色且泛有金屬光澤，個性較自負且勇敢。<br><br>
+        <h3><span class="ability-title">【金屬皮膚 Metalskin】</span></h3> <p><span class="wp">．WP：-</span><br>當你受到穿刺傷害且未穿護甲（頭盔除外）時，視為有 2 點護甲；
+但受到火焰傷害時會損失 <span class="wp">1d3 WP</span>。<br>`
+    }
+  },
+  { key:'矮人',
+    img:'images/race/Dwarf.png',
+    text:`在馬茲提卡，矮人並沒有建立龐大的王國，但他們的足跡遍布大陸最嚴酷的沙漠地帶。最初，他們出現在伊茲卡拉沙漠的邊陲，憑藉堅毅與適應力迅速融入炙熱荒原的生活，並逐漸散布至所有沙漠地區。如今，人口最集中的地方是泰茲卡之家，當地的矮人社群以「酋長」為領袖，而在荒蕪的峭壁群落中，他們的領袖則被尊稱為「峭壁看守者」。<br><br>矮人社群規模不大，往往僅有數十至數百人，隱居於洞穴、峭壁或地下廳堂中。他們以石工與冶煉聞名，能從貧瘠的荒原中提煉出珍貴的礦石與金屬，並打造堅固的武器與防具。這些技藝使他們在戰爭或貿易中都佔有一席之地。<br><br>然而，沙漠矮人性格謹慎而冷漠。他們在遇到外來者前，往往會暗中觀察許久，以判斷對方是否值得信任。與狗民的衝突最為常見，雙方彼此敵視，卻也懂得保持距離，避免引發全面戰爭。矮人偶爾也會與地下的蝎人相爭，但更多時候，他們選擇守護自己的峭壁與部族，遠離塵囂。<br><br>對其他族裔而言，矮人或許是冷眼旁觀的隱士，但一旦建立信任，他們將展現出最堅固的盟誼與最可靠的鋼鐵之刃。`,
+    detail:`
+      <div class="center"><h3>基礎移動力：8</h3></div>
+      <div class="left">
+        <h3><span class="ability-title">【刻骨銘心 Unforgiving】</span></h3>
+        <p><span class="wp">．WP：3</span><br>
+當你攻擊曾經傷害過你（至少 1 點傷害）的人時，你可以發動此能力，讓該次攻擊檢定獲得 1 個優勢。那個人是什麼時候傷害過你一點都不重要，所以你最好將所有傷害過你的人都記下來，以免忘記。</p>
+      </div>
+      <div class="right">
+        <h3><span class="ability-title">【沙漠耐性 Desert Stamina】</span></h3>
+        <p><span class="wp">．WP：2</span><br>
+當你因為一整天沒有進食將獲得【飢餓】狀態，或一整天沒有睡眠將獲得【睡眠不足】時。你可以進行體質檢定，成功可避免獲得該狀態。每多一天未進食或睡眠，該檢定便多一個劣勢。</p>
+      </div>
+    `,
+    subraces:{}
+  },
+  { key:'鷹人',
+    img:'images/race/Quetzaldaun.png',
+    text:`在馬茲提卡的險峻高山與絕壁之巔，棲息著一支古老而罕為人知的族裔——鷹人，當地人稱為「奎查達恩（Quetzaldaun）」。他們擁有覆滿羽毛的身軀、鋒銳的爪與能張展的雙翼，看似與傳說中的阿拉科克拉相似，但卻自稱是更為尊貴的後裔。據說在遠古時代，太陽與風暴之神夸爾特曾降下恩賜，使他們由脆弱的鳥類化為今日強健而威嚴的姿態。<br><br>鷹人一向隱居避世，聚落多在高處岩壁與天險間建立巢居，傳承以風、天空與太陽為核心的文化。他們的歌聲被視為向神祇獻祭的祈禱，羽毛裝飾則象徵榮耀與地位。然而，近年大陸的動盪與戰亂迫使許多鷹人失去了棲所，不得不離開家鄉的懸崖，與其他族裔接觸。<br><br>雖然高傲且警惕，鷹人逐漸理解人類能成為守護其文化與信仰的盟友。對其他族裔而言，鷹人或許是神秘的同伴，他們能在天空中偵察敵情，或以俯衝之勢在戰場上展現凌厲的威勢。但若未獲得他們的信任，鷹人將依舊如高空的烈陽般，遙不可及。`,
+    detail:`
+      <div class="center"><h3>基礎移動力：12</h3></div>
+      <div class="left">
+        <h3><span class="ability-title">【銳眼 Sharp-eyed】</span></h3>
+        <p><span class="wp">．WP：-</span><br>
+鷹人可以看到最遠 200 米外的人或物體，就像在眼前一樣清楚。且對超出武器有效射程的目標進行攻擊不會獲得 1 個劣勢。</p>
+      </div>
+      <div class="right">
+        <h3><span class="ability-title">【飛翼 Wings】</span></h3>
+        <p><span class="wp">．WP：2</span><br>
+ 翅膀可以讓鷹人用移動力在空中自由飛翔。在戰鬥時，你必須控制雙翅來穩定地進行戰鬥，每輪需消耗 2 WP 才能維持飛行。非戰鬥時，每一刻飛行時間消耗 1 WP。</p>
+      </div>
+    `,
+    subraces:{}
+  },
+  { key:'蜥蜴人',
+    img:'images/race/LizardPeople.png',
+    text:`在馬茲提卡的沼澤與水域地帶，是蜥蜴人的地盤。關於蜥蜴人的起源沒人知曉，但蜥蜴人普遍信奉著火巨人泰茲卡，並堅信他們是受到了火巨人的祝福而獲得強大的力量。儘管有學者懷疑和噬心者札爾特克的獸術有關，但蜥蜴人堅決否認這種說法。<br><br>沼澤嚴苛的環境塑造了蜥蜴人冷酷而堅毅的性格。他們是天生的掠食者，擅長以耐心與潛伏等待獵物，屏息潛水的天賦更讓他們在水下出沒如影。他們通常避開容易受潮損壞的皮革與金屬，轉而選擇骨牙、石片、甚至火山玻璃打造武器與護具，這些裝備雖粗獷卻極為實用。蜥蜴人以部落為單位活動，能在危險的沼澤裡自給自足，鮮少依賴外界。<br><br>然而，大約一世紀前，許多蜥蜴人薩滿同時夢見了神祇的徵兆，聲稱水面之外的土地將與他們的命運交織。自此，部分蜥蜴人開始走出濕地，與人類城邦進行貿易與交流。對其他族裔而言，蜥蜴人既可能是冷酷的沼澤獵手，也可能是堅定的盟友——端看你是否贏得他們的尊重。`,
+    detail:`
+      <div class="center"><h3>基礎移動力：10</h3></div>
+      <div class="left">
+        <h3><span class="ability-title">【屏氣 Hold Breath】</span></h3>
+        <p><span class="wp">．WP：1</span><br>
+        當你在水底時，你可以消耗1點WP來自動通過閉氣的體質檢定。此外，你也可以發動此能力來合理地避開某些危險情況(由GM判斷)。</p>
+      </div>
+      <div class="right">
+        <h3><span class="ability-title">【肉食者 Meat Eater】</span></h3>
+        <p><span class="wp">．WP：3</span><br>
+ 蜥蜴人每餐都要吃肉，如果一整天沒有吃肉，蜥蜴人會陷入憤怒狀態，此情況造成的憤怒狀態只能靠吃肉來消除(短休和長休無法消除)。<br>此外，你可以對有血肉的生物進行特殊的徒手攻擊。發動此能力並花費3WP，攻擊命中時造成揮砍傷害並撕扯下血肉吃掉，恢復你造成傷害一半的HP。</p>
+      </div>
+    `,
+    subraces:{}
+  },
+  { key:'豹人',
+    img:'images/race/PantherPeople.png',
+    text:`在馬茲提卡幽深的叢林裡，豹人是最令人畏懼也最神秘的族裔之一。他們長久以來守護著高聳的樹冠領地，過著以狩獵為榮的生活。豹人身形敏捷、肌肉結實，眼神如同叢林中最銳利的掠食者，行動無聲卻致命。對他們而言，狩獵不僅是生存，更是一門藝術與信仰。<br><br>在過去的世代，豹人薩滿以智慧勸告族人遠離其他文明，保持獨立與純粹的生活方式。然而，當人類逐漸探索並侵入叢林時，這份古老的規訓開始動搖。部分豹人對人類的信仰與城邦文化心生憎惡，另一些則選擇改變，放棄野性而追求「文明」，甚至與外族進行交易與合作。他們以卓越的獵術和珍稀毛皮進行交換，偶爾成為外族的盟友。<br><br>對其他族裔而言，與豹人的相遇可能意味著交易、試煉，或是一場生死搏殺。`,
+    detail:`
+      <div class="center"><h3>基礎移動力：12</h3></div>
+      <div class="left">
+        <h3><span class="ability-title">【叢林伏擊 Jungle Ambush】</span></h3>
+        <p><span class="wp">．WP：2</span><br>
+        當你處在茂密的樹林中時，你可以發動此能力在隱匿檢定中獲得一個優勢。</p>
+      </div>
+    `,
+    subraces:{
+      "狩豹人":`兇猛、野性的亞種。他們生於殘酷的環境，習慣於「不是獵人就是獵物」的法則。狩豹人社群通常由睿智的老薩滿引導，但若落入殘暴的狩豹領主之手，他們的部落則會變得嗜血無情。對他們而言，傳統的法律幾乎毫無必要，因為任何違反族群規範的行為往往直接以死亡作為懲戒。<br><br>狩豹人是天生的完美獵手。他們的勇士能單憑天賦與簡單的武器，就捕獵比自己龐大數倍的生物。他們善於合作，也樂於單獨出擊，將狩獵視為對榮耀的試煉。對狩豹人而言，退縮是最恥辱的行為——哪怕形勢不利，他們也寧可正面迎擊。這樣的性格讓他們在叢林與戰場上既令人敬畏，也難以馴服。<br><br>然而，狩豹人並非盲目的蠻勇。他們懂得等待時機，能耐心潛伏數日，為的是在正確的時刻給予敵人致命一擊。憑藉敏銳的感官、天生的偽裝、精心打造的武器與獸性的直覺，他們成為馬茲提卡叢林中最致命的掠食者。<br><br>
+      <h3><span class="ability-title">【狩獵本能 Hunting Instincts】</span></h3> <p><span class="wp">．WP：3</span><br>你可以發動此能力來鎖定一個處於你視線範圍內，或你可以聞到氣味的生物，作為你的獵物（在戰鬥中需要一個動作）。你可以追蹤獵物的氣味一整天，且當你攻擊獵物時，你可以消耗 <span class="wp">1 WP</span> 讓該次攻擊獲得 1 個優勢。<br>`,
+      "豹貓人":`豹人族群中的一個獨特分支，他們的體型相較狩豹人更為嬌小，性格也顯得溫和許多。這使得他們在外族眼中不像戰士般充滿威懾，而更像靈巧而神秘的叢林精靈。由於天性謹慎與隱居，豹貓人被認為是馬茲提卡最難尋覓的族群之一，極少有人能真正見過他們的聚落。<br><br>豹貓人深愛他們的叢林家園，將濃密的樹冠、靜謐的溪流與盤根錯節的藤蔓視為庇護之所。他們不認為有任何理由要離開叢林，因為在他們的觀念裡，外面的世界充滿著危險與動盪，遠不及族群生活的安穩。對豹貓人而言，最理想的生活便是隱身在翠綠之間，維護族裔的和諧與純淨。<br><br>然而，仍有極少數的豹貓人心懷冒險或探索的衝動，選擇走出家園，踏足外界。他們往往被族中長輩視為不安分，甚至會在返回時遭到冷眼或排斥，特別是若他們帶著外族同伴回來，更會被視為破壞傳統的異類。這樣的矛盾，使得流浪的豹貓人成為少見卻耐人尋味的存在——他們既背負著族群的疏離，也攜帶著叢林的智慧，成為外界難得一見的旅者。<br><br>
+     <h3><span class="ability-title">【迅捷攀爬 Quick Climber】</span></h3> <p><span class="wp">．WP：2</span><br>你在進行攀爬相關活動時，你可以發動此能力在體操檢定獲得一個優勢。<br>`
+    }
+  },
+  { key:'蛙人',
+    img:'images/race/FrogPeople.png',
+    text:`在馬茲提卡的水域地帶，除了居住著蜥蜴人之外，還有一群神秘的蛙人。關於蛙人的起源眾說紛紜，但學者們普遍認為是薩滿儀式出錯的意外結果。<br><br>天性善良的蛙人是蜥蜴人食物之一，兩族之間時常有碰撞與衝突。因此許多蛙人部落為求庇護選擇和人類合作，現在在許多城市裡也能見到蛙人的蹤跡。但在蜥蜴人選擇出來和文明社會交流之後，現在兩族的衝突明顯減少，能較和平的共處。<br><br>蛙人對於寶石有著強烈的愛好，這點在商業生意上得到更好的發揮。他們總是能夠找到珍貴華美的寶石，許多貴族往往願意出高價向其購買。憑藉天生的優勢，有貿易的地方蛙人總能佔有一席之地。`,
+    detail:`
+      <div class="center"><h3>基礎移動力：10</h3></div>
+      <div class="left">
+        <h3><span class="能力 ability-title">【猛力彈跳 Leaping】</span></h3>
+        <p><span class="wp">．WP：3</span><br>
+        蛙人可以發動此能力來水平跳躍等於移動力的距離，或是垂直跳躍等於移動力一半的距離（都不需要進行體操檢定）。若蛙人在跳躍後進行一次近戰攻擊，該次攻擊會獲得 1 個優勢。</p>
+      </div>
+      <div class="right">
+        <h3><span class="能力 ability-title">【休聲美譽 Renowned Reputation】</span></h3>
+        <p><span class="wp">．WP：2</span><br>
+        由於蛙人在外的良好名聲，在合理的情況下(由GM判定)，你可以在一次交易、欺瞞、遊說或表演檢定中獲得優勢。</p>
+      </div>
+    `,
+    subraces:{}
+  }
+];
+    const btnWrap=document.getElementById('race-buttons');
+    const descEl=document.getElementById('race-desc');
+
+    btnWrap.innerHTML=raceList.map((r,i)=>`<button data-key="${r.key}" class="${i===0?'active':''}">${r.key}</button>`).join('');
+
+    function showRace(r){
+      
+      descEl.innerHTML="";
+      setTimeout(()=>{
+        
+        
+        
+
+        let subraceHTML="";
+        const keys=Object.keys(r.subraces||{});
+        if(keys.length>0){
+          subraceHTML=`
+            <div class="right">
+              <button id="subrace-random">隨機</button>
+              <div class="subrace-tabs">
+                ${keys.map(k=>`<button data-sub="${k}">${k}</button>`).join('')}
+              </div>
+              <div class="subrace-content" id="subrace-content">
+                <p>請選擇一個亞種</p>
+              </div>
+            </div>`;
+        }
+
+descEl.innerHTML=`
+  <div class="top-section">
+    <div><img src="${r.img}" alt="${r.key}"></div>
+    <div>
+      <h2>${r.key}</h2>
+      <p>${r.text}</p>
+    </div>
+  </div>
+  <div class="detail-section">
+    <div class="race-detail">
+      ${r.detail||""}
+      ${subraceHTML}
+    </div>
+  </div>`;
+        const topImg = document.querySelector('.top-section img');
+        if (topImg) requestAnimationFrame(()=> topImg.classList.add('show'));
+
+        // 綁定亞種互動
+        if(keys.length>0){
+          const tabs=document.querySelectorAll('.subrace-tabs button');
+          const content=document.getElementById('subrace-content');
+          tabs.forEach(btn=>{
+            btn.addEventListener('click',()=>{
+              tabs.forEach(b=>b.classList.remove('active'));
+              btn.classList.add('active');
+              content.innerHTML=`<p>${r.subraces[btn.dataset.sub]}</p>`;
+            });
+          });
+          const randomBtn=document.getElementById('subrace-random');
+          if(randomBtn){
+            randomBtn.addEventListener('click',()=>{
+              const rand=keys[Math.floor(Math.random()*keys.length)];
+              content.innerHTML=`<p>${r.subraces[rand]}</p>`;
+            });
+          }
+        }
+      },200);
+    }
+
+    showRace(raceList[0]);
+
+    btnWrap.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        btnWrap.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const race=raceList.find(r=>r.key===btn.dataset.key);
+        if(race) showRace(race);
+      });
+    });
+  </script>
+
+<!-- 🔹 書籤返回標籤 -->
+<div class="bookmark-tab" id="back-to-top">返回標籤列</div>
+
+<script>
+  const backBtn = document.getElementById("back-to-top");
+
+  // 根據頁面內容自動調整標籤與文字
+  let targetTop, labelText;
+  if (document.querySelector("#prof-buttons")) {
+    targetTop = document.querySelector("#prof-buttons");
+    labelText = "↑ 返回";
+  } else if (document.querySelector(".race-tabs")) {
+    targetTop = document.querySelector(".race-tabs");
+    labelText = "↑ 返回";
+  } else {
+    labelText = "↑ 返回";
+  }
+  backBtn.textContent = labelText;
+
+  // === 滾動控制出現與消失（滑入滑出動畫）===
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      backBtn.classList.add("visible");
+    } else {
+      backBtn.classList.remove("visible");
+    }
+  });
+
+  // === 點擊平滑返回標籤列 ===
+  backBtn.addEventListener("click", () => {
+    if (targetTop) {
+      const y = targetTop.offsetTop;
+      window.scrollTo({ top: y - 10, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+</script>
+
+
+
+
+</body>
+</html>

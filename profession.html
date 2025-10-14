@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<link rel="stylesheet" href="navbar.css">
+<script defer src="navbar.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<link rel="stylesheet" href="background.css">
+<script defer src="background.js"></script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>職業 PROFESSION - 馬茲提卡</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/quatl" rel="stylesheet">
+  <style>
+    :root { --gold:#c9a35a; --jade:#0e4b3a; --ink:#1a1a1a; --paper:#f5e9c9; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body { font-family:'Noto Sans TC',sans-serif; color:#f1e8d6; }
+
+header{
+  text-align:left;                     /* ✅ 改為靠左 */
+  padding:40px 40px 20px;              /* 微調內距 */
+  background:transparent center/cover no-repeat;
+  border-bottom:none;                  /* ✅ 拿掉底部邊線 */
+  box-shadow:none;                     /* ✅ 移除陰影，讓它更自然地融合下面 */
+}
+
+    header p{ margin-top:8px; font-size:1.05rem; color:#fffbe8; }
+
+    .divider{
+      width:100%; height:80px; margin:18px 0 0;
+      background:url('images/aztec-divider.png') repeat-x;
+      background-size:auto 200%; opacity:.9;
+    }
+
+    .prof-buttons{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:20px auto; max-width:1000px; }
+    .prof-buttons button{
+      padding:10px 14px; border:2px solid var(--gold); border-radius:8px;
+      background:rgba(255,255,255,0.08); color:var(--paper); font-weight:700; cursor:pointer;
+      transition:.25s;
+    }
+    .prof-buttons button:hover, .prof-buttons button.active{ background:var(--gold); color:#1a1a1a; transform:scale(1.05); }
+
+    .prof-preview{ max-width:1200px; margin:28px auto; padding:0 28px 28px; }
+    .top-section{
+      display:grid; grid-template-columns:1.1fr 1fr; gap:20px;
+      padding:15px; background:rgba(0,0,0,0.25);
+border:1px solid var(--gold); border-radius:12px; margin-bottom:20px;
+box-shadow: 0 0 10px rgba(201,163,90,0.3);
+    }
+    .top-section img{
+      width:100%; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,.4);
+      opacity:0; transition:opacity .8s ease;
+    }
+    .top-section img.show{ opacity:1; }
+    .top-section h2{ margin-bottom:8px; }
+    .top-section p{ line-height:1.75; }
+
+    .detail-section{
+      padding:15px; background:rgba(0,0,0,0.3); border:1px solid var(--gold); border-radius:12px;
+    }
+
+.class-detail {
+  margin-top: 4px;
+  display: grid;
+  grid-template-areas:
+    "center center"
+    "center2 center2"
+    "center3 center3"
+    "extra-left extra-right"
+    "left right"
+    "extra-bottom extra-bottom";
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+/* ✅ 限制左右欄寬與內距，防止超出 */
+.class-detail .left,
+.class-detail .right {
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+  max-width: 100%;      /* 防止內容超出邊框 */
+  overflow-wrap: break-word;
+}
+
+.class-detail .left ul,
+.class-detail .right ul {
+  padding-left: 18px;   /* ✅ 給清單縮排，避免壓線 */
+  margin: 0;
+}
+
+
+    .class-detail .center,.class-detail .center2,.class-detail .center3, .class-detail .left, .class-detail .right{
+      background:rgba(255,255,255,0.05);
+      padding:12px; border-radius:8px; border:1px solid var(--gold);
+    }
+    .class-detail .center{ grid-area:center; text-align:center; }
+    .class-detail .center2{ grid-area:center2; text-align:center; }
+    .class-detail .center3{ grid-area:center3; text-align:left; }
+.class-detail .extra-left { grid-area: extra-left; }
+.class-detail .extra-right { grid-area: extra-right; }
+
+.class-detail .center3:empty,
+.class-detail .extra-left:empty,
+.class-detail .extra-right:empty {
+  display: none;
+}
+
+    .subclass-tabs{ margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; }
+    .subclass-tabs button{
+      border:1px solid var(--gold); background:transparent; color:var(--paper);
+      padding:4px 8px; border-radius:6px; cursor:pointer;
+    }
+    .subclass-tabs button.active{ background:var(--gold); color:#1a1a1a; }
+    .subclass-content{ margin-top:10px; background:rgba(0,0,0,0.35); padding:10px; border-radius:6px; }
+
+    .left h3 { margin: 0 0 8px; color: #fff4d0; }
+    .gear-tabs { display:flex; flex-wrap:wrap; gap:6px; margin:6px 0; }
+    .gear-tabs .gear-tab { border:1px solid var(--gold); background:transparent; color:var(--paper); padding:4px 8px; border-radius:6px; cursor:pointer; }
+    .gear-tabs .gear-tab.active { background: var(--gold); color:#1a1a1a; }
+    #gear-content { margin-top:10px; background:rgba(0,0,0,0.35); padding:10px; border-radius:6px; line-height:1.8; }
+
+    .ability-title{ color:var(--gold); font-weight:bold; }
+    .wp{ color:#ffd56a; font-style:italic; }
+    .note{ font-size:.95rem; opacity:.95; }
+
+/* 🔸 給薩滿與學者的專用樣式，避免與右欄衝突 */
+.shaman-tabs, .scholar-tabs {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.shaman-tabs button, .scholar-tabs button {
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--paper);
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.shaman-tabs button.active, .scholar-tabs button.active {
+  background: var(--gold);
+  color: #1a1a1a;
+}
+
+.shaman-content, .scholar-content {
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  border-radius: 6px;
+}
+/* 🔸 騎士團互動樣式 */
+.knight-tabs {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.knight-tabs button {
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--paper);
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.knight-tabs button.active {
+  background: var(--gold);
+  color: #1a1a1a;
+}
+
+.knight-content {
+  margin-top: 10px;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 10px;
+  border-radius: 6px;
+  text-align: left;
+}
+/* 🔸 旅商底部左右欄樣式 */
+.extra-bottom {
+  grid-area: extra-bottom; /* ✅ 讓它套用該區域 */
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 20px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.extra-bottom .extra-img {
+  flex: 1;
+}
+
+.extra-bottom .extra-img img {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+}
+
+.extra-bottom .extra-text {
+  flex: 1.5;
+  text-align: left;
+  line-height: 1.8;
+}
+
+.quote {
+  border-left: 4px solid var(--gold);
+  padding-left: 16px;
+  margin: 24px 0;
+  font-style: italic;
+  color: #f5e9c9; /* 淡金色字 */
+  font-size: 1.1em;
+}
+.quote span {
+  display: block;
+  text-align: right;
+  margin-top: 6px;
+  font-style: normal;
+  color: var(--gold);
+  font-size: 0.95em;
+}
+
+/* === 🔹 返回標籤列書籤樣式 === */
+.bookmark-tab {
+  position: fixed;
+  right: 24px;
+  bottom: 36px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-weight: 600;
+  font-style: italic;
+  padding: 10px 18px;
+  border-radius: 10px 0 0 10px;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(201,163,90,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s ease;
+  z-index: 9999;
+}
+
+/* 滑入時顯示 */
+.bookmark-tab.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+}
+
+/* 初始滑出狀態 */
+.bookmark-tab:not(.visible) {
+  transform: translateX(120%);
+}
+
+/* 滑鼠懸停時光暈閃爍效果 */
+.bookmark-tab:hover {
+  background: linear-gradient(90deg, rgba(255,180,80,0.3), rgba(201,163,90,0.2));
+  box-shadow: 0 0 12px rgba(255,180,80,0.6), 0 0 20px rgba(201,163,90,0.4);
+  color: #ffdca3;
+}
+  </style>
+</head>
+
+<body>
+<div id="site-navbar"></div>
+  <header>
+    <p>所有 PC 都是冒險者，職業是你踏上冒險旅程之前所實踐的專業，決定你的受訓技能、職業能力、起始英雄能力，以及起始裝備。<br>遊戲開始後，你就不受職業的限制，可以自由發展你的角色。<br>
+    <span class="ability-title">受訓技能：</span>從你職業提供的 8 項起始技能中「選擇 6 項」技能，這些是你的受訓技能。受訓技能的數值 = 基礎技能數值 ×2<br>
+    <span class="ability-title">起始英雄能力：</span>除了薩滿外，每個職業都提供了幾項你創角時可以選擇的英雄能力，從中選擇一個。</p>
+  </header>
+<div class="divider"></div>
+
+  <div class="prof-buttons" id="prof-buttons"></div>
+
+  <div class="prof-preview">
+    <div class="desc" id="prof-desc"></div>
+  </div>
+
+  <script>
+    const professions = [
+      {
+        key:'工匠',
+        img:'images/profession/artisan.png',
+        intro:`工匠是一群將心血與歲月投注於技藝的人。憑藉雙手與知識，將自然界的材料化為堅固的器具、精美的飾品與實用的武器。工匠們懂得如何挑選最堅韌的黑曜石來製作鋒利的刃片，如何運用玉石、羽毛與金屬，打造出兼具美觀與象徵意義的裝飾品。他們的作品不僅是物質上的創造，更承載了部族與城邦的榮耀。<br><br>在戰場上，工匠是不可或缺的後盾。他們鍛造的長矛、斧刃與盾牌，能決定戰士的生死；在和平時期，他們則製作農具、織機與日常用具，維繫著社會的運轉。工匠熟悉不同工藝領域，有的專精於金屬與石材的打磨，有的善於紡織、繪飾與建築。他們的地位雖然低調，但卻深受尊敬，因為他們的雙手塑造了文明的基石。<br><br>選擇工匠範型，代表你將深入理解細緻的工藝與勞動的價值。你可能是來自繁華城邦的工坊學徒，也可能是隱居村落的木匠後裔。透過不斷精進的技術，你能在冒險中提供團隊可靠的裝備、修繕支援，甚至用創造力解決棘手的難題。這條道路，並非追求華麗的力量，而是透過汗水與技巧，在每一次的敲擊與雕琢之中，留下屬於自己的印記。`,
+        center:`<h3>關鍵屬性：力量</h3>`,
+        center2:`<h3>起始技能：工藝、巧手、調查、徒手、斧、棍棒、劍、小刀</h3>`,
+        /* ✅ 左側 Gear（四組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>馬卡劍</li><li>棉甲</li><li>鍛匠工具</li><li>火炬</li><li>打火匣</li>
+              <li>1D8 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>碎骨棒</li><li>棉甲</li><li>木匠工具</li><li>火炬</li><li>10米麻繩</li><li>打火匣</li>
+              <li>1D8 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>黑曜石斧</li><li>獸皮甲</li><li>皮匠工具</li><li>提燈</li><li>燈油</li><li>打火匣</li>
+              <li>1D8 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第四組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>棉甲</li><li>織布工具</li><li>火炬</li><li>毛毯</li><li>打火匣</li>
+              <li>1D8 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【鍛匠大師 Master Blacksmith】</h3>":"<span class='wp'>．WP：見描述</span><br>此能力需要鍛匠工具。你可以利用鍛匠工具做以下的事情：<br><br>．在一刻時間內，你可以消耗<span class='wp'> 3 WP</span>，銳化一把帶有黑曜石刀刃或尖端的武器。當使用銳化武器進行攻擊時，目標的護甲值會視為降低 2 點。一旦在戰鬥中使用銳化武器進行過攻擊或格擋，銳化效果會在該戰鬥結束後終止。<br><br>．在一班時間內，你可以嘗試從裝備列表中打造一把黑曜石武器。這個過程需要重量為 1 的黑曜石。消耗的 WP 等於物品的金幣價格（向上取整）。若你沒有足夠的 WP，你可以將工作分成好幾班的時間來處理。<br><br>或者，你可以使用蒐集到的材料試圖強化黑曜石裝備的效果（實際效果取決於材料）。當一班時間結束後，進行一次<span class='wp'>【工藝】</span>檢定，檢定結果將決定你這次的強化結果。",
+          "<h3>【木匠大師 Master Carpenter】</h3>":"<span class='wp'>．WP：見描述</span><br>此能力需要木匠工具。你可以利用木匠工具做以下的事情：<br><br>．以一個動作，你可以消耗<span class='wp'> 1 WP </span>對門、牆壁或其他無生命物體造成 1d12 傷害（無視護甲值）。<br><br>．在一班時間內，你可以嘗試從裝備列表中打造一個木製物品，例如棍棒、長棍。這個過程需要重量為 1 的木頭。消耗的 WP 等於物品的金幣價格（向上取整）。<br><br>或者，你可以使用蒐集到的材料試圖強化木材裝備的效果（實際效果取決於材料）。當一班時間結束後，進行一次<span class='wp'>【工藝】</span>檢定，檢定結果將決定你這次的強化結果。",
+          "<h3>【皮匠大師 Master Tanner】</h3>":"<span class='wp'>．WP：見描述</span><br>此能力需要皮匠工具。你可以利用皮匠工具做以下的事情：<br><br>．你可以嘗試從將一隻動物或怪物的皮做成一套獸皮甲。該皮甲的護甲值等於野獸護甲值的一半（向上取整），至少為 1。這個過程耗時一班時間，消耗的 WP 等於物品的護甲值。<br><br>或者，你可以使用蒐集到的材料試圖強化毛皮裝備的效果（實際效果取決於材料）。當一班時間結束後，進行一次<span class='wp'>【工藝】</span>檢定，檢定結果將決定你這次的強化結果。",
+          "<h3>【羽匠大師 Master Pluma】</h3>":"<span class='wp'>．WP：見描述</span><br>此能力需要織布工具。你可以利用織布工具做以下的事情：<br><br>．在一班時間內，你可以嘗試從裝備列表中打造一套服裝。這個過程需要重量為 1 的植物纖維或羽毛。消耗的 WP 等於物品的金幣價格（向上取整）。若你沒有足夠的 WP，你可以將工作分成好幾班的時間來處理。<br><br>或者，你可以試圖製作羽毛護身符，這些護身符有特殊的效果（詳見羽毛護身符章節），可以當成單獨的飾品配戴，也可以再加工到服裝上。當一班時間結束後，進行一次<span class='wp'>【工藝】</span>檢定，檢定結果將決定你這次的打造結果。"
+        }
+      },
+
+      /* 其他職業（示範幾個，右側互動同樣保留） */
+      {
+        key:'獵人',
+        img:'images/profession/Hunter.png',
+        intro:`在馬茲提卡廣袤的叢林與山谷之間，獵人是自然的探索者與守望者。他們熟悉林木的氣息、動物的習性，以及隱藏於濃密葉影中的危機。獵人不僅是弓矢與陷阱的能手，更是觀察的專家：一片斷裂的枝葉、一行輕微的足跡，對他們來說就是指引方向的路標。<br><br>在部族與城邦的生活裡，獵人負責提供肉食與獸皮，他們懂得如何在不驚擾自然的情況下獲取資源。當危險來臨時，他們的技能更能轉化為守護的力量──無論是設置陷阱對抗入侵者，還是憑藉敏銳的眼力，預先發現潛伏的猛獸。<br><br>馬茲提卡的叢林充滿濕熱與未知，毒蛇、猛禽與沼澤中的掠食者無所不在。獵人卻能在其中自在行走，靠著熟悉的道路與草藥知識保持安全。他們能為同伴找到乾淨的水源，辨別可食與有毒的果實，並在危險時刻帶領隊伍穿越隱蔽小徑。<br><br>選擇獵人範型，代表你將把自然當作盟友。你可能是森林部落中磨練出的巡林者，也可能是獨自徘徊於荒野的遊俠。你的價值在於行動的敏捷、目光的銳利，以及對叢林無與倫比的理解。無論是在狩獵還是冒險中，獵人始終是開路的先鋒，也是荒野裡最可靠的同伴。`,
+        center:`<h3>關鍵屬性：敏捷</h3>`,
+        center2:`<h3>起始技能：體操、狩獵、隱匿、察覺、求生、小刀、弓、吹箭</h3>`,
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>戰弓</li><li>黑曜石箭袋</li><li>獸皮甲</li><li>睡袋</li><li>火炬</li><li>打火匣</li><li>10米麻繩</li><li>圈套陷阱</li><li>1D8 份食物</li><li>1D6 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>投石繩</li><li>黑曜石彈丸袋</li><li>獸皮甲</li><li>睡袋</li><li>火炬</li><li>打火匣</li><li>10米麻繩</li><li>釣竿</li><li>1D8 份食物</li><li>1D6 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>馬卡短劍</li><li>吹箭筒</li><li>吹箭袋</li><li>獸皮甲</li><li>睡袋</li><li>火炬</li><li>打火匣</li><li>10米麻繩</li><li>圈套陷阱</li><li>1D8 份食物</li><li>1D6 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【動物夥伴 Companion】</h3>":"<span class='wp'>．WP：3</span><br>你可以發動此能力，將一隻動物馴服為你的夥伴。此過程需耗時一刻時間，且你同時只能擁有一隻動物夥伴。<br><br>只要你待在該動物的自然棲息地，牠就會一直跟著你。牠可以為你偵察附近環境，而不需要消耗額外的 WP。在戰鬥中，你可以額外消耗 3 WP，命令夥伴攻擊一名敵人（不需要花費你的動作）。",
+          "<h3>【雙重射擊 Twin Shot】</h3>":"<span class='wp'>．WP：3</span><br>當你使用 弓 或 吹箭筒 進行攻擊時，你可以發動此能力來射出兩支箭矢/吹箭。你可以指定同一個目標、或兩個不同的目標<br><br>無論如何，都只進行一次帶有 1 個劣勢的攻擊檢定。傷害分開計算。",
+          "<h3>【陷阱大師 Master Trap】</h3>":"<span class='wp'>．WP：見描述</span><br>當你在森林中時，你可以耗時一刻時間蒐集材料，並在你指定的地點設置陷阱。花費的WP和陷阱作用詳見下表。<br><br>．圈套陷阱：<br><span class='wp'>WP:2</span><br>用纖維繩（龍舌蘭纖維、藤蔓）做成繩圈，固定在樹根或木樁上，連接觸發機關。每當有生物觸發陷阱時，需進行閃避檢定，失敗視為被擒抱。繩子可以被割斷。<br><br>．囚籠陷阱：<br><span class='wp'>WP:2</span><br>用藤蔓或木條製成簡易籠子，內部放置誘餌，一旦觸動機關，籠子扣下並鎖住獵物。使目標「被困」在籠內，行動受限，只能嘗試破壞或推翻籠子。<br><br>．陷坑陷阱：<br><span class='wp'>WP:3</span><br>挖一個偽裝的深坑，底部插入削尖的木樁，再用樹葉或泥土覆蓋。每當有生物觸發陷阱時，需進行閃避檢定，失敗將跌入3米陷坑，並受到2D4穿刺傷害。<br><br>．落石陷阱：<br><span class='wp'>WP:3</span><br>用繩索懸掛一塊巨石，設計觸發點讓石頭砸落。每當有生物觸發陷阱時，需進行閃避檢定，失敗被擊倒伏地，並受到2D6鈍擊傷害。<br><br>．藤鞭陷阱：<br><span class='wp'>WP:3</span><br>將彈力強的細樹枝或藤條拉緊，綁上尖刺或石頭，觸發後迅速彈出。每當有生物觸發陷阱時，需進行閃避檢定，失敗被擊飛2D6米，並受到等量揮砍傷害。"
+        }
+      },
+      {
+        key:'詩人',
+        img:'images/profession/Bard.png',
+        intro:`在馬茲提卡的文明中，詩人並非單純的吟遊者，而是知識的守護者與文化的傳承者。他們被稱為「花與歌之人」，透過詩句、音樂與舞蹈來頌揚神祇、記錄歷史、傳遞智慧。詩人的話語與旋律能凝聚族群的信念，使城邦在動盪與榮耀中維繫共同的記憶。<br><br>詩人在社會中享有崇高地位，他們出席祭典、戰前儀式與領主的宮廷，擔任見證與講述的角色。人們相信，詩歌不僅能陶冶心靈，更能讓勇士記住自己的榮耀與責任。許多首領與戰士渴望詩人的讚頌，因為那代表他們的名字將在世代的歌聲裡長存。<br><br>專精於不同領域的詩人各有價值：有的偏重史詩吟誦，能將過往戰事與族群傳說娓娓道來；有的擅長歌舞與樂器，帶來凝聚情感的力量；也有詩人專注於隱喻與箴言，他們的話語像謎語般啟迪聽眾。這些專精不僅是藝術的差異，更影響他們在冒險中的作用——一位史詩詩人能鼓舞士氣，一位歌舞詩人能拉近陌生群體的距離，而一位箴言詩人則可能以機智言詞化解危機。<br><br>選擇詩人範型，代表你將承擔一份特殊的責任：不只是觀察者，更是文化的記錄者與推動者。你的聲音，能將冒險的片段編織成世代傳唱的傳奇。`,
+        center:`<h3>關鍵屬性：魅力</h3>`,
+        center2:`<h3>起始技能：體操、閃避、語言、祕聞傳說、欺瞞、表演、遊說、小刀</h3>`,
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>骨銼</li><li>黑曜石小刀</li><li>油燈</li><li>燈油</li><li>打火匣</li><li>1D6 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>長笛</li><li>黑曜石小刀</li><li>10米麻繩</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>海貝號角</li><li>黑曜石小刀</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【音樂家 Musician】</h3>":"<span class='wp'>．WP：3</span><br>你動人的聲音可以鼓舞你的盟友或挫敗你的敵人。<br><br>發動此能力（一個動作）可以讓 10 米內所有盟友的所有檢定獲得 1 個優勢，或讓相同範圍內的所有敵人獲得 1 個劣勢（選擇其中一種）。效果持續到你下一個回合開始。<br><br>你可以使用樂器來增加此能力的範圍，或減少 WP 的消耗量（參考裝備的樂器說明）。",
+          "<h3>【頌神曲 Hymn to God】</h3>":"<span class='wp'>．WP：3</span><br>你精通讚揚神祇的祭文禱詞。<br><br>每日一次，在適當的地方耗時一刻時間向當日侍神誠心唸頌禱詞，進行<span class='wp'>表演</span>檢定。若成功，則侍神將會聽到你的祈禱，並降下神賜給整個隊伍。<br><br>降下何種神賜取決於當日的守護侍神。（詳見曆法章節）",
+          "<h3>【戰歌 Battle Song】</h3>":"<span class='wp'>．WP：3</span><br>你精通鼓舞士氣和振奮人心的激昂戰歌。<br><br>你可以耗時一刻時間鼓舞隊友，消除其他人的畏縮和沮喪狀態，每個消除的狀態可回復該隊友2WP。<br><br>此外，在戰鬥時，你也可以用一個動作吼出激勵的戰鬥誓言，聽得見你的所有其他同伴立刻自選 1 個狀態消除。"
+         }
+      },
+      {
+        key:'戰士',
+        img:'images/profession/Warrior.png',
+        intro:`在馬茲提卡大陸，戰士是社會與城邦的支柱。他們不僅是戰場上的鬥士，更是部族榮耀的象徵。自少年起，戰士便接受嚴格訓練，學習如何在叢林與平原上求生，如何揮舞各式各樣的武器。對馬茲提卡人而言，武勇與榮譽往往決定一個人的地位，而戰士正是這份價值的化身。<br><br>戰士熟悉多種武器：黑曜石劍(馬夸維爾特) 能劈裂骨肉；長柄木矛與投槍器在近戰與遠距中皆具威脅；羽飾圓盾不僅保護身軀，也象徵身分與成就。部分戰士專注於重裝與近身搏鬥，正面突破敵陣；另一些則強調敏捷與靈巧，習慣於叢林中埋伏、突擊。無論流派不同，戰士們都以紀律與實戰磨練成就自我。<br><br>在城邦與部族中，戰士的地位舉足輕重。他們是保護領地與人民的屏障，也是祭典與儀式上不可或缺的角色。俘虜敵人、奮戰至死、贏得榮譽，這些行為能使戰士的名字傳頌於世，甚至獲得神祇的垂青。<br><br>選擇戰士範型，代表你承擔了最直接卻最重要的職責：以武藝與勇氣守護同伴與信念。無論是舉盾在前，還是持矛開道，戰士都是隊伍的核心力量，讓冒險能在危險的土地上持續前行。`,
+        center:`<h3>關鍵屬性：力量</h3>`,
+        center2:`<h3>起始技能：閃避、徒手、斧、棍棒、矛、劍、弓、投槍器</h3>`,
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>馬卡劍／銅斧／碎骨棒（擇一）</li><li>圓盾</li><li>皮革戰甲</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D6 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>馬卡短劍／黑曜石斧／投射標槍（擇一）</li><li>投槍器</li><li>黑曜石箭袋</li><li>棉甲</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D6 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>木矛</li><li>皮革戰甲</li><li>木製戰盔</li><li>打火匣</li><li>1D6 份食物</li><li>1D6 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【老兵 Veteran】</h3>":"<span class='wp'>．WP：1</span><br>多年來的實戰經驗，讓你能在戰場上持續把握主動權，不被局勢的混亂所動搖。<br><br>(創角時)你從武器技能裡選擇一項，該武器的技能數值成長1點。<br><br>此外，在每一輪開始時，你可以發動此能力來保留你上一輪的先攻卡，而不抽取新的先攻卡。",
+          "<h3>【狂暴 Berserker】</h3>":"<span class='wp'>．WP：3</span><br>你立即獲得「憤怒」狀態，並立即對最近的敵人進行一次近戰攻擊。狂暴持續到戰場上沒有敵人，或你 HP 歸零為止。<br>狂暴期間：<br>．你的近戰攻擊獲得一個優勢。<br>．若你攻擊前額外消耗<span class='wp'> 1 WP </span>，該次命中額外造成 +1D4 傷害。<br>．擊殺一個敵人後，你可以立刻移動2米。<br>．你不能格擋或閃避。<br><br>戰鬥結束之後，你會陷入力竭狀態。",
+          "<h3>【雙重斬擊 Double Slash】</h3>":"<span class='wp'>．WP：3</span><br>當你持握揮砍武器時，你可以同時對兩個相距你 2 米內的敵人進行一次攻擊。<br><br>你只進行一次攻擊檢定，若成功則同時命中兩個敵人。敵人可以分別進行格擋或閃避。傷害骰也分開計算。<br><br>此能力可以與「雙持戰鬥」能力結合。"
+         }
+      },
+      {
+        key:'騎士',
+        img:'images/profession/Knight.png',
+        intro:`在馬茲提卡的城邦與部族社會中，騎士象徵著最高的榮耀與最沉重的責任。他們不僅是訓練有素的精銳戰士，更是信仰與軍事的代表。成為騎士意味著經歷無數戰役、累積戰功，並獲得城邦與神祇的認可。騎士肩負守護族群、維護秩序的使命，他們的存在不僅是武力的展現，更是榮耀與信仰的化身。<br><br>儘管諸神已然隱沒，不再如往昔那般直接干預凡間，但許多人相信，他們仍透過夢境、徵兆或神聖遺物，賜予騎士們非凡的意志與力量。<br><br>在馬茲提卡，主要有兩個騎士團：鷹騎士團 和 豹騎士團<br><br>選擇騎士範型，意味著承擔古老的榮光與沉重的責任。鷹騎士以光明之名守護秩序，豹騎士則以狩獵之道尋求新榮耀。`,
+        center:`<h3>關鍵屬性：力量</h3>`,
+        center2:`<h3>起始技能：野獸知識、祕聞傳說、表演、遊說、棍棒、矛、劍、投槍器</h3>`,
+  /* 新增 extra 區塊 */
+extra: `
+  <h3><span class="ability-title">選擇騎士團：</span></h3>
+  <div class="knight-tabs" id="knight-order-tabs">
+    <button data-order="鷹騎士團">鷹騎士團</button>
+    <button data-order="豹騎士團">豹騎士團</button>
+  </div>
+  <div class="knight-content" id="knight-order-content">
+    <p>請選擇一個騎士團</p>
+  </div>
+`,
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>投槍器</li><li>投射標槍</li><li>馬卡劍／馬卡短劍／銅斧／碎骨棒／木矛（擇一）</li><li>圓盾</li><li>木製戰盔</li><li>鷹騎士戰甲 或 豹騎士戰甲（根據騎士團獲得）</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D12 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【守護者 Guardian】</h3>":"<span class='wp'>．WP：2</span><br>你願意毫不猶豫地為盟友擋下攻擊。<br><br>若你和另一名盟友都與同一名敵人相距 2 米內，當該敵人嘗試攻擊你的盟友時，你可以發動此能力，強迫敵人改為攻擊你。<br><br>此能力可以在你的回合外使用，且不需要花費動作。",
+          "<h3>【舉盾格擋 Shield Block】</h3>":"<span class='wp'>．WP：3</span><br>當你使用盾牌進行格擋時，你可以發動此能力讓該次格擋檢定獲得 1 個優勢。<br><br>另外，你也可以使用此能力用盾牌格擋通常無法被格擋的怪物物理攻擊（AOE由GM判斷）。<br><br>此能力可以和「堅強防禦」能力結合。",
+          "<h3>【堅強防禦 Defensive】</h3>":"<span class='wp'>．WP：3</span><br>你可以在不消耗該輪動作的情況下嘗試格擋一次攻擊。<br><br>你只能對同一次攻擊嘗試格擋一次，且你無法再對該次攻擊進行閃避或格擋。<br><br>只要你有足夠的 WP，你在同一輪中可以多次發動此能力。"
+        }
+      },
+      {
+        key:'薩滿',
+        img:'images/profession/Shaman.png',
+        intro:`在馬茲提卡，大地與諸神的力量並未隨著神祇隱沒而完全消失。薩滿是最接近這股神秘力量的人，他們能觸碰凡人無法理解的能量，並以詩歌、祈禱、舞蹈或獻祭的方式引導魔法流動。薩滿的角色不僅是施術者，更是靈性導師、祭儀主持者與未知奧秘的研究者。<br><br>薩滿對於魔法的本質有不同解讀，因此形成了四種截然不同的流派：<br><br>選擇薩滿範型，意味著你必須選擇一條流派之路，並決定自己對魔法本質的理解。是靈魂的力量、野性的殘暴、神聖的羽術，還是大自然的元素？在馬茲提卡的世界裡，薩滿的存在象徵著人類與神祇、自然與靈魂之間微妙的連結，而你的選擇，將決定你如何改變冒險的命運。`,
+center:`<h3>關鍵屬性：意志</h3>
+<div class="shaman-tabs" id="shaman-path-tabs">
+  <button data-path="靈魂流派">靈魂流派</button>
+  <button data-path="獸術流派">獸術流派</button>
+  <button data-path="羽術流派">羽術流派</button>
+  <button data-path="元素流派">元素流派</button>
+</div>
+<div class="shaman-content" id="shaman-path-content"><p>請選擇一個魔法流派</p></div>
+`,
+center2:`<h3>起始技能：依流派而定</h3>`,
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>硬木棒</li><li>水晶球</li><li>魔導書</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>魔杖</li><li>魔導書</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>聖徽</li><li>魔導書</li><li>睡袋</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D8 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【魔法 Magic】</h3>":"身為薩滿，你創角時不會獲得英雄能力，而是可以施放魔法。你必須選擇一個魔法流派，該流派魔法會成為你的受訓次要技能(智力)。<br><br>另外，你可以選擇「三個戲法」和「三個 1 階法術」。你只能從通用魔法或你的流派魔法中選擇。這些法術都會記載到你起始裝備的魔導書裡。"
+        }
+      },
+      {
+        key:'學者',
+        img:'images/profession/Scholar.png',
+        intro:`在馬茲提卡的城邦裡，學者代表著知識的傳承與探索。這片大地上的人類社會極為重視教育：兒童在十五歲之前由家長教育，學習基礎的倫理、勞作與信仰，並受公社監督。十五歲後，他們進入城邦學校，接受五年的進階教育。隨著不同族裔與人類的交流加深，學校裡也能看到半身人、矮人，甚至其他族群的學生，共同參與知識的學習。<br><br>在這些教育機構中，教師（Tlamatimine）是專責的講師，直到退休都屬於城邦的公共財產。但並非所有受過教育的人都會留在體制內。有些人選擇獨立研究，專注於天文、歷史、生物或數學的領域；也有人因失誤、爭議或挑戰傳統而被逐出教育體制。這些人，無論因何原因離開學校，通常都被稱為「學者」。<br><br>選擇學者範型，意味著你將以知識為武器。你可能是仰望星辰的占星師，或是保存傳說的記錄者，又或是深入叢林探究奇異生命的觀察者。雖然缺乏教師的穩固地位，卻能在冒險中成為隊伍的智囊，以知識與洞察力支援隊伍，解讀符號、推理線索、記錄歷史，用智慧與研究成果引導同伴走過險境。`,
+        center:`<h3>關鍵屬性：智力</h3>`,
+        center2:`<h3>起始技能：閃避、察覺、野獸知識、求生、醫療、語言、祕聞傳說、調查</h3>`,
+        center3:`
+  <h3><span class="ability-title">額外特性：【術業有專攻 Master of One】</span></h3>
+  <span class='wp'>．WP：3</span>
+  <p>學者或許涉獵萬端，但你在某門學問上精進不懈，學有所成。請選擇一項專攻：</p>
+<div class="scholar-tabs" id="scholar-special-tabs">
+  <button data-path="天律學">天律學</button>
+  <button data-path="神律學">神律學</button>
+  <button data-path="數律學">數律學</button>
+  <button data-path="生知學">生知學</button>
+</div>
+<div class="scholar-content" id="scholar-special-content"><p>請選擇一門專業學科</p></div>
+`,
+
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>硬木棒</li><li>筆記本</li><li>羽毛筆</li><li>睡袋</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>書本（任一主題）</li><li>睡袋</li><li>油燈</li><li>燈油</li><li>打火匣</li><li>1D6 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>投石繩</li><li>繃帶（十份）</li><li>一劑塔爾卡根粉末（催眠毒藥）</li><li>睡袋</li><li>提燈</li><li>燈油</li><li>打火匣</li><li>1D6 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【直覺思考 Intuition】</h3>":"<span class='wp'>．WP：3</span><br>當面臨困難抉擇時，你可以發動此能力，直接詢問 GM 一個問題，並得到一個有用的答案。<br><br>該答案代表你的廣泛知識，僅有助於你的決策，無法揭示所有需要知道的事情。",
+          "<h3>【現場教學 Field Teaching】</h3>":"<span class='wp'>．WP：3</span><br>你可以快速講述知識來幫助所有人。當你在協助他人時，你可以協助複數盟友進行同一項檢定。<br><br>但你協助的對象有人檢定失敗的話你陷入憤怒狀態（若你還未憤怒）。",
+          "<h3>【經驗分享 Experience Sharing】</h3>":"<span class='wp'>．WP：-</span><br>在技能成長階段開始前，你可以放棄一項技能成長機會，將自身經驗傳授給其他夥伴，讓最多兩位盟友額外獲得該項技能成長機會，之後正常進行技能成長流程。<br><br>你不能選擇已經標記該技能的盟友。"
+        }
+      },
+      {
+        key:'旅商',
+        img:'images/profession/Pochteca.png',
+        intro:`在馬茲提卡廣袤的大地上，旅商不僅是貨物的搬運者，更是聯繫城邦與部族的關鍵人物。他們走遍叢林、山谷與河道，帶來玉石、黑曜石、可可豆、羽毛、香料與珍貴藥材，用以交換各地的特產。旅商讓資源得以流通，也讓偏遠村落得以接觸外界的繁榮。<br><br>然而，旅商的價值遠不止於貿易。當他們踏上漫長的旅程時，同時也承擔了情報傳遞的責任。城邦的統治者往往要求旅商在歸途中回報沿途所見，包括敵對勢力的動態、道路的狀況、部族間的爭執，甚至遺跡與怪物的傳聞。這些情報能決定一場戰爭的走向，或讓一座城邦提前準備防禦。<br><br>因而，旅商所傳遞的消息極其珍貴。若旅商在交易途中遭到殺害，不僅意味著貨物流通的中斷，更常被視為外交挑釁，足以成為戰爭爆發的導火線。他們的安危與地位，遠超出一般商人的想像。<br><br>選擇旅商範型，代表你將肩負財富與情報的雙重責任。你或許是一位能言善道的談判者，也可能是習慣長途旅行的生存家。無論如何，你的足跡與話語，將能改變馬茲提卡的命運。`,
+        center:`<h3>關鍵屬性：魅力</h3>`,
+        center2:`<h3>起始技能：閃避、騎術、察覺、調查、交易、欺瞞、遊說、小刀</h3>`,
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>火炬</li><li>打火匣</li><li>野炊工具</li><li>1D6 份食物</li><li>1D12 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>提燈</li><li>燈油</li><li>打火匣</li><li>1D6 份食物</li><li>1D12 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>油燈</li><li>燈油</li><li>打火匣</li><li>背包</li><li>1D6 份食物</li><li>1D12 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【察言觀色 Insight】</h3>":"<span class='wp'>．WP：3</span><br>你對人心的觀察遠超常人。在你與另一個人的談話中，你可以發動此能力進行察覺檢定。依照檢定結果，你可獲得下列一項或多項資訊（大成功則全部獲得）：<br><br><span class='wp'>．失敗/成功：</span>對方目前的情緒（害怕、緊張、焦躁、誠懇、傲慢等）。<br><span class='wp'>．成功：</span>對方是否在說謊。<br><span class='wp'>．成功：</span>對方對你／某人／某事的真實態度（敵意、戒心、好感、利益）。<br><span class='wp'>．大成功：</span>你能判斷對方潛在的動機或弱點（例如「他在保護某人」、「他在隱瞞交易」、「他受金錢驅使」）。",
+          "<h3>【商隊領袖 Caravan Master】</h3>":"<span class='wp'>．WP：3</span><br>你熟悉商路捷徑，能縮短長途旅行所需時間，並在遭遇危險時能迅速指揮眾人應對。<br><br>當隊伍在荒野上長途旅行（兩天以上的路程）時，你可以發動此能力來縮短1d4班的路程。<br><br>此外，若旅行過程中的探路檢定失敗而遇到危險時，你可以發動此能力來讓所有人面對危險的檢定獲得一個優勢。",
+          "<h3>【情報掮客 Information Broker】</h3>":"<span class='wp'>．WP：3</span><br>在重要城邦、市集或貿易路口停留至少一天時間後，你可以發動此能力向 GM 提出一個針對當地的問題，獲得可靠訊息。這些訊息可能包括附近部族的動向、危險怪物出沒、政治陰謀或市場需求，實際能獲得什麼資訊由GM決定。"
+        }
+      },
+      {
+        key:'盜賊',
+        img:'images/profession/Thief.png',
+        intro:`盜賊是行走於陰影與光明之間的人物。他們不如戰士般光榮，也不像詩人般受人讚頌，卻是城邦與荒野中不可或缺的角色。盜賊擅長鑽研陷阱、開鎖與潛行，他們的眼睛總能比別人更快找到隱藏的財寶與秘密。對許多人來說，盜賊雖帶著不光彩的名聲，但在探索古老遺跡、解決危險任務時，他們卻往往是最可靠的同伴。<br><br>馬茲提卡的叢林與遺跡中充滿陷阱與詭計，許多財寶不是被怪物守護，就是隱匿於古老機關之後。盜賊專精於拆解這些挑戰，能迅速判斷石板陷阱的壓力點，或發現牆壁中幾乎無痕的暗門。他們的雙手靈巧，不僅能竊取，也能修補與操作精密的機關。<br><br>在隊伍中，盜賊往往是「處理髒活」的人。他們能潛入敵營偷取情報，能悄然解決守衛，或是以狡詐與速度奪回珍貴的物品。他們懂得在黑市周旋，能將戰利品轉化為實際的資源。對盜賊而言，榮耀並非來自光明，而是來自於任務完成後，團隊仍能安全離開並滿載而歸。<br><br>選擇盜賊範型，代表你將探索危險的深處，扮演那個在陰影中行走、替隊伍解除危機的人。你或許是財寶的追尋者，也可能是不被光明接納的「解決者」──但無論如何，你的價值，總會在最關鍵的時刻顯現。`,
+        center:`<h3>關鍵屬性：敏捷</h3>`,
+        center2:`<h3>起始技能：體操、閃避、巧手、隱匿、察覺、調查、欺瞞、小刀</h3>`,
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>投石繩</li><li>黑曜石彈丸袋</li><li>10米麻繩</li><li>爪鉤</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>開鎖器（簡易）</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>黑曜石小刀</li><li>吹箭筒</li><li>吹箭袋</li><li>滾珠</li><li>火炬</li><li>打火匣</li><li>1D6 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【背刺 Backstabbing】</h3>":"<span class='wp'>．WP：3</span><br>當你對一名敵人進行近戰攻擊時，若該敵人和你的另一個盟友相距 2 米內，你可以發動此能力。<br><br>你的攻擊會視為偷襲，代表敵人無法閃避或格擋、你的攻擊檢定獲得 1 個優勢、傷害骰數量增加一顆（例如 1D8 變成 2D8）。<br><br>只有靈巧武器才能發動此能力。",
+          "<h3>【迅捷步法 Fast Footwork】</h3>":"<span class='wp'>．WP：3</span><br>你可以在不消耗該輪動作的情況下嘗試閃避一次攻擊。<br><br>你只能對同一次攻擊嘗試閃避一次，且你無法再對該次攻擊進行躲閃避或格擋。<br><br>只要你有足夠的 WP，你在同一輪中可以多次使用此能力。",
+          "<h3>【閃電速度 Lightning Fast】</h3>":"<span class='wp'>．WP：2</span><br>當戰鬥開始抽先攻卡時，你可以抽兩張卡，並選擇想要的其中一張。"
+        }
+      },
+      {
+        key:'農民',
+        img:'images/profession/Farmer.png',
+        intro:`在馬茲提卡這塊大陸，農民並非單純耕作之人，而是最貼近大自然循環的守護者。他們掌握古老的浮田技術，能在湖泊與水道中建造人工小島，種植玉米、豆類、辣椒與番茄，同時利用水域的魚群與水草來滋養土壤。這種魚菜共生的方式，讓農民成為糧食與生態的維繫者，也是城邦與部族能繁榮存續的根基。<br><br>農民懂得如何從水域捕撈魚類，如何利用淤泥與水草肥沃土地，也知道哪些植物能作為食物，哪些則是祭品或藥材。他們在日常看似平凡，卻是社會中不可或缺的一環。沒有農民的智慧與辛勤，沒有任何城邦能長久屹立。<br><br>在冒險中，農民的價值同樣不可小覷。他們能辨認可食與有毒的植物，找到乾淨水源，或用簡單的工具捕獲魚類。他們對土地與水域的熟悉，使他們能帶領隊伍在叢林與濕地間尋找生機。<br><br>選擇農民範型，代表你將成為那個最踏實卻最堅韌的存在——用智慧與汗水，讓同伴在危險的旅程中不至於挨餓，並將自然的恩澤化為力量。`,
+        center:`<h3>關鍵屬性：智力</h3>`,
+        center2:`<h3>起始技能：狩獵、野獸知識、求生、察覺、游泳、調查、工藝、徒手</h3>`,
+        /* ✅ 左側 Gear（三組） */
+        gear: {
+          '<h3>第一組</h3>': `
+            <ul>
+              <li>槌子</li><li>野炊工具</li><li>火炬</li><li>打火匣</li><li>1D8 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第二組</h3>': `
+            <ul>
+              <li>十字鎬</li><li>睡袋</li><li>油燈</li><li>燈油</li><li>打火匣</li><li>1D8 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+          '<h3>第三組</h3>': `
+            <ul>
+              <li>鏟子</li><li>釣竿</li><li>火炬</li><li>打火匣</li><li>1D8 份食物</li><li>1D10 枚銀幣</li>
+            </ul>
+          `,
+        },
+        /* ✅ 右側保持原互動（亞種/英雄能力） */
+        subclasses:{
+          "<h3>【浮田耕藝 Chinampa Craft】</h3>":"<span class='wp'>．WP：不定</span><br>你獲得(創角時受訓)<span class='wp'>「浮田術」(智力)</span>次要技能。<br><br>耗費一班時間，你可以在濕地或河湖上建造「簡易小型浮田」，能夠讓你種植少量的作物並收成，提供隊伍所需的糧食。<br><br>實際種植所需消耗的WP和收成時間詳見「農業」章節。",
+          "<h3>【水獵巧技 Aquatic Prowess】</h3>":"<span class='wp'>．WP：2</span><br>你擅長在水域裡捕獵，能在水中迅速應對情況。<br><br>．當你嘗試釣魚時，你可以發動此能力來讓狩獵檢定獲得優勢。<br>．當你在水中進行近戰攻擊時，你可以發動此能力來避免該次攻擊獲得劣勢。<br>．你在水中受到攻擊時，你可以發動此能力使用游泳來取代閃避檢定。",
+          "<h3>【大廚 Master Chef】</h3>":"<span class='wp'>．WP：不定</span><br>你獲得(創角時受訓)<span class='wp'>「廚藝」(智力)</span>次要技能。你可以為隊伍製作美味好吃的菜餚而非單純飽腹的糧食。<br><br>現在你烹飪時改為進行「廚藝」檢定。<br><br>每道菜譜有各自所需的時間、WP和食材，成功烹調將製作出有額外增益的食物。<br><br>你一開始可以學會三道初級料理。詳見「農業」章節。"
+        }
+      }
+    ];
+
+    const btnWrap = document.getElementById('prof-buttons');
+    const descEl = document.getElementById('prof-desc');
+
+    /* 產生上方職業按鈕 */
+    btnWrap.innerHTML = professions.map((p,i)=>`<button data-key="${p.key}" class="${i===0?'active':''}">${p.key}</button>`).join('');
+
+    /* —— 核心渲染函式（左：Gear / 右：subclasses 或 right） —— */
+    function renderProfession(p){
+      // 左欄：起始裝備；若沒有 p.gear，退回用 p.left
+      let leftHTML = '';
+      if (p.gear) {
+        const gkeys = Object.keys(p.gear);
+        leftHTML = `
+          <div class="left" id="gear-left">
+            <h3><span class="ability-title">起始裝備</span></h3>
+            <div class="gear-tabs">
+              ${gkeys.map(k => `<button class="gear-tab" data-gear="${k}">${k}</button>`).join('')}
+            </div>
+            <div class="gear-content" id="gear-content"><p>請選擇一個裝備</p></div>
+          </div>`;
+      } else {
+        leftHTML = `<div class="left" id="gear-left">
+          <h3>裝備 <span class="en">(Gear)</span></h3>${p.left || '<p>—</p>'}
+        </div>`;
+      }
+
+      // 右欄：保留既有邏輯（subclasses 或 right）
+      let rightHTML = '';
+      if (p.subclasses){
+        const keys = Object.keys(p.subclasses);
+        rightHTML = `
+          <div class="right">
+           <h3><span class="ability-title">英雄能力</span></h3>
+            <div class="subclass-tabs">
+              ${keys.map(k=>`<button data-sub="${k}">${k}</button>`).join('')}
+            </div>
+            <div class="subclass-content" id="subclass-content"><p>請選擇一個英雄能力</p></div>
+          </div>`;
+      } else if (p.right){
+        rightHTML = `<div class="right">${p.right}</div>`;
+      }
+
+      // 寫進頁面
+      const html = `
+  <div class="top-section">
+    <div><img src="${p.img}" alt="${p.key}"></div>
+    <div>
+      <h2>${p.key}</h2>
+      <p>${p.intro || ''}</p>
+    </div>
+  </div>
+  <div class="detail-section">
+    <div class="class-detail">
+      <div class="center">${p.center || ''}</div>
+      <div class="center2">${p.center2 || ''}</div>
+      <div class="center3">${p.center3 || ''}</div>
+${p.extra ? `<div class="center3">${p.extra}</div>` : ''}
+
+
+
+      ${leftHTML}
+      ${rightHTML}
+${p.key === '旅商' ? `
+  <div class="extra-bottom">
+    <div class="extra-img">
+      <img src="images/profession/cart.png" alt="【馬車】「簡易行囊車」">
+    </div>
+    <div class="extra-text">
+      <h3><span class="ability-title">【馬車】「簡易行囊車」</span></h3>
+      <p>作為一名旅商，你一開始擁有一輛專屬馬車，在你的冒險中你可以花費金錢去改良你的馬車（詳見馬車製作章節），你的馬車初始數值如下：<br><br><span class='wp'>．馬車底盤：</span>小型底盤，HP 35。<br><span class='wp'>．坐騎：</span>驢子，HP 12，備註：有時候會不受控制（需進行騎術檢定）<br><span class='wp'>．配備：</span>布質遮篷（提供遮陽避雨，紮營時可以當作睡袋的功能）、貨物區（可放置最多25重量物品）、火盆（每班需補充燃料）。可提供照明範圍 10 米，讓馬車在夜間以每班最多 15 公里行駛。</p>
+    </div>
+  </div>
+` : ''}
+
+    </div>
+  </div>
+`;
+      descEl.innerHTML = html;
+
+      // 圖片淡入
+      requestAnimationFrame(()=>{
+        const img = descEl.querySelector('.top-section img');
+        if(img) img.classList.add('show');
+      });
+
+      // 右欄事件
+      if (p.subclasses){
+        const keys = Object.keys(p.subclasses);
+const rightBox = descEl.querySelector('.right');
+const tabs = rightBox ? rightBox.querySelectorAll('.subclass-tabs button') : [];
+const content = rightBox ? rightBox.querySelector('#subclass-content') : null;
+
+        tabs.forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            tabs.forEach(b=>b.classList.remove('active'));
+            btn.classList.add('active');
+            content.innerHTML = `<p>${p.subclasses[btn.dataset.sub]}</p>`;
+          });
+        });
+        const randomBtn = descEl.querySelector('#subclass-random');
+        if(randomBtn){
+          randomBtn.addEventListener('click',()=>{
+            const k = keys[Math.floor(Math.random()*keys.length)];
+            content.innerHTML = `<p>${p.subclasses[k]}</p>`;
+            tabs.forEach(b=>b.classList.remove('active'));
+            const t = Array.from(tabs).find(b=>b.dataset.sub===k);
+            if(t) t.classList.add('active');
+          });
+        }
+      }
+
+      // 左欄 Gear 事件
+      const gearLeft = descEl.querySelector('#gear-left');
+      if (gearLeft && p.gear) {
+        const gearContent = gearLeft.querySelector('#gear-content');
+        const tabBtns = gearLeft.querySelectorAll('[data-gear]');
+        tabBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const key = btn.dataset.gear;
+            gearContent.innerHTML = p.gear[key] || '<p>—</p>';
+          });
+        });
+        const rnd = gearLeft.querySelector('#gear-random');
+        if (rnd) {
+          rnd.addEventListener('click', () => {
+            const keys = Object.keys(p.gear || {});
+            if (!keys.length) return;
+            const k = keys[Math.floor(Math.random() * keys.length)];
+            gearLeft.querySelector(`[data-gear="${k}"]`)?.click();
+          });
+        }
+      }
+// --- 薩滿流派互動 ---
+if (p.key === '薩滿') {
+  const pathTabs = descEl.querySelectorAll('#shaman-path-tabs button');
+  const pathContent = descEl.querySelector('#shaman-path-content');
+  const center2El = descEl.querySelector('.center2'); // ✅ 抓取center2元素
+
+  const shamanPaths = {
+    '靈魂流派': {
+      skill: `靈魂流派、體操、閃避、察覺、醫療、語言、祕聞傳說、棍棒`,
+      desc: `
+        <h3><span class="ability-title">【靈魂流派】</span></h3>
+        <p>馬茲提卡人和崇拜馬茲提克諸神的靈魂被稱為托那利(tonalli)，在死亡的那一刻，他們會到達一座宏偉的神廟。<br>研究靈魂能量的薩滿，尊敬祖先的靈魂或世界本身的精神能量。<br>他們相信靈魂是力量的源泉，透過儀式可治癒、強化，甚至操縱他人精神。</p>
+      `
+    },
+    '獸術流派': {
+      skill: `獸術流派、閃避、狩獵、隱匿、野獸知識、求生、棍棒、小刀`,
+      desc: `
+        <h3><span class="ability-title">【獸術流派】</span></h3>
+        <p>蟲噬、獸爪與毒液的魔法，是邪神噬心者札爾特克賜予人類的黑暗贈禮。<br>這些法術暴力而無情，模仿野獸的殘酷與掠食，但這些薩滿認為這是生存在殘酷大地上的必要力量。<br>唯有藉由獸術，他們才能以野性的殘暴對抗荒野中的威脅，確保族群得以存續。</p>
+      `
+    },
+    '羽術流派': {
+      skill: `羽術流派、閃避、體操、隱匿、野獸知識、求生、醫療、察覺`,
+      desc: `
+        <h3><span class="ability-title">【羽術流派】</span></h3>
+        <p>由大地母神馬茲提卡親自創造，並由其子夸爾特賜予人類，用以對抗札爾特克的大軍。<br>羽術薩滿透過羽毛、光輝與聖歌施法，象徵純潔、保護與秩序。</p>
+      `
+    },
+    '元素流派': {
+      skill: `元素流派、閃避、察覺、醫療、語言、祕聞傳說、調查、棍棒`,
+      desc: `
+        <h3><span class="ability-title">【元素流派】</span></h3>
+        <p>相信火、風、水、土是構成萬物的根本。他們透過操縱這四種元素來釋放力量，展現出大自然原始而無情的威能。</p>
+      `
+    }
+  };
+
+  pathTabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      pathTabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const key = btn.dataset.path;
+      const data = shamanPaths[key];
+      // 更新右側描述區
+      pathContent.innerHTML = data.desc || '<p>—</p>';
+      // ✅ 同步更新center2顯示技能
+      center2El.innerHTML = `<h3>起始技能：${data.skill}</h3>`;
+    });
+  });
+}
+// --- 學者術業有專攻互動 ---
+if (p.key === '學者') {
+  const specTabs = descEl.querySelectorAll('#scholar-special-tabs button');
+  const specContent = descEl.querySelector('#scholar-special-content');
+
+  const scholarSpecs = {
+    '天律學': `
+      <h3><span class="ability-title">【天律學 Celestonomy】（學院出身）</span></h3><br>
+      <p>你能解讀日月星辰的運行，辨明天體之間的軌跡。天象既是神祇的語言，也是未來的暗示。</p>
+      <p>．獲得<span class='wp'>「天律學」(智力)</span>次要技能。</p>
+      <p>．當你進行技能檢定時，合理狀況下（由GM判定）可發動此能力改用「天律學」，並獲得 1 個優勢。</p>
+      <p>．在第四班長休時，你可耗費一刻時間觀看星象。發動此能力進行「天律學」檢定，你將捕捉到星律——天體運行所揭示的恆定秩序。在該次團務剩下的時間內，你可以發動此能力將一個失敗(大失敗除外)的檢定改為成功。（每場團務限一次）</p>
+<blockquote class="quote">
+  <em>「星辰雖沉默，卻以軌道揭示秩序；我們理解天道，不靠信仰，而靠觀測。」</em>
+  <span>——瑪索亞‧光觀者，《天體秩序論》訓誡</span>
+</blockquote>
+    `,
+    '神律學': `
+      <h3><span class="ability-title">【神律學 Theonomy】（學院出身）</span></h3><br>
+      <p>你並非以祈禱祈求神蹟，而是以研究神祇的律法與祭儀來獲取力量。你知道該如何取悅神祇，才能讓神意在凡世迴響。</p>
+      <p>．獲得<span class='wp'>「神律學」(智力)</span>次要技能。</p>
+      <p>．當你進行技能檢定時，合理狀況下可發動此能力改用「神律學」，並獲得 1 個優勢。</p>
+      <p>．此外，當你身處與某位神祇相關的場所（神廟、祭壇、聖徽或象徵領域）時，你可以花費一刻時間進行「神律學」檢定。若成功，你得以理解此地所運行的神之法則，並以理論推演模擬其邏輯。在該次團務剩下的時間內檢定出現大失敗時，你可宣告「引用神律」來重構事件的結果，使該檢定重新擲骰一次並取較佳結果（每場團務限一次）。這代表你以對神法的理解暫時干預了命運的演算。</p>
+<blockquote class="quote">
+  <em>「神蹟並非違背自然法則，而是運作於更高層次的邏輯中。」</em>
+  <span>——亞瑪赫‧奎奧提爾，《羽父之法論》訓誡</span>
+</blockquote>
+    `,
+    '數律學': `
+      <h3><span class="ability-title">【數律學 Numeronomy】（學院出身）</span></h3><br>
+      <p>你精通神聖的數字與曆法，能從秩序的奧秘中看見世界的規律。數字不是單純的計算，而是眾神遺留於世的密碼。</p>
+      <p>．獲得<span class='wp'>「數律學」(智力)</span>次要技能。</p>
+      <p>．當你進行技能檢定時，合理的狀況下（由GM判定）可發動此能力改用「數律學」，並獲得 1 個優勢。</p>
+      <p>．此外，你能快速測算敵人的站位與距離來找到反擊的機會。當戰鬥的一輪結束時，你可以在抽下一輪的先攻卡前發動此能力。進行「數律學」檢定，若成功，你可以讓所有敵人先抽取先攻卡，剩下的先攻卡你可以自行分配給所有隊友。（每場戰鬥限一次）</p>
+<blockquote class="quote">
+  <em>「萬物皆可計算，混沌只是我們尚未解出的公式；當我們能計出秩序，便能看見神留下的數。」</em>
+  <span>——奧蘇特‧計序者，《秩序的幾何》訓誡</span>
+</blockquote>
+    `,
+    '生知學': `
+      <h3><span class="ability-title">【生知學 Vitalogy】（通用）</span></h3><br>
+      <p>你從生命的經驗中學習世界的法則。每一次錯誤、傷痕與發現，都是知識的印記；唯有親身體驗，才能真正理解世界的運作。</p>
+      <p>．你從智力相關的核心技能中選擇一項，該技能的技能等級提升 1。</p>
+      <p>．當你使用你選擇提升的技能進行檢定時，你可發動此能力來獲得 1 個優勢。</p>
+      <p>．此外，你能從錯誤中累積經驗並快速學習。當你技能檢定失敗時，你可以發動此能力，直接將該技能標上提升標記。（每場團務限一次）</p>
+<blockquote class="quote">
+  <em>「真正的知識不在文字裡，而在那些讓你改變的經歷中。」</em>
+  <span>——伊札特‧長行者，《行於生命之書》</span>
+</blockquote>
+    `
+  };
+
+  specTabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      specTabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const key = btn.dataset.path;
+      specContent.innerHTML = scholarSpecs[key] || '<p>—</p>';
+    });
+  });
+}
+// --- 騎士團互動 ---
+if (p.key === '騎士') {
+  const orderTabs = descEl.querySelectorAll('#knight-order-tabs button');
+  const orderContent = descEl.querySelector('#knight-order-content');
+
+  const knightOrders = {
+    '鷹騎士團': `
+      <h3><span class="ability-title">【鷹騎士團 Eagle Knight】</span></h3>
+      <p>鷹騎士追隨羽父夸爾特的理想。夸爾特象徵光明、公正與生命力，即使隱沒，他的榮光仍在鷹騎士的誓言中延續。</p>
+      <p>他們身披金羽與鮮亮羽飾，行動果斷，視野高遠，常擔任前鋒與斥候。鷹騎士以守護與秩序為責，試圖在動盪的大陸中維持希望。</p><br>
+      <h3><span class="ability-title">額外特性：【羽父之祝福】</span></h3>
+      <p>每一位真正的鷹騎士，都背負著羽父的羽翼。這份羽翼只會展開一次，帶領你越過死亡，直至最後的榮耀。</p><br>
+      <p>當你死亡時，下一輪你的身體將會發出神性的光輝，你視為獲得復活術的效果，且不會受到負面影響。一旦此祝福發動後，你將永久失去此項特性。</p>
+    `,
+    '豹騎士團': `
+      <h3><span class="ability-title">【豹騎士團 Jaguar Knight】</span></span></h3>
+      <p>豹騎士曾是邪神噬心者札爾特克的守護者。過去他們以「心臟獻祭」榮耀其神，但如今獻祭被禁止，這段歷史成為陰影。</p>
+      <p>不得不尋求新的榮耀方式的他們，轉向以狩獵威脅這塊土地的蝰手獸或巨怪為榮。如今的榮耀，來自守護族群與斬殺危險，而非祭壇上的心臟。</p><br>
+      <h3><span class="ability-title">額外特性：【噬心者之怒】</span></h3>
+      <p>當豹騎士殞落時，他的心臟化為復仇的祭品，帶著札爾特克的憤怒爆裂而出，血肉為祭，怒火燃燒，將敵人一併拖入獻祭的火焰之中。</p><br>
+      <p>當你死亡時，下一輪你的心臟將會爆裂而出，血肉為祭，以你為中心施放威力等級3的「札爾特克之怒」法術，且該法術的範圍和傷害都變成2倍。</p>
+    `
+  };
+
+  orderTabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      orderTabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const key = btn.dataset.order;
+      orderContent.innerHTML = knightOrders[key] || '<p>—</p>';
+    });
+  });
+}
+
+    }
+
+    // 初始渲染 + 上方按鈕事件
+    renderProfession(professions[0]);
+    btnWrap.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        btnWrap.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const p = professions.find(x=>x.key===btn.dataset.key);
+        if(p) renderProfession(p);
+      });
+    });
+  </script>
+<!-- 🔹 書籤返回標籤 -->
+<div class="bookmark-tab" id="back-to-top">返回標籤列</div>
+
+<script>
+  const backBtn = document.getElementById("back-to-top");
+
+  // 根據頁面內容自動調整標籤與文字
+  let targetTop, labelText;
+  if (document.querySelector("#prof-buttons")) {
+    targetTop = document.querySelector("#prof-buttons");
+    labelText = "↑ 返回";
+  } else if (document.querySelector(".race-tabs")) {
+    targetTop = document.querySelector(".race-tabs");
+    labelText = "↑ 返回";
+  } else {
+    labelText = "↑ 返回";
+  }
+  backBtn.textContent = labelText;
+
+  // === 滾動控制出現與消失（滑入滑出動畫）===
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 300) {
+      backBtn.classList.add("visible");
+    } else {
+      backBtn.classList.remove("visible");
+    }
+  });
+
+  // === 點擊平滑返回標籤列 ===
+  backBtn.addEventListener("click", () => {
+    if (targetTop) {
+      const y = targetTop.offsetTop;
+      window.scrollTo({ top: y - 10, behavior: "smooth" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>戰鬥與傷害</title>
+<!-- ✅ 導覽列與背景模組 -->
+<link href="navbar.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer="" src="navbar.js"></script>
+<link href="background.css" rel="stylesheet"/>
+<script defer="" src="background.js"></script>
+<!-- ✅ 字型 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.cdnfonts.com/css/quatl" rel="stylesheet"/>
+<style>
+    :root { --gold:#c9a35a; --jade:#0e4b3a; --ink:#1a1a1a; --paper:#f5e9c9; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body { font-family:'Noto Sans TC',sans-serif; color:#f1e8d6; }
+
+    /* ✅ 頁首區 */
+    header{
+      text-align:left;
+      padding:40px 40px 20px;
+      background:transparent;
+      border-bottom:none;
+      box-shadow:none;
+    }
+    header h1{
+      font-family:"Quatl",serif;
+      font-size:2rem;
+      color:var(--gold);
+      letter-spacing:2px;
+    }
+    header p{
+      margin-top:8px;
+      font-size:1.05rem;
+      color:#fffbe8;
+      line-height:1.7;
+    }
+
+    /* ✅ 主內容區 */
+    main{
+      max-width:1200px;
+      margin:30px auto;
+      padding:0 32px 40px;
+      background:rgba(0,0,0,0.25);
+      border:1px solid var(--gold);
+      border-radius:12px;
+      backdrop-filter:blur(3px);
+      box-shadow:0 4px 10px rgba(0,0,0,0.5);
+    }
+    main h2{
+      color:var(--gold);
+      font-size:1.5rem;
+      margin-bottom:12px;
+    }
+    main p{
+      line-height:1.8;
+      margin-bottom:14px;
+    }
+    main ul{
+      margin-left:20px;
+      line-height:1.8;
+    }
+    main img{
+      display:block;
+      width:100%;
+      border-radius:10px;
+      margin:20px 0;
+      box-shadow:0 3px 12px rgba(0,0,0,.4);
+    }
+
+    /* ✅ 分隔線裝飾 */
+    .divider{
+      width:100%;
+      height:80px;
+      margin:18px 0 0;
+      background:url('images/aztec-divider.png') repeat-x;
+      background-size:auto 200%;
+      opacity:.9;
+    }
+  
+
+/* === Embedded COMBAT styles into TEMPLATE === */
+.combat-wrap .tabbar-wrap,
+.combat-wrap .bookmark-nav,
+.combat-wrap .subtabs,
+.combat-wrap .text-block,
+.combat-wrap .tab-content,
+.combat-wrap .rules-table{
+  background: rgba(0,0,0,0.10);
+  border: 1px solid var(--gold);
+  border-radius: 12px;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.combat-wrap .tabbar-wrap{ padding: 10px; margin-bottom: 14px; }
+.combat-wrap .bookmark-nav{ padding: 8px; margin: 8px 0 14px; }
+.combat-wrap .subtabs{ padding: 10px; margin-bottom: 10px; border-style: solid; }
+.combat-wrap .text-block{ padding: 16px 18px; margin: 12px 0; }
+.combat-wrap .rules-table{ width: 100%; border-collapse: collapse; margin: 10px 0; border-radius:10px; overflow:hidden; }
+.combat-wrap .rules-table th, .combat-wrap .rules-table td{ border: 1px solid rgba(201,163,90,.35); padding: 8px 10px; }
+.combat-wrap .rules-table thead th{ background: rgba(201,163,90,0.15); color: var(--gold); }
+
+/* Buttons */
+.combat-wrap .tabbar, .combat-wrap .mini-nav, .combat-wrap .sub-nav{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+.combat-wrap .tab-btn, .combat-wrap .mini-btn, .combat-wrap .subtab-btn{
+  background: rgba(0,0,0,0.28);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: .95rem;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.combat-wrap .tab-btn[aria-selected="true"], .combat-wrap .tab-btn:hover,
+.combat-wrap .mini-btn:hover, .combat-wrap .subtab-btn[aria-selected="true"], .combat-wrap .subtab-btn:hover{
+  background: var(--gold); color: #000;
+  box-shadow: 0 0 12px rgba(201,163,90,.6);
+}
+
+/* Tabs behavior */
+.combat-wrap .tab-content{ display:none; opacity:0; transform: translateY(6px); transition: opacity .2s, transform .2s; padding: 16px; }
+.combat-wrap .tab-content.active{ display:block; }
+.combat-wrap .tab-content.show{ opacity:1; transform: translateY(0); }
+
+/* Back to top button inside blocks */
+.combat-wrap .back-to-top{
+  display:inline-block;
+  background: rgba(0,0,0,.5);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: all .2s ease;
+  float: right;
+  margin-top: -8px;
+}
+.combat-wrap .back-to-top:hover{ background: var(--gold); color:#000; }
+
+/* Titles */
+.combat-wrap .text-block h2, .combat-wrap .text-block h3 { color: var(--gold); margin: 0 0 8px; }
+/* 讓每個卡片/面板成為定位容器，預留右上角空間給返回鈕 */
+.combat-wrap .text-block,
+.combat-wrap .tab-content,
+.combat-wrap .card {
+  position: relative;
+  padding-right: 64px; /* 預留空間避免文字把按鈕擠出去 */
+}
+
+/* 調整返回鈕：改為絕對定位在區塊內右上角，不再使用 float */
+.combat-wrap .back-to-top{
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  float: none;
+  margin: 0;
+
+  background: rgba(0,0,0,.5);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: .85rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
+  z-index: 2; /* 高於文字 */
+}
+
+.combat-wrap .back-to-top:hover{
+  background: var(--gold);
+  color: #000;
+  box-shadow: 0 0 12px rgba(201,163,90,.6);
+  transform: translateY(-1px);
+}
+
+/* 手機上縮小預留空間與按鈕尺寸 */
+@media (max-width: 640px){
+  .combat-wrap .text-block,
+  .combat-wrap .tab-content,
+  .combat-wrap .card { padding-right: 52px; }
+
+  .combat-wrap .back-to-top{
+    top: 10px; right: 10px;
+    padding: 5px 10px;
+    font-size: .8rem;
+  }
+}
+/* 只保留真正內容卡片與表格有面板，其餘容器回歸透明 */
+.combat-wrap .text-block{
+  background: rgba(0,0,0,0.22) !important;   /* 透明度可 0.18~0.22 */
+  border: 1px solid var(--gold) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.32) !important;
+  padding: 16px 18px;
+}
+
+/* 表格沿用面板風格 */
+.combat-wrap .rules-table{
+  background: rgba(0,0,0,0.18) !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.28) !important;
+}
+.combat-wrap .rules-table thead th{
+  background: rgba(201,163,90,0.15) !important;
+  color: var(--gold) !important;
+}
+.combat-wrap .rules-table th,
+.combat-wrap .rules-table td{
+  border-color: rgba(201,163,90,0.32) !important;
+}
+
+/* Header 寬度與 skill 同步 */
+:root{ --header-w: 1200px; }
+
+/* 頁首主導覽（已整合在 header） */
+.site-header .wrap{
+  max-width: var(--header-w);
+  margin: 0 auto 12px;
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(201,163,90,.35);
+}
+.site-header .brand{ color: var(--gold); font-weight: 700; }
+.site-header .main-nav{ margin-left: auto; display:flex; gap:10px; flex-wrap:wrap; }
+.site-header .main-nav a{
+  display:inline-flex; align-items:center; padding:8px 12px;
+  border-radius:999px; text-decoration:none; font-weight:600;
+  color: var(--ink); border:1px solid transparent;
+}
+.site-header .main-nav a:hover{
+  border-color: rgba(201,163,90,.25);
+  background: rgba(201,163,90,.08);
+}
+.site-header .main-nav a.active{
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(201,163,90,.14);
+}
+.site-header h1{ color: var(--gold); max-width: var(--header-w); margin:12px auto 6px; padding:0 18px; }
+.site-header p { color: var(--muted);  max-width: var(--header-w); margin:0 auto 10px; padding:0 18px; }
+
+/* ★ 放在 header 的分頁列：透明、無框、不造成「一堆框」 */
+#header-tabbar.tabbar-wrap{
+  max-width: var(--header-w);
+  margin: 8px auto 0;
+  padding: 8px 12px;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+#header-tabbar .tabbar{
+  display:flex; flex-wrap:wrap; gap:8px; justify-content:center;
+}
+#header-tabbar .tab-btn{
+  border:1px solid rgba(201,163,90,.45);
+  background: rgba(0,0,0,.18);
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+#header-tabbar .tab-btn[aria-selected="true"]{
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(201,163,90,.18);
+}
+
+/* 內容區：只讓 .text-block / 表格有面板，其餘容器透明（避免多層框） */
+.combat-wrap .text-block{
+  background: rgba(0,0,0,0.22) !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(3px) !important;
+  -webkit-backdrop-filter: blur(3px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.32) !important;
+  padding: 16px 18px;
+}
+.combat-wrap .rules-table{
+  background: rgba(0,0,0,0.18) !important;
+  border: 1px solid var(--gold) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.28) !important;
+}
+.combat-wrap .rules-table thead th{
+  background: rgba(201,163,90,0.15) !important;
+  color: var(--gold) !important;
+}
+.combat-wrap .rules-table th,
+.combat-wrap .rules-table td{
+  border-color: rgba(201,163,90,0.32) !important;
+}
+/* 其餘外層容器透明、無框 */
+.combat-wrap .tab-content,
+.combat-wrap .tabbar-wrap,
+.combat-wrap .bookmark-nav,
+.combat-wrap .subtabs{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  padding: 0 !important;
+}
+
+/* 返回鈕固定在卡片右上，不會溢出 */
+.combat-wrap .text-block{ position: relative; padding-right: 64px; }
+.combat-wrap .back-to-top{
+  position: absolute; top: 12px; right: 12px; z-index: 2;
+  float: none; margin: 0;
+}
+@media (max-width: 640px){
+  .combat-wrap .text-block{ padding-right: 52px; }
+  .combat-wrap .back-to-top{ top:10px; right:10px; }
+}
+
+/* 分頁列放到 header 後的樣式（對齊 experience 的次導覽列） */
+#header-tabbar{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:12px;
+  padding:8px 0 0;
+  background: transparent !important;   /* 不要再有面板框 */
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+#header-tabbar .tab-btn{
+  background: rgba(0,0,0,0.30);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all .3s ease;
+}
+
+#header-tabbar .tab-btn:hover{
+  background: rgba(255,215,100,0.15);
+  transform: translateY(-2px);
+}
+
+#header-tabbar .tab-btn[aria-selected="true"]{
+  background: var(--gold);
+  color: #1a1a1a;
+  font-weight: 700;
+}
+
+/* ⚠️ 避免一堆框：內容外層容器恢復透明，只讓文字卡片與表格有面板 */
+.combat-wrap .tabbar-wrap,
+.combat-wrap .bookmark-nav,
+.combat-wrap .subtabs,
+.combat-wrap .tab-content{
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  padding: 0 !important;
+}
+
+/* 子分頁顯示邏輯（攻擊：近戰／遠程） */
+.combat-wrap #tab-attacks .subpanel{
+  display: none;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.combat-wrap #tab-attacks .subpanel.active{
+  display: block;
+}
+.combat-wrap #tab-attacks .subpanel.show{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 讓子分頁頂部書籤列與卡片間距更舒服 */
+.combat-wrap #tab-attacks .bookmark-nav{ margin: 8px 0 12px !important; }
+
+/* 高亮標題：左側金色導引條 + 微光 */
+.combat-wrap .text-block h3.highlight,
+.combat-wrap .text-block h2.highlight {
+  position: relative;
+  padding-left: 12px;
+  color: var(--gold);
+  text-shadow: 0 0 6px rgba(201,163,90,.35);
+}
+.combat-wrap .text-block h3.highlight::before,
+.combat-wrap .text-block h2.highlight::before{
+  content:"";
+  position:absolute; left:0; top:.2em; bottom:.2em;
+  width:4px; border-radius:2px;
+  background: linear-gradient(180deg, rgba(201,163,90,0.95), rgba(201,163,90,0.35));
+  box-shadow: 0 0 10px rgba(201,163,90,0.5);
+}
+
+/* 內部子卡片（特殊攻擊細分） */
+.combat-wrap #melee-special .subblock{
+  background: rgba(0,0,0,0.16);
+  border: 1px solid rgba(201,163,90,.35);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  position: relative;
+}
+
+/* 子卡片標題高亮（次層樣式） */
+.combat-wrap #melee-special .subhead{
+  margin: 0 0 8px;
+  color: var(--gold);
+  font-weight: 700;
+  position: relative;
+  padding-left: 10px;
+}
+.combat-wrap #melee-special .subhead::before{
+  content:"";
+  position:absolute; left:0; top:.2em; bottom:.2em;
+  width:3px; border-radius:2px;
+  background: linear-gradient(180deg, rgba(201,163,90,.9), rgba(201,163,90,.3));
+}
+
+/* 讓「返回」鈕乖乖待在每個子卡片右上角 */
+.combat-wrap #melee-special .subblock{ padding-right: 56px; }
+.combat-wrap #melee-special .subblock .back-to-top{
+  position: absolute; top:10px; right:10px; z-index:2;
+  float:none; margin:0;
+}
+
+/* 統一所有小標題高亮（h3/h4） */
+.combat-wrap .text-block h3,
+.combat-wrap .text-block h4 {
+  position: relative;
+  padding-left: 12px;
+  color: var(--gold);
+  text-shadow: 0 0 6px rgba(201,163,90,.35);
+  margin: 0 0 8px;
+}
+
+/* 左側金色導引條 */
+.combat-wrap .text-block h3::before,
+.combat-wrap .text-block h4::before {
+  content: "";
+  position: absolute;
+  left: 0; top: .2em; bottom: .2em;
+  width: 4px; border-radius: 2px;
+  background: linear-gradient(180deg, rgba(201,163,90,0.95), rgba(201,163,90,0.35));
+  box-shadow: 0 0 10px rgba(201,163,90,0.5);
+}
+
+/* 若某些地方你已手動加了 .highlight，不用移除；規則相容 */
+</style>
+</head>
+<body>
+<!-- ✅ 導覽列載入 -->
+<div id="site-navbar"></div>
+<!-- ✅ 頁首區 -->
+<header> <h1>戰鬥和傷害</h1>
+<p>作為一名冒險者，生活是艱難的，而且常常是暴力的。在馬茲提卡，你可能會遇到野獸、惡意攻擊者和怪物。戰鬥可能對你的玩家角色來說很艱難，有時甚至是致命的。在進入戰鬥之前，你應該經常問自己：值得嗎？</p>
+<div aria-label="戰鬥分頁" class="subnav" id="header-tabbar" role="tablist">
+<button aria-selected="true" class="tab-btn" data-tab="tab-initiative" role="tab">戰鬥輪與先攻</button>
+<button aria-selected="false" class="tab-btn" data-tab="tab-actions" role="tab">動作與移動</button>
+<button aria-selected="false" class="tab-btn" data-tab="tab-attacks" role="tab">攻擊</button>
+<button aria-selected="false" class="tab-btn" data-tab="tab-damage" role="tab">傷害與狀態</button>
+<button aria-selected="false" class="tab-btn" data-tab="tab-rest" role="tab">治療與休息</button>
+<button aria-selected="false" class="tab-btn" data-tab="tab-hazards" role="tab">其他危害</button>
+</div>
+</header>
+<div class="divider"></div>
+<!-- ✅ 主內容 -->
+<div class="combat-wrap"><main><section class="tab-content active show" id="tab-initiative" role="tabpanel">
+<nav class="bookmark-nav">
+<div class="mini-nav">
+<button class="mini-btn" data-target="#init-draw">抽先攻卡</button>
+<button class="mini-btn" data-target="#init-surprise">奇襲與偷襲</button>
+<button class="mini-btn" data-target="#init-wait">等待</button>
+</div>
+</nav>
+<article class="text-block" id="init-draw">
+<h2>抽先攻卡 Deawing The Initiative</h2>
+<ul>
+<li>先攻卡共有十張，每一張標記數字 1~10。</li>
+<li>在每一輪開始時，每個戰鬥人員都要隨機抽一張先攻卡，GM 也為 NPC 抽卡。</li>
+<li>先攻卡上的數字代表你在該輪的行動順序，數字 1 最先行動，再來數字 2，以此類推，直到每個人都行動完畢。</li>
+<li>在一輪中輪到你行動的時候稱為你的「回合」。</li>
+<li>將先攻卡放在你的角卡旁，讓每個人都可以看到彼此的行動順序，GM 也是。</li>
+<li>當每個戰鬥人員都完成自己的回合後，該輪結束，然後展開新的一輪並重新抽先攻卡。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="init-surprise">
+<h2>奇襲和偷襲 Surprise &amp; Sneak Attack</h2>
+<p>贏得衝突的關鍵往往是在敵人最意想不到的時候發動攻擊。</p>
+<ul>
+<li>若要奇襲敵人，首先進行一次<strong>隱匿</strong>檢定。若你要靠近敵人進行近戰攻擊，則<strong>隱匿</strong>檢定有劣勢。若<strong>隱匿</strong>檢定失敗，敵人會發現你，正常抽先攻卡。</li>
+<li>若<strong>隱匿</strong>檢定成功，你可以在第一輪戰鬥中選擇你想要的先攻卡。如果有多個角色參與奇襲，你們可以都選一張牌。其他戰鬥者從剩餘的牌中獲取先攻卡。第二輪開始後，則正常抽先攻卡。</li>
+<li>在發動奇襲的第一輪中，你的攻擊視為「偷襲」，你可以用遠程或近戰武器發動偷襲。攻擊檢定具有優勢，且敵人無法閃避或格擋。若你使用具有<strong>靈巧</strong>特性的武器進行偷襲，則武器傷害骰會增加一顆。</li>
+<li>第二輪開始後，所有人正常抽先攻卡。之後，你無法在戰鬥中發動偷襲。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="init-wait">
+<h2>等待 Waiting</h2>
+<ul>
+<li>在你的回合時，你可以選擇<strong>「等待」</strong>。這代表你可以和回合在你後面的 PC 交換先攻卡。</li>
+<li>你也可以和其他 NPC 交換先攻卡，且他們無法拒絕（但通常同一類型的一群 NPC 會在同一個先攻順序一起行動）。</li>
+<li>你不能和已經完成回合或已經宣告等待的角色交換先攻卡。</li>
+<li><strong>怪物</strong>通常在一輪中擁有多張先攻卡（代表他們可以一輪中執行多個回合）。若你要和怪物交換先攻卡，你必須決定想交換哪一張（交換規則同上）。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+</section><section class="tab-content" id="tab-actions" role="tabpanel">
+<nav class="bookmark-nav">
+<div class="mini-nav">
+<button class="mini-btn" data-target="#act-actions">動作</button>
+<button class="mini-btn" data-target="#act-free">自由動作</button>
+<button class="mini-btn" data-target="#act-reaction">反應</button>
+<button class="mini-btn" data-target="#act-move">移動</button>
+<button class="mini-btn" data-target="#act-terrain">地形</button>
+</div>
+</nav>
+<article class="text-block" id="act-actions">
+<h2>動作 Action</h2>
+<p>有很多事情都可以被視為「一個動作」，但以下是一些常見的動作：</p>
+<ul>
+<li><strong>疾走</strong>：你該回合的移動力加倍。</li>
+<li><strong>近戰攻擊</strong>：攻擊 2 米內的敵人（長柄武器為 4 米）。</li>
+<li><strong>遠程攻擊</strong>：攻擊射程內的敵人。</li>
+<li><strong>格擋</strong>：格擋敵人的近戰或遠程攻擊，但後者需要使用盾牌。此為反應。</li>
+<li><strong>閃避</strong>：閃避敵人的近戰或遠程攻擊。此為反應。</li>
+<li><strong>拿起物品</strong>：從 2 米內的地上或你的物品欄中拿起物品。</li>
+<li><strong>穿戴／卸下護甲或頭盔：</strong>護甲和頭盔可以保護你免受傷害，但會限制你的靈活度。</li>
+<li><strong>急救</strong>：用<strong>醫療</strong>技能拯救 HP 歸零且瀕死的人。</li>
+<li><strong>鼓舞</strong>：用<strong>遊說</strong>技能鼓舞 HP 歸零的人繼續戰鬥。</li>
+<li><strong>破門</strong>：門受到一定傷害即可被打破。</li>
+<li><strong>開鎖</strong>：用<strong>巧手</strong>技能進行開鎖。沒有開鎖器會有劣勢。</li>
+<li><strong>使用物品</strong>：使用藥水或 2 米內的其他物品。</li>
+<li><strong>啟動能力</strong>：使用天生或英雄能力。</li>
+<li><strong>施法</strong>：施法通常需要一個動作。包括戲法。有些為反應，有些則花更多時間。</li>
+<li><strong>協助</strong>：協助其他人的檢定獲得優勢。</li>
+<li><strong>喘息</strong>：回復 1D6 WP。在<strong>一班時間</strong>內只能使用一次。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="act-free">
+<h3>自由動作 Free Actions</h3>
+<ul>
+<li>像是抽出武器、趴下、大喊一句話這類較微小的動作，被稱為「自由動作」。</li>
+<li>自由動作不需花費你該輪的動作，但「每種類型」的自由動作在一輪中只能執行一次。例如，你可以趴下 + 大喊一句話，但不能趴下又起身。</li>
+</ul>
+<p>以下是一些常見的自由動作：</p>
+<ul>
+<li><strong>準備武器</strong>：拔出、更換或收起武器。</li>
+<li><strong>改變姿態</strong>：趴下或起身。</li>
+<li><strong>放下物品</strong>：將一個物品放在地上。</li>
+<li><strong>大聲呼喊</strong>：說出或大喊幾個字。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="act-reaction">
+<h2>反應 Reaction</h2>
+<ul>
+<li>有些動作不在你的回合中執行，而是在其他人的回合中。這些動作被稱為「反應」，例如格擋或閃避。</li>
+<li>執行反應會用掉你該輪的回合，也就是說，如果你在該輪的回合已經結束，你在該輪的剩餘時間內就不能再執行反應。</li>
+<li>一旦你執行過反應後，將先攻卡翻到背面，讓大家知道你已經結束回合。</li>
+<li>一旦你執行過反應後，你會失去該輪的移動力。有些反應能提供你一些額外的移動力，例如格擋或閃避。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="act-move">
+<h2>移動 Movement</h2>
+<p>在正常情況下，你在一輪中可以移動的距離（米） = 你的移動力。但以下是一些需要另外考慮的特殊情況：</p>
+<ul>
+<li><strong>疾走：</strong>若你用動作來執行<strong>疾走</strong>，你在該輪的移動力會加倍。</li>
+<li><strong>起身/趴下：</strong>你可以在移動過程中趴下或起身。這些屬於自由動作，不會影響你的移動。</li>
+<li><strong>跳躍：</strong>作為移動的一部份，你可以透過<strong>體操</strong>檢定來進行水平跳躍，跳躍距離 = 移動力一半。若你想跳躍的距離 ≦ 移動力的 1/4，則不需要檢定。</li>
+<li><strong>開門：</strong>穿越關著但未上鎖的門需要消耗<strong>一半移動力</strong>。</li>
+<li><strong>敵人：</strong>你無法穿越敵人。若想試圖穿越，你必須將敵人<strong>擊倒伏地</strong>。穿越友善生物則沒有任何問題。</li>
+<li><strong>藉機攻擊：</strong>若你想離開距離你 2 米內的敵人，你必須進行<strong>閃避</strong>檢定。此檢定不花費動作，但若失敗，敵人可以馬上對你進行一次<strong>無法被閃避或格擋</strong>的藉機攻擊。<strong>非自願的移動</strong>不會觸發藉機攻擊。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="act-terrain">
+<h2>地形 Terrain</h2>
+<p>地形通常會影響你在戰鬥中的移動和動作。</p>
+<ul>
+<li><strong>狹窄：</strong>空間很小或天花板很矮。除了<strong>穿刺</strong>武器和<strong>靈巧</strong>武器以外，所有近戰武器攻擊都有一個劣勢。</li>
+<li><strong>崎嶇：</strong>每當你在<strong>崎嶇</strong>地形上移動時，必須進行一次<strong>體操</strong>檢定（不花費動作）。若失敗，你會跌倒伏地並失去該輪剩餘的移動力。</li>
+<li><strong>昏暗：</strong>所有遠程攻擊都有一個劣勢。</li>
+<li><strong>黑暗：</strong>你在完全黑暗中無法<strong>疾走</strong>，也無法對敵人進行遠程攻擊。若要對敵人進行近戰攻擊，你必須先進行一次<strong>察覺</strong>檢定（不花費動作）。</li>
+</ul>
+<p><strong>火炬 &amp; 提燈：</strong>一把火炬或一盞提燈可以照亮 10 米（五格）半徑。點燃火炬或提燈需要一個動作，且需要打火匣或可以借用的明火。若你身邊沒有這些東西，你可以進行<strong>求生</strong>檢定來試圖點燃，但這需要耗時<strong>一刻時間</strong>。<br/>
+        你需要用一隻手來持握火炬或提燈，代表你無法使用雙手武器或副手武器。火炬可以當作武器使用，視為可以造成火焰傷害的「小型木棒」。每當你用火炬命中敵人時，你必須馬上擲骰判斷火焰是否會熄滅。<br/>
+        一把火炬或一盞提燈最長可以燃燒<strong>一班時間</strong>，但並不穩定。經過每<strong>一刻時間</strong>後，或每當 GM 想要增加刺激感時，你必須擲骰（骰子類型取決於光源，見裝備）。骰到 1 代表火焰熄滅。</p>
+<button class="back-to-top">↑ 返回</button>
+</article>
+</section><section class="tab-content" id="tab-attacks" role="tabpanel">
+<nav class="bookmark-nav">
+<div class="subtabs">
+<div aria-label="攻擊子分頁" class="sub-nav" role="tablist">
+<button aria-selected="true" class="subtab-btn" data-sub="melee" role="tab">近戰攻擊</button>
+<button aria-selected="false" class="subtab-btn" data-sub="ranged" role="tab">遠程攻擊</button>
+</div>
+</div>
+</nav>
+<!-- 近戰 -->
+<div class="subpanel active" id="sub-melee">
+  <nav class="bookmark-nav">
+    <div class="mini-nav">
+      <button class="mini-btn" data-target="#melee-crit">暴擊 (攻擊大成功)</button>
+      <button class="mini-btn" data-target="#melee-fumble">犯蠢 (攻擊大失敗)</button>
+      <button class="mini-btn" data-target="#melee-dmgtypes">傷害類型</button>
+      <button class="mini-btn" data-target="#melee-parry">格擋</button>
+      <button class="mini-btn" data-target="#melee-dodge">閃避</button>
+      <button class="mini-btn" data-target="#melee-special">特殊攻擊</button>
+    </div>
+  </nav>
+  <article class="text-block" id="melee-main">
+    <h2>近戰攻擊 Melee Combat</h2>
+    <ul>
+      <li>若要以近戰攻擊敵人，你通常必須位於目標的 2 米內（相鄰於目標一格），然後進行相應武器的技能檢定。</li>
+      <li><strong>傷害：</strong>若攻擊檢定命中，你使用的武器會決定你對敵人造成多少傷害。傷害會因為你的傷害加值或骰到大成功而提升，而被敵人的護甲降低。</li>
+      <li><strong>傷害加值：</strong>你的傷害加值由你的<strong>力量</strong>或<strong>敏捷</strong>屬性決定。使用力量類武器就用力量傷害加值，使用敏捷類武器就用敏捷傷害加值。</li>
+      <li><strong>武器：</strong>你可以隨時準備最多三把武器，寫在角卡的武器欄位上，且不算進負重，這些是你的「備戰武器」。若要使用武器進行攻擊，你必須先拔出武器。拔出備戰武器或交換另一把備戰武器是一個自由動作。撿起地上的武器或拿出你物品欄裡的武器則需要一個動作。</li>
+      <li><strong>力量需求：</strong>有些武器具有「力量需求」。若你的<strong>力量</strong>低於武器的需求，你使用該武器進行的所有攻擊和格擋都有劣勢。若你的力量＜武器需求的一半，則你完全無法使用該武器。</li>
+      <li><strong>持握：</strong>武器要麼需要一手或兩手才能使用。你只能持握一把雙手武器，或同時持握兩把單手武器（包括盾牌）。你可以用雙手同時抽出兩把單手武器。若你雙手各持一把單手武器，這兩把單手武器的力量需求會 -3。</li>
+      <li><strong>長柄武器：</strong>你可以使用具有<strong>長柄</strong>特性的武器攻擊最多 4 米遠（兩格）的敵人。</li>
+      <li><strong>伏地目標：</strong>若你站著攻擊伏地的敵人，你的攻擊具有優勢，且會額外造成 1D6 傷害。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 近戰：暴擊 -->
+  <article class="text-block" id="melee-crit">
+    <h3>暴擊 (攻擊大成功) Critical Hit</h3>
+    <ul>
+      <li>若攻擊檢定骰到大成功，你會造成<strong>「暴擊」</strong>。對方也要骰到大成功才能閃避或格擋你的暴擊。</li>
+      <li>若造成暴擊，你可以選擇以下其中一種效果：
+        <ul>
+          <li>武器傷害骰加倍（傷害加值或其他加值不會加倍）。例如，你用闊劍（2D6 傷害）造成暴擊，且你的傷害加值為 1D4，則你的暴擊傷害為 4D6+1D4。</li>
+          <li>你可以馬上對另一個敵人進行另一次攻擊，而不用花費動作，且該次攻擊無法被閃避或格擋。</li>
+          <li>你找到護甲的間隙或弱點，敵人的護甲對該次攻擊無效。只有當你的武器會造成穿刺傷害時才能選擇此選項。</li>
+        </ul>
+      </li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 近戰：犯蠢 -->
+  <article class="text-block" id="melee-fumble">
+    <h3>犯蠢 (攻擊大失敗) Demon Roll in Melee</h3>
+    <table class="rules-table">
+      <thead><tr><th style="width:80px;">D6</th><th>近戰攻擊意外</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>武器掉到腳邊。撿起武器需要花費動作。</td></tr>
+        <tr><td>2</td><td>你露出空檔，讓敵人藉機攻擊，你無法閃避或格擋。</td></tr>
+        <tr><td>3</td><td>武器卡在物體裡。需要力量檢定才能拔出來（需花費動作）。</td></tr>
+        <tr><td>4</td><td>你意外將武器丟到 1D3+3 米外。你必須移動並花費動作撿起來。</td></tr>
+        <tr><td>5</td><td>你的武器打到堅硬的物體而受損。直到修復前，使用此武器的檢定都有 1 個劣勢。</td></tr>
+        <tr><td>6</td><td>你不小心打到自己。正常骰武器傷害，但不會加上任何傷害加值。</td></tr>
+      </tbody>
+    </table>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 近戰：傷害類型 -->
+  <article class="text-block" id="melee-dmgtypes">
+    <h3>傷害類型 Damage Types</h3>
+    <ul>
+      <li>傷害類型共有三種：揮砍、穿刺、鈍擊。每種武器可以造成的傷害類型都不一樣。</li>
+      <li>有些武器可以造成兩種傷害類型，你必須在進行攻擊檢定前宣告你要使用哪一種。</li>
+      <li>傷害類型會影響攻擊對抗護甲的效果，有些怪物也有針對不同傷害類型的抗性。
+        <ul>
+          <li>皮甲和鑲釘皮甲在抵抗<strong>鈍擊</strong>傷害時，護甲值會 +2。</li>
+          <li>鎖子甲在抵抗<strong>揮砍</strong>傷害時，護甲值會 +2。</li>
+        </ul>
+      </li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 近戰：格擋 -->
+  <article class="text-block" id="melee-parry">
+    <h3>格擋 Parrying</h3>
+    <ul>
+      <li>當你被近戰攻擊命中時，你可以使用持握的武器或盾牌進行格擋。注意，自由動作只能在自己回合執行，無法當下拔武器來格擋。</li>
+      <li>進行對應武器技能檢定。你無法用徒手格擋；同一次攻擊也無法同時格擋與閃避。</li>
+      <li><strong>反應：</strong>格擋會用掉你本輪的回合（除非有英雄能力「堅強防禦」）。</li>
+      <li><strong>耐久：</strong>若格擋成功而傷害超過你武器/盾的耐久，武器會受損，需<strong>工藝</strong>修復。</li>
+      <li><strong>盾牌：</strong>持盾可用任一基於<strong>力量</strong>的近戰武器技能來進行格擋。</li>
+      <li><strong>穿刺：</strong>穿刺傷害不會對被格擋的武器或盾牌造成傷害。</li>
+      <li><strong>怪物：</strong>除非另有說明，怪物攻擊<strong>無法被格擋</strong>。</li>
+      <li><strong>格擋移位：</strong>格擋成功可讓你與敵人各移動 2 米，不消耗移動力、不觸發藉機攻擊。</li>
+      <li><strong>格擋大成功：</strong>可立即反擊（自動命中、不可被閃避/格擋）。若敵人是暴擊，則你也需大成功才能格擋成功。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 近戰：閃避 -->
+  <article class="text-block" id="melee-dodge">
+    <h3>閃避 Dodging</h3>
+    <ul>
+      <li>以<strong>閃避</strong>檢定來避免攻擊命中；成功則無傷，失敗則被命中。</li>
+      <li>同一次攻擊不可同時格擋與閃避。</li>
+      <li><strong>反應：</strong>閃避會用掉你本輪回合（除非有英雄能力「迅捷步法」）。</li>
+      <li><strong>怪物：</strong>除非另有說明，怪物攻擊<strong>可以被閃避</strong>。</li>
+      <li><strong>閃避移位：</strong>成功閃避可移動 2 米，不消耗移動力、不觸發藉機攻擊。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+<!-- 近戰：特殊攻擊（保留為單一大區塊，內部分卡） -->
+<article class="text-block" id="melee-special">
+  <h3 class="highlight">特殊攻擊 Special Attacks</h3>
+
+  <!-- 推撞 -->
+  <section class="subblock" id="melee-special-shove">
+    <h4 class="subhead">推撞 Shove</h4>
+    <ul>
+      <li>命中且你的力量傷害加值 ≧ 敵人，即可另把敵人推離 2 米。</li>
+      <li>此移動不消耗敵人移動力、不觸發藉機攻擊。</li>
+      <li><strong>怪物</strong>不能推撞也不能被推撞。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </section>
+
+  <!-- 絆摔 -->
+  <section class="subblock" id="melee-special-topple">
+    <h4 class="subhead">絆摔 Topple</h4>
+    <ul>
+      <li>不造成傷害，改為試圖使敵人伏地。</li>
+      <li>做武器技能檢定；武器具<strong>絆摔</strong>特性時 +1 優勢；敵人比你大一級時 -1 劣勢；大兩級則無法絆摔。</li>
+      <li>敵人可閃避，不可格擋。成功則敵人伏地。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </section>
+
+  <!-- 擒抱 -->
+  <section class="subblock" id="melee-special-grapple">
+    <h4 class="subhead">擒抱 Grapple</h4>
+    <ul>
+      <li>不造成傷害，改為以<strong>徒手</strong>檢定試圖擒抱人形敵人；敵人大一級 -1 劣勢，大兩級不能擒抱。</li>
+      <li>敵人可閃避，不可格擋；你失敗則自己伏地。成功則雙方伏地，敵人被纏住，僅能以自由動作嘗試<strong>掙脫</strong>（你再做一次徒手檢定來對抗）。</li>
+      <li>你維持擒抱時不能移動或做需要身體活動的動作，但可嘗試<strong>關節技</strong>（帶 1 優勢、不可被閃避/格擋的徒手攻擊）。鬆手為自由動作。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </section>
+
+  <!-- 尋找弱點 -->
+  <section class="subblock" id="melee-special-weakspot">
+    <h4 class="subhead">尋找弱點 Find Weak Spot</h4>
+    <ul>
+      <li>武器可造成<strong>穿刺</strong>時可宣告此動作；本次攻擊 -1 劣勢，但命中則敵人護甲無效。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </section>
+
+  <!-- 繳械 -->
+  <section class="subblock" id="melee-special-disarm">
+    <h4 class="subhead">繳械 Disarm</h4>
+    <ul>
+      <li>不造成傷害，改為試圖繳械敵人的武器（不可繳敵人盾牌或天生武器）。</li>
+      <li>做武器技能檢定；敵人雙手持武器時你 -1 劣勢。敵人可閃避、不可格擋。</li>
+      <li>成功則把武器拋離 1D6 米；撿起需 1 動作。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </section>
+</article>
+
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+</div>
+<!-- 遠程 -->
+<div class="subpanel" id="sub-ranged">
+  <!-- 遠程的二級書籤列 -->
+  <nav class="bookmark-nav">
+    <div class="mini-nav">
+      <button class="mini-btn" data-target="#ranged-crit">暴擊 (攻擊大成功)</button>
+      <button class="mini-btn" data-target="#ranged-fumble">犯蠢 (攻擊大失敗)</button>
+      <button class="mini-btn" data-target="#ranged-parry-dodge">格擋和閃避</button>
+      <button class="mini-btn" data-target="#ranged-obscured">受遮蔽的目標</button>
+    </div>
+  </nav>
+
+  <!-- 遠程：基本敘述 -->
+  <article class="text-block" id="ranged-main">
+    <h2>遠程攻擊 Ranged Combat</h2>
+    <ul>
+      <li>通常需站在目標 2 米以外（相鄰一格會有劣勢）。</li>
+      <li><strong>傷害：</strong>命中後由武器決定基本傷害；可因傷害加值或大成功增加，被護甲減少。</li>
+      <li><strong>傷害加值：</strong>與近戰相同，遠程攻擊也有傷害加值。</li>
+      <li><strong>射程：</strong>可有效使用至「射程」；最遠可至 2 倍射程但有劣勢。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 遠程：暴擊 -->
+  <article class="text-block" id="ranged-crit">
+    <h3>暴擊 (攻擊大成功) Critical Hit</h3>
+    <ul>
+      <li>若攻擊檢定大成功，你造成<strong>暴擊</strong>；對方也需大成功才可閃避或用盾牌格擋。</li>
+      <li>你可以擇一：
+        <ul>
+          <li>武器傷害骰加倍（不含傷害加值）。例如戰弓暴擊造成 2D12。</li>
+          <li>立即對另一名敵人再攻一次（不耗動作、不可閃避或格擋）。</li>
+          <li>找到弱點使其護甲無效（限可造成穿刺傷害的武器）。</li>
+        </ul>
+      </li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 遠程：犯蠢 -->
+  <article class="text-block" id="ranged-fumble">
+    <h3>犯蠢 (攻擊大失敗) Demon Roll in Melee</h3>
+    <table class="rules-table">
+      <thead><tr><th style="width:80px;">D6</th><th>近戰攻擊意外</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>武器掉到腳邊。撿起武器需要花費動作。</td></tr>
+        <tr><td>2</td><td>你箭矢用完了。投石繩或投擲武器則重骰。</td></tr>
+        <tr><td>3</td><td>你命中附近一個有價值或重要的物品。</td></tr>
+        <tr><td>4</td><td>武器受損。直到修復前，使用此武器的檢定都有 1 個劣勢。</td></tr>
+        <tr><td>5</td><td>打到隨機一名盟友。正常骰傷害。</td></tr>
+        <tr><td>6</td><td>你不小心打到自己。正常骰武器傷害，但不會加上任何傷害加值。</td></tr>
+      </tbody>
+    </table>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 遠程：格擋與閃避 -->
+  <article class="text-block" id="ranged-parry-dodge">
+    <h3>格擋和閃避 Parrying &amp; Dodging</h3>
+    <ul>
+      <li>需要盾牌才能格擋遠程攻擊。</li>
+      <li>其餘規則類似近戰的格擋/閃避，但格擋大成功不會給反擊機會。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+
+  <!-- 遠程：遮蔽 -->
+  <article class="text-block" id="ranged-obscured">
+    <h3>受遮蔽的目標 Obscured Targets</h3>
+    <ul>
+      <li>目標被物體或人遮蔽視線時，你的遠程攻擊有劣勢。</li>
+      <li>目標完全不在視線內（如牆後）時，無法攻擊。</li>
+    </ul>
+    <button class="back-to-top">↑ 返回</button>
+  </article>
+</div>
+</section><section class="tab-content" id="tab-damage" role="tabpanel">
+<nav class="bookmark-nav">
+<div class="mini-nav">
+<button class="mini-btn" data-target="#dmg-armor">護甲</button>
+<button class="mini-btn" data-target="#dmg-death">死亡</button>
+<button class="mini-btn" data-target="#dmg-severe">重傷</button>
+<button class="mini-btn" data-target="#dmg-conditions">狀態</button>
+</div>
+</nav>
+<article class="text-block">
+<h2>傷害 Damage</h2>
+<p>冒險者的生活充滿困難和危險。冒險的獎勵也許很豐厚，但你一路上肯定會受到各式各樣的傷害。當你受到傷害時，你的<strong>生命值（HP）</strong>就會減少。</p>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="dmg-armor">
+<h2>護甲 Armor</h2>
+<ul>
+<li>穿戴護甲可以保護你的身體不受傷害。將你穿戴的護甲寫在角卡的護甲欄位，且不算進負重。</li>
+<li>穿上或卸下護甲在戰鬥中需要一個動作。</li>
+<li>你同時只能穿戴一套護甲。</li>
+<li>有些護甲會讓你的特定技能檢定獲得劣勢。</li>
+<li><strong>護甲值（AR）：</strong>每套護甲都有一個<strong>護甲值</strong>。每當你受到物理攻擊的傷害時，將受到的傷害減去護甲值。若傷害完全被護甲抵消，則敵人的武器反而會受到自己的攻擊傷害，有可能會因此受損。</li>
+<li><strong>頭盔：</strong>你可以同時穿戴一套護甲和一個頭盔，進一步提升你的護甲值。穿上或卸下頭盔在戰鬥中需要一個動作。頭盔也會讓你的特定技能檢定獲得劣勢。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="dmg-death">
+<h2>死亡 Death</h2>
+<ul>
+<li>若你的 HP 歸零，你會跌倒伏地並陷入瀕死。你無法移動，也無法執行任何動作，除了<strong>鼓舞</strong>自己（見下文）。</li>
+<li><strong>死亡檢定：</strong>當你 HP 為 0 時，你在你每回合開始時必須進行一次<strong>體質</strong>檢定。你不能強推此檢定。在你的角卡上記錄檢定結果。
+            <ul>
+<li>在第三次成功之後，你可以恢復 1D6 HP，且不用再進行死亡檢定。在第三次失敗之後，你就會死亡。</li>
+<li>骰到大成功視為兩次成功，骰到大失敗視為兩次失敗。</li>
+<li>若你在 HP 為 0 時受到傷害，會自動視為一次失敗。</li>
+<li>在戰鬥結束後，繼續追蹤戰鬥輪，直到處理完所有死亡檢定。若你成功活了下來，所有成功和失敗次數都會重置。</li>
+</ul>
+</li>
+<li><strong>鼓舞：</strong>若有另一個 PC 在你的 10 米內，且你能聽見該 PC，他可以對你進行<strong>遊說</strong>檢定，嘗試鼓舞你在 HP 為零的情況下繼續戰鬥。這是一個動作。
+            <ul>
+<li>若你被成功鼓舞，你可以繼續正常行動，但你在每回合開始時一樣要進行死亡檢定。</li>
+<li>你也可以嘗試鼓舞自己，但不是進行<strong>遊說</strong>檢定，而是進行帶有一個劣勢的<strong>意志</strong>檢定。</li>
+</ul>
+</li>
+<li><strong>急救：</strong>若你的 HP 為 0，相鄰於你的另一個人可以進行<strong>醫療</strong>檢定來嘗試對你急救。若沒有繃帶，此檢定有劣勢。此檢定可以重複嘗試。
+            <ul>
+<li>若檢定成功，你不用再進行死亡檢定，且恢復 1D6 HP。</li>
+<li>即使你被成功鼓舞而可以正常行動，你也不能用此方式急救自己。</li>
+<li>此急救方式只對 HP 為零的人有效。</li>
+</ul>
+</li>
+<li><strong>過量擊殺：</strong>HP 沒有負數，但如果單次攻擊造成的傷害 ≧ 你現有 HP + 最大 HP，你會當場死亡。光榮紀念這名殞落的冒險者，然後創一個新的吧！</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="dmg-severe">
+<h2>重傷 Severe Injuries</h2>
+<p>若你 HP 歸零但沒有當場被殺死，你可能會受到很難痊癒甚至永久影響的重傷。進行一次<strong>體質</strong>檢定，若失敗，骰 1D20 看看你受到什麼重傷。若你每天至少好好休息<strong>一班時間</strong>，且有人每天進行<strong>醫療</strong>檢定來照顧你，則重傷的「痊癒時間」會減半。因永久性重傷而降低的技能等級可以透過正常方式重新提升回去。</p>
+<table class="rules-table">
+<thead>
+<tr>
+<th style="width:80px">D20</th>
+<th>重傷</th>
+<th>效果</th>
+<th style="width:120px">痊癒</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1-3</td><td>鼻子骨折</td><td>所有<strong>察覺</strong>檢定獲得 1 個劣勢。</td><td>1D6 天</td></tr>
+<tr><td>3-4</td><td>臉部留疤</td><td>所有<strong>表演</strong>和<strong>遊說</strong>檢定獲得 1 個劣勢。</td><td>2D6 天</td></tr>
+<tr><td>5-6</td><td>牙齒斷裂</td><td><strong>表演</strong>和<strong>遊說</strong>技能數值永久 -2（最低至 3）</td><td>-</td></tr>
+<tr><td>7-8</td><td>肋骨骨折</td><td>基於<strong>力量</strong>和<strong>敏捷</strong>的所有檢定獲得 1 個劣勢。</td><td>1D6 天</td></tr>
+<tr><td>9~10</td><td>腦震盪</td><td>基於<strong>智力</strong>的所有檢定獲得 1 個劣勢。</td><td>1D6 天</td></tr>
+<tr><td>11-12</td><td>深沉傷口</td><td>基於<strong>力量</strong>和<strong>敏捷</strong>的所有檢定獲得 1 個劣勢，且每當你進行這類檢定時會受到 1D6 傷害。</td><td>2D6 天</td></tr>
+<tr><td>13</td><td>腿骨折</td><td>移動力減半。</td><td>3D6 天</td></tr>
+<tr><td>14</td><td>手臂骨折</td><td>無法使用雙手武器，也無法雙持武器，且需要用到雙手的動作都獲得 1 個劣勢。</td><td>3D6 天</td></tr>
+<tr><td>15</td><td>腳趾斷裂</td><td>移動力永久 -2（最低至 4）</td><td>-</td></tr>
+<tr><td>16</td><td>手指斷裂</td><td>所有武器的技能數值永久 -1（最低至 3）</td><td>-</td></tr>
+<tr><td>17</td><td>失去眼睛</td><td><strong>調查</strong>技能數值永久 -2（最低至 3）</td><td>-</td></tr>
+<tr><td>18</td><td>惡夢</td><td>你每睡<strong>一班時間</strong>，就要進行一次抵抗恐懼的<strong>意志</strong>檢定。若失敗，你沒有睡飽那班時間。</td><td>2D6 天</td></tr>
+<tr><td>19</td><td>人格變化</td><td>隨機產生一個新弱點。</td><td>-</td></tr>
+<tr><td>20</td><td>失憶</td><td>你無法想起你自己和其他 PC 是誰。此效果必須扮演出來。</td><td>1D6 天</td></tr>
+</tbody>
+</table>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="dmg-conditions">
+<h2>狀態 Conditions</h2>
+<ul>
+<li>在此遊戲中，你可能會承受六種不同的<strong>狀態</strong>。每個狀態都會讓你的特定屬性和基於該屬性的所有技能獲得劣勢。六個狀態如下：
+            <ul>
+<li>力竭（力量）</li>
+<li>虛弱（體質）</li>
+<li>暈眩（敏捷）</li>
+<li>憤怒（智力）</li>
+<li>畏縮（意志）</li>
+<li>沮喪（魅力）</li>
+</ul>
+</li>
+<li><strong>承受狀態：</strong>承受狀態最常見的原因是「強推檢定」。在你強推檢定後，你必須選擇一個狀態，並描述你是如何承受該狀態的。你也可能會因為其他原因而承受狀態，例如怪物的攻擊或法術。</li>
+<li><strong>複數狀態：</strong>若你即將承受的狀態是你已經擁有的狀態，則你必須選擇另一個狀態。若你在擁有全部六種狀態的情況下又即將承受狀態，你會改為失去 1D6 WP。若你沒有 WP 可以扣，則改為失去 1D6 HP。</li>
+<li><strong>恢復狀態：</strong>你可以在短休後自選恢復一個狀態。長休可以恢復所有狀態。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+</section><section class="tab-content" id="tab-rest" role="tabpanel">
+<nav class="bookmark-nav">
+<div class="mini-nav">
+<button class="mini-btn" data-target="#rest-main">休息規則</button>
+</div>
+</nav>
+<article class="text-block" id="rest-main">
+<h2>治療和休息</h2>
+<ul>
+<li>失去的 HP 和 WP 可以透過<strong>休息</strong>來恢復。休息共有三種類型：喘息、短休、長休。當你在休息時，你無法執行任何需要檢定或 WP 的動作。</li>
+<li><strong>喘息：</strong>只持續<strong>一輪時間</strong>的快速調息。喘息只能讓你恢復 1D6 WP。你每<strong>一班時間</strong>只能進行一次喘息。</li>
+<li><strong>短休：</strong>短休會持續<strong>一刻時間</strong>。短休能讓你恢復 1D6 HP，若有其他人進行<strong>醫療</strong>檢定來照顧你，你可以額外恢復 1D6 HP。但照顧者無法獲得短休的好處，且一次只能照顧一個人。另可恢復 1D6 WP 和自選恢復一個狀態。若有嚴重的事情干擾你的短休，則你無法獲得短休的好處。你每<strong>一班時間</strong>只能進行一次短休。</li>
+<li><strong>長休：</strong>長休會持續<strong>一班時間</strong>，且只能在附近沒有敵人的安全地點進行。長休能讓你恢復所有失去的 HP 和 WP，並恢復所有狀態。若有嚴重的事情干擾你的長休，則你無法獲得長休的好處。</li>
+<li><strong>魔法：</strong>治療類的法術可以讓你更快恢復 HP。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+</section><section class="tab-content" id="tab-hazards" role="tabpanel">
+<nav class="bookmark-nav">
+<div class="mini-nav">
+<button class="mini-btn" data-target="#hz-fear">恐懼</button>
+<button class="mini-btn" data-target="#hz-poison">毒素</button>
+<button class="mini-btn" data-target="#hz-disease">疾病</button>
+<button class="mini-btn" data-target="#hz-fall">墜落</button>
+<button class="mini-btn" data-target="#hz-swim">游泳 &amp; 溺水</button>
+<button class="mini-btn" data-target="#hz-sleep">睡眠不足</button>
+<button class="mini-btn" data-target="#hz-hunger">飢餓</button>
+<button class="mini-btn" data-target="#hz-cold">寒冷</button>
+</div>
+</nav>
+<article class="text-block" id="hz-fear">
+<h2>恐懼 Fear</h2>
+<ul>
+<li>在遺跡和森林中蟄伏著許多可怕的怪物，有些怪物可以進行所謂的<strong>「恐懼攻擊」</strong>。有些魔法或可怕的經歷也會觸發恐懼攻擊。</li>
+<li>當你受到恐懼攻擊時，你必須馬上進行一次<strong>意志</strong>檢定。此檢定可以被強推，且不算是動作。有些特別可怕的恐懼攻擊會讓你的檢定獲得劣勢。</li>
+<li>若<strong>意志</strong>檢定失敗，你必須骰「恐懼表」。</li>
+</ul>
+<table class="rules-table">
+<thead><tr><th style="width:80px;">D8</th><th>恐懼效果</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><strong>腿軟：</strong>恐懼重挫了你的精神和決心。你失去 1D6 WP，並陷入<strong>「沮喪」</strong>。</td></tr>
+<tr><td>2</td><td><strong>動搖：</strong>恐懼的壓力讓你陷入<strong>「畏縮」</strong>。</td></tr>
+<tr><td>3</td><td><strong>氣喘：</strong>恐懼讓你上氣不接下氣，陷入<strong>「力竭」</strong>。</td></tr>
+<tr><td>4</td><td><strong>蒼白：</strong>你的臉一片死白，膝蓋發軟，讓你陷入<strong>「暈眩」</strong>。</td></tr>
+<tr><td>5</td><td><strong>尖叫：</strong>你放聲尖叫，腸胃劇烈絞痛，讓你陷入<strong>「虛弱」</strong>。</td></tr>
+<tr><td>6</td><td><strong>發怒：</strong>恐懼讓你變得<strong>「憤怒」</strong>，你下回合必須攻擊恐懼來源（近戰優先）。</td></tr>
+<tr><td>7</td><td><strong>癱瘓：</strong>恐懼使你的身體動彈不得。你下回合無法移動和採取任何動作。</td></tr>
+<tr><td>8</td><td><strong>恐慌：</strong>你在一陣恐慌之下盡力逃離現場。你下回合必須疾走遠離恐懼來源。</td></tr>
+</tbody>
+</table>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="hz-poison">
+<h2>毒素 Posion</h2>
+<ul>
+<li>毒素的強度分為三種「效力」：弱效、中效、強效。</li>
+<li>每當你攝入毒素時，根據毒素效力進行<strong>體質</strong>檢定：弱效（一個優勢）、中效（無優劣勢）、強效（一個劣勢）。</li>
+<li>若<strong>體質</strong>檢定失敗，你會受到毒素的完整效果。若檢定成功，你只會受到毒素的有限效果。</li>
+<li>毒素對怪物無效。</li>
+</ul>
+<h3>致命毒藥 Lethal Poison</h3>
+<ul>
+<li><strong>完整效果：</strong>你在你每回合開始時受到 1D6 傷害，直到你 HP 歸零。若你及時喝下解毒劑，毒素效果就會終止。</li>
+<li><strong>有限效果：</strong>你在下回合開始時受到 1D6 傷害。</li>
+</ul>
+<h3>麻痺毒藥 Paralyzing Poison</h3>
+<ul>
+<li><strong>完整效果：</strong>你陷入<strong>力竭</strong>狀態，且必須在你每回合開始時進行一次<strong>體質</strong>檢定（不花費動作）。若檢定失敗，你在該輪無法移動，也無法執行任何動作（包括自由動作）。此效果會在<strong>一刻時間</strong>後或你喝下解毒劑後終止。</li>
+<li><strong>有限效果：</strong>你陷入<strong>力竭</strong>狀態。</li>
+</ul>
+<h3>催眠毒藥 Sleeping Poison</h3>
+<ul>
+<li><strong>完整效果：</strong>你陷入<strong>暈眩</strong>狀態，且必須在你每回合開始時進行一次<strong>體質</strong>檢定（不花費動作）。若檢定失敗，你會陷入沉睡且持續一班時間。喝下解毒劑或受到至少 1 點傷害能讓你馬上醒來。</li>
+<li><strong>有限效果：</strong>你陷入<strong>暈眩</strong>狀態。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="hz-disease">
+<h2>疾病 Disease</h2>
+<ul>
+<li>疾病的強度分為三種「效力」：弱效、中效、強效。</li>
+<li>當你暴露於危險的疾病時，根據疾病效力進行<strong>體質</strong>檢定：弱效（一個優勢）、中效（無優劣勢）、強效（一個劣勢）。</li>
+<li>若你獲勝，你成功抵抗疾病，沒事發生。若疾病獲勝，你會在一天後生病，你會陷入<strong>虛弱</strong>狀態且失去 1D6 HP。當你生病時，你無法恢復 HP、WP 和狀態。</li>
+<li>每天進行一次同樣的<strong>體質</strong>檢定，每次失敗都會再失去 1D6 HP。</li>
+<li>若你在生病期間 HP 歸零，你會在一天後死亡。</li>
+<li>一旦你<strong>體質</strong>檢定獲勝，你就會完全痊癒，可以正常恢復 HP、WP 和狀態。</li>
+<li><strong>醫護：</strong>在你生病期間，若有人用<strong>醫療</strong>檢定照顧你，照顧者可以代替你進行檢定：根據疾病效力進行<strong>醫療</strong>檢定。「藥草汁」可以讓此檢定獲得 1 個優勢。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="hz-fall">
+<h2>墜落 Falling</h2>
+<ul>
+<li>墜落在堅硬的表面上會讓你受到墜落傷害。墜落傷害 = 墜落高度（米）一半數量的 D6 骰，向下取整，傷害類型為<strong>鈍擊</strong>。</li>
+<li>墜落高度小於 2 米不會造成墜落傷害。</li>
+<li>墜落者可以進行<strong>體操</strong>檢定嘗試讓墜落傷害的 D6 數量減少一半（向上取整）。</li>
+<li>護甲無法抵抗墜落傷害。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="hz-swim">
+<h2>游泳 &amp; 溺水 Swimming &amp; Drowning</h2>
+<ul>
+<li>所有 PC 都會游泳。但你在水中的移動力是正常的一半。</li>
+<li>你在水中的所有攻擊檢定都有劣勢。</li>
+<li>更困難的水中運動需要進行<strong>游泳</strong>檢定。若你穿戴鎖子甲或板甲，檢定有劣勢。</li>
+<li>你待在水中每經過<strong>一刻時間</strong>，就必須進行一次<strong>游泳</strong>檢定來保持漂浮（不花費動作）。若你穿戴鎖子甲或板甲，則是<strong>每輪</strong>進行一次<strong>游泳</strong>檢定。</li>
+<li>若你待在水底，則必須每輪進行一次體質檢定來維持閉氣（不花費動作）。
+            <ul>
+<li>若檢定失敗，你會開始溺水，你在每回合開始時會受到 1D6 傷害，直到有人救你為止。</li>
+<li>若你在溺水時 HP 歸零，你會正常進行死亡檢定，但只會記錄失敗的次數。</li>
+</ul>
+</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="hz-sleep">
+<h2>睡眠不足 Sleep Deprivation</h2>
+<ul>
+<li>你每天至少需要睡眠<strong>一班時間</strong>且不被打擾。你不能穿著護甲入睡。若你一整天都沒有睡眠，你會陷入<strong>睡眠不足</strong>，你無法恢復 WP 和狀態，但你可以正常恢復 HP。</li>
+<li>只要你繼續沒有睡眠，你<strong>每班時間</strong>會失去 1D6 WP。</li>
+<li>若你在睡眠不足時 WP 歸零，你會癱倒並沉睡至少<strong>一班時間</strong>，且無法被喚醒。</li>
+<li>一旦你睡上至少<strong>一班時間</strong>，你就不再睡眠不足，可以正常恢復 WP 和狀態。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="hz-hunger">
+<h2>飢餓 Hunger</h2>
+<ul>
+<li>你每天必須至少吃一份食物。若你一整天沒有進食，你會陷入飢餓，你無法恢復 HP、WP 和狀態（除非使用魔法治療）。</li>
+<li>若你繼續沒吃東西，每天就會再失去 1 HP。</li>
+<li>若你在飢餓時 HP 歸零，你會在一天後活活餓死。</li>
+<li>一旦你吃下至少一份食物，你就不再飢餓，可以正常恢復 HP、WP 和狀態。</li>
+<li>只要擁有食物，你就視為同時擁有充足的水分，不用額外紀錄攜帶的水。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+<article class="text-block" id="hz-cold">
+<h2>寒冷 Cold</h2>
+<ul>
+<li>當天氣非常寒冷，而你無法保持暖和時，你必須經常進行<strong>求生</strong>檢定。這通常需要<strong>每班時間</strong>進行一次，但在極度寒冷的情況下，可以需要<strong>每段時間</strong>甚至<strong>每輪</strong>進行一次。</li>
+<li>若你沒有毛毯，你的檢定有劣勢。若你穿著毛皮大衣，你的檢定有優勢。</li>
+<li>若檢定失敗，你失去 1D6 HP 和 1D6 WP，且無法恢復 HP、WP 和狀態（除非使用魔法治療）。</li>
+<li>你必須繼續進行<strong>求生</strong>檢定來抵禦寒冷，失敗會繼續損失 HP 和 WP。</li>
+<li>若你在寒冷時 HP 歸零，你會在下一次需要擲骰的時候死亡。</li>
+<li>只有當你變得暖和時（例如待在營火邊），你才會脫離寒冷的威脅，可以正常恢復 HP、WP 和狀態。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</article>
+</section></main></div>
+<script>
+(function(){
+  function scrollToEl(el, {behavior='smooth', yPadding=10}={}){
+    if(!el) return;
+    const se = document.scrollingElement || document.documentElement || document.body;
+    const rect = el.getBoundingClientRect();
+    const top = (window.pageYOffset || se.scrollTop) + rect.top - yPadding;
+    se.scrollTo({ top: Math.max(0, top), behavior });
+  }
+
+  // —— 主分頁：同時綁定 header 內的按鈕 ——
+(function(){
+  const tabBtns = document.querySelectorAll('#header-tabbar .tab-btn');
+  const panels  = document.querySelectorAll('.combat-wrap .tab-content');
+  const headerAnchor = document.querySelector('#header-tabbar');
+
+  function scrollToHeader(){
+    if(!headerAnchor) return;
+    const se  = document.scrollingElement || document.documentElement;
+    const top = headerAnchor.getBoundingClientRect().top + (window.pageYOffset || se.scrollTop) - 8;
+    se.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  }
+
+  tabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-tab');
+      // 切換 aria-selected 樣式
+      tabBtns.forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
+      // 切換內容面板
+      panels.forEach(p=>{
+        const on = p.id === id;
+        p.classList.toggle('active', on);
+        if(on){ requestAnimationFrame(()=>p.classList.add('show')); }
+        else { p.classList.remove('show'); }
+      });
+      // 捲回 header 下方的分頁列
+      scrollToHeader();
+    });
+  });
+})();
+
+// Sub tabs (attacks)
+const attackRoot = document.querySelector('.combat-wrap #tab-attacks');
+if (attackRoot){
+  const subBtns   = attackRoot.querySelectorAll('.subtab-btn');
+  const subPanels = attackRoot.querySelectorAll('.subpanel');
+  const anchor    = attackRoot.querySelector('.subtabs');
+
+  subBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const targetId = 'sub-' + btn.getAttribute('data-sub');
+      // 切 aria-selected
+      subBtns.forEach(b=>b.setAttribute('aria-selected', b===btn?'true':'false'));
+      // 顯示/隱藏子分頁 + 動畫
+      subPanels.forEach(p=>{
+        const on = (p.id === targetId);
+        p.classList.toggle('active', on);
+        if (on) { requestAnimationFrame(()=>p.classList.add('show')); }
+        else    { p.classList.remove('show'); }
+      });
+      // 捲回子分頁書籤列
+      if (anchor) {
+        const se  = document.scrollingElement || document.documentElement;
+        const top = anchor.getBoundingClientRect().top + (window.pageYOffset || se.scrollTop) - 8;
+        se.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      }
+    });
+  });
+}
+
+
+  // Bookmark buttons
+  document.querySelectorAll('.combat-wrap .mini-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const sel = btn.getAttribute('data-target');
+      const el = document.querySelector(sel);
+      scrollToEl(el, {behavior:'smooth', yPadding:12});
+    });
+  });
+
+  // Back to top in blocks
+  document.querySelectorAll('.combat-wrap .back-to-top').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      const tab = btn.closest('.tab-content');
+      const anchor = (tab && tab.querySelector('.bookmark-nav')) || document.querySelector('.combat-wrap .tabbar-wrap');
+      scrollToEl(anchor, {behavior:'smooth', yPadding:8});
+    });
+  });
+})();
+// —— 保證「攻擊」分頁預設顯示「近戰」 —— 
+(function(){
+  const attackTabId = 'tab-attacks';
+  const meleeBtnSel = '.combat-wrap #tab-attacks .subtab-btn[data-sub="melee"]';
+  const meleePanelId = 'sub-melee';
+
+  function selectMelee() {
+    const root = document.querySelector('.combat-wrap #tab-attacks');
+    if (!root) return;
+    const subBtns   = root.querySelectorAll('.subtab-btn');
+    const subPanels = root.querySelectorAll('.subpanel');
+    const btn       = root.querySelector(meleeBtnSel);
+
+    // 切 aria-selected
+    subBtns.forEach(b=>{
+      const on = (b.getAttribute('data-sub') === 'melee');
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+
+    // 顯示近戰子分頁 + 動畫
+    subPanels.forEach(p=>{
+      const on = (p.id === meleePanelId);
+      p.classList.toggle('active', on);
+      if (on) { requestAnimationFrame(()=>p.classList.add('show')); }
+      else    { p.classList.remove('show'); }
+    });
+  }
+
+  // A) 若載入時「攻擊」分頁已是作用中 → 立即預設近戰
+  const attackPanel = document.querySelector('.combat-wrap #' + attackTabId);
+  if (attackPanel && attackPanel.classList.contains('active')) {
+    selectMelee();
+  }
+
+  // B) 使用者之後點到「攻擊」分頁時 → 自動預設近戰
+  const mainTabBtns = document.querySelectorAll('#header-tabbar .tab-btn, .combat-wrap .tab-btn');
+  mainTabBtns.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-tab');
+      if (id === attackTabId) {
+        // 稍微等面板顯示再切子分頁，避免動畫閃爍
+        setTimeout(selectMelee, 0);
+      }
+    });
+  });
+
+  // C) 若完全沒有任何主分頁被標記為 active（某些情況初始化空白）
+  //    就讓第一個主分頁或攻擊分頁啟用（選你需要的預設；下方示範啟用第一個）
+  const anyActive = document.querySelector('.combat-wrap .tab-content.active');
+  if (!anyActive) {
+    const firstBtn = document.querySelector('#header-tabbar .tab-btn');
+    if (firstBtn) firstBtn.click();
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>馬茲提卡戰役 MAZTICA</title>
+
+  <!-- ✅ 導覽列與背景模組 -->
+  <link rel="stylesheet" href="navbar.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="navbar.js"></script>
+  <link rel="stylesheet" href="background.css">
+  <script defer src="background.js"></script>
+
+  <!-- ✅ 字型 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/quatl" rel="stylesheet">
+
+  <style>
+    :root { --gold:#c9a35a; --jade:#0e4b3a; --ink:#1a1a1a; --paper:#f5e9c9; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body { font-family:'Noto Sans TC',sans-serif; color:#f1e8d6; }
+
+    /* ✅ 頁首區 */
+    header{
+      text-align:left;
+      padding:40px 40px 20px;
+      background:transparent;
+      border-bottom:none;
+      box-shadow:none;
+    }
+    header h1{
+      font-family:"Quatl",serif;
+      font-size:2rem;
+      color:var(--gold);
+      letter-spacing:2px;
+    }
+    header p{
+      margin-top:8px;
+      font-size:1.05rem;
+      color:#fffbe8;
+      line-height:1.7;
+    }
+
+    /* ✅ 主內容區 */
+    main{
+      max-width:1200px;
+      margin:30px auto;
+      padding:0 32px 40px;
+      background:rgba(0,0,0,0.25);
+      border:1px solid var(--gold);
+      border-radius:12px;
+      backdrop-filter:blur(3px);
+      box-shadow:0 4px 10px rgba(0,0,0,0.5);
+    }
+    main h2{
+      color:var(--gold);
+      font-size:1.5rem;
+      margin-bottom:12px;
+    }
+    main p{
+      line-height:1.8;
+      margin-bottom:14px;
+    }
+    main ul{
+      margin-left:20px;
+      line-height:1.8;
+    }
+    main img{
+      display:block;
+      width:100%;
+      border-radius:10px;
+      margin:20px 0;
+      box-shadow:0 3px 12px rgba(0,0,0,.4);
+    }
+
+    /* ✅ 分隔線裝飾 */
+    .divider{
+      width:100%;
+      height:80px;
+      margin:18px 0 0;
+      background:url('images/aztec-divider.png') repeat-x;
+      background-size:auto 200%;
+      opacity:.9;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ✅ 導覽列載入 -->
+  <div id="site-navbar"></div>
+
+  <!-- ✅ 頁首區 -->
+  <header>
+    <h1>馬茲提卡戰役 MAZTICA</h1>
+<p>馬茲提卡，一塊充滿叢林、神秘和危險的大陸。</p>
+    <ul>
+      <li>資料僅供Max的團務中使用，請勿分享</li>
+      <li>規則主要採用《龍與魔》DragonBane系統</li>
+      <li>世界觀原為DND的中南美洲（阿茲特克）風格大陸世界，經由房規改編調整，並非原本官方的世界觀和架構</li>
+      <li>當前版本 2.0</li>
+    </ul>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- ✅ 主內容 -->
+  <main>
+    <h2>尚未完全完工</h2>
+ 歡迎來到馬茲提卡資料網站！本網站整合了舊版資料庫與新版
+        <strong>龍與魔：馬茲提卡戰役介紹</strong>
+        的內容。您可以透過上方的導覽列快速找到世界背景、族裔設定、職業規則、技能、戰鬥、魔法、英雄能力、裝備與其他實用資訊。
+  </main>
+</body>
+</html>

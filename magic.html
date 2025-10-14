@@ -1,0 +1,2697 @@
+<!DOCTYPE html>
+
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>魔法 &amp; 法術 MAGIC &amp; SPELL</title>
+<!-- ✅ 導覽列與背景模組 -->
+<link href="navbar.css" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script defer="" src="navbar.js"></script>
+<link href="background.css" rel="stylesheet"/>
+<script defer="" src="background.js"></script>
+<!-- ✅ 字型 -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.cdnfonts.com/css/quatl" rel="stylesheet"/>
+<style>
+    :root { --gold:#c9a35a; --jade:#0e4b3a; --ink:#1a1a1a; --paper:#f5e9c9; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body { font-family:'Noto Sans TC',sans-serif; color:#f1e8d6; }
+
+/* ✅ 書籤列樣式 */
+.bookmark-nav {
+  text-align:center;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.bookmark-btn {
+  background:rgba(0,0,0,0.35);
+  color:var(--gold);
+  border:1px solid var(--gold);
+  border-radius:6px;
+  margin:4px;
+  padding:6px 14px;
+  font-size:0.9rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+}
+.bookmark-btn:hover {
+  background:var(--gold);
+  color:#000;
+}
+
+.bookmark-btn.active {
+  background: var(--gold);
+  color: #000;
+  box-shadow: 0 0 8px rgba(201, 163, 90, 0.6);
+}
+
+
+    /* ✅ 頁首區 */
+    header{
+      text-align:center;
+      padding:40px 40px 20px;
+      background:transparent;
+      border-bottom:none;
+      box-shadow:none;
+    }
+    header h1{
+      font-family:"Quatl",serif;
+      font-size:2rem;
+      color:var(--gold);
+      letter-spacing:2px;
+    }
+    header p{
+      margin-top:8px;
+      font-size:1.05rem;
+      color:#fffbe8;
+      line-height:1.7;
+    }
+
+    /* ✅ 主內容區 */
+    main{
+      max-width:1200px;
+      margin:30px auto;
+      padding:0 32px 40px;
+      background:rgba(0,0,0,0.25);
+      border:1px solid var(--gold);
+      border-radius:12px;
+      backdrop-filter:blur(3px);
+      box-shadow:0 4px 10px rgba(0,0,0,0.5);
+    }
+    main h2{
+      color:var(--gold);
+      font-size:1.5rem;
+      margin-bottom:12px;
+    }
+    main p{
+      line-height:1.8;
+      margin-bottom:14px;
+    }
+    main ul{
+      margin-left:20px;
+      line-height:1.8;
+    }
+    main img{
+      display:block;
+      width:100%;
+      border-radius:10px;
+      margin:20px 0;
+      box-shadow:0 3px 12px rgba(0,0,0,.4);
+    }
+
+    /* ✅ 分隔線裝飾 */
+    .divider{
+      width:100%;
+      height:50px;
+      margin:0;
+      background:url('images/aztec-divider.png') repeat-x;
+      background-size:auto 200%;
+      opacity:.9;
+    }
+
+/* ✅ 文字內容區塊樣式 */
+.text-block {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+.text-block:hover {
+  background: rgba(0, 0, 0, 0.6);
+  transform: translateY(-2px);
+}
+.text-block h3, 
+.text-block h4 {
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+.text-block p,
+.text-block li {
+  color: #f1e8d6;
+  line-height: 1.8;
+}
+
+/* ✅ 回到書籤列按鈕樣式 */
+.back-to-top {
+  display: inline-block;
+  float: right;
+  margin-top: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.back-to-top:hover {
+  background: var(--gold);
+  color: #000;
+  transform: translateY(-2px);
+}
+.text-block:hover .back-to-top {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* ✅ 手機或平板裝置上始終顯示 */
+@media (max-width: 768px) {
+  .back-to-top {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+}
+
+
+/* ✅ 表格文字樣式（全站通用） */
+table {
+  font-size: 0.9rem;       /* 調整字體大小（可改 0.9rem / 14px / 1rem 等） */
+  font-weight: normal;      /* 取消粗體 */
+  color: #f1e8d6;           /* 字體顏色一致 */
+}
+table th, table td {
+  font-weight: normal;      /* 確保表頭也不是粗體 */
+  padding: 6px 10px;        /* 調整內距 */
+}
+/* ✅ 深紅文字強調樣式 */
+.text-red {
+  color: #b22222;            /* FireBrick 深紅色 */
+  font-weight: bold;
+}
+
+/* 🎴 流派法術查閱區 */
+.spell-section {
+  margin-top: 24px;
+  padding: 18px;
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 6px rgba(0,0,0,0.3);
+}
+.spell-title {
+  text-align: center;
+  color: var(--gold);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--gold);
+  display: inline-block;
+  width: 100%;
+}
+.spell-tier-nav {
+  text-align: center;
+  margin-bottom: 12px;
+}
+.spell-tier-btn {
+  background: rgba(0,0,0,0.3);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  margin: 3px;
+  padding: 6px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.spell-tier-btn:hover,
+.spell-tier-btn.active {
+  background: var(--gold);
+  color: #000;
+}
+.spell-tier {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.spell-tier.active {
+  display: block;
+}
+.placeholder {
+  text-align: center;
+  color: #ccc;
+  font-style: italic;
+  padding: 20px 0;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* === 法術名稱按鈕 (統一風格) === */
+.spell-list-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.spell-btn {
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.spell-btn:hover,
+.spell-btn.active {
+  background: var(--gold);
+  color: #000;
+  box-shadow: 0 0 8px rgba(201, 163, 90, 0.6);
+}
+
+.spell-detail {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--gold);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 10px auto;
+  max-width: 680px;
+  text-align: left;
+  color: var(--paper);
+  line-height: 1.6;
+}
+.spell-detail.hidden {
+  display: none;
+}
+.spell-detail h3 {
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.spell-detail p {
+  margin: 4px 0;
+}
+
+  </style>
+<style id="skilltree-css">
+/* === Skill Tree: Soft Glow + Floating Particles === */
+@keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+@keyframes pulseGlow { 0%{opacity:.15;}50%{opacity:.3;}100%{opacity:.15;} }
+
+/* Color themes per flow */
+#spells-pluma .skilltree-wrap{--color:#e5a84c;}
+#spells-elemental .skilltree-wrap{--color:#4ec9b0;}
+#spells-tonalli .skilltree-wrap{--color:#b078e0;}
+#spells-hishna .skilltree-wrap{--color:#d1463d;}
+#spells-general .skilltree-wrap{--color:#dcdcdc;}
+
+.skilltree-wrap{
+  position:relative;
+  margin:16px 0 8px;
+  padding:16px 12px 24px;
+  background:rgba(0,0,0,0.25);
+  border:1px solid var(--color,#dcdcdc);
+  border-radius:10px;
+  overflow:hidden !important;
+  animation:fadeIn 1s ease both;
+}
+.skilltree{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(135px,1fr);
+  gap:20px;
+  align-items:start;
+  position:relative;
+  z-index:2;
+}
+.skill-col{display:flex;flex-direction:column;gap:10px;align-items:center;transition:all .5s ease;}
+
+.skill-node{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  min-height:46px;
+  padding:8px 10px;
+  background:rgba(0,0,0,0.45);
+  border:1px solid var(--color,#dcdcdc);
+  border-radius:8px;
+  cursor:pointer;
+  transition:all .4s ease;
+  color:#f5e9c9;
+  font-size:0.9rem;
+  width:135px;
+  box-shadow:0 0 0 rgba(0,0,0,0);
+}
+.skill-node:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 10px var(--color,rgba(220,220,220,0.6));
+  background:rgba(255,255,255,0.1);
+}
+.skill-node.active{
+  box-shadow:0 0 14px var(--color,rgba(220,220,220,1));
+  background:rgba(255,255,255,0.2);
+  color:#fff;
+}
+.skill-tier-title{
+  font-weight:600;
+  color:var(--color,#dcdcdc);
+  margin-bottom:4px;
+  font-size:0.9rem;
+  text-shadow:0 0 5px rgba(220,220,220,0.4);
+}
+.skill-tier-title hr{
+  border:0;border-top:1px solid rgba(220,220,220,0.3);
+  margin-bottom:6px;width:100%;
+}
+
+/* SVG connections */
+.skilltree-svg{
+  position:absolute; inset:0;
+  pointer-events:none;
+  z-index:1;
+  overflow:visible;
+}
+.connection{
+  stroke:var(--color,#dcdcdc);
+  stroke-width:2.2;
+  fill:none;
+  stroke-linecap:round;
+  stroke-dasharray:600;
+  stroke-dashoffset:600;
+  opacity:0.95;
+  filter:drop-shadow(0 0 5px var(--color,rgba(220,220,220,0.6)));
+  animation:drawline 1.4s ease forwards;
+  transition:stroke 0.3s ease, stroke-width 0.3s ease;
+}
+@keyframes drawline{to{stroke-dashoffset:0;}}
+.connection.active{
+  stroke-width:3.5;
+  filter:drop-shadow(0 0 10px var(--color,rgba(255,255,255,0.8)));
+}
+
+/* Soft magical glow background */
+.skilltree-wrap::before{
+  content:'';
+  position:absolute;
+  inset:-5px;
+  border-radius:10px;
+  background:radial-gradient(circle at center,var(--color) 0%,transparent 80%);
+  opacity:.25;
+  filter:blur(80px);
+  z-index:0;
+  animation:pulseGlow 8s infinite ease-in-out;
+}
+
+/* Particle layer */
+.skilltree-canvas{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  mix-blend-mode:screen;
+}
+
+/* Panel */
+.spell-detail-panel{
+  margin-top:12px;
+  padding:10px 14px;
+  background:rgba(0,0,0,0.3);
+  border:1px solid var(--color,#dcdcdc);
+  border-radius:8px;
+  position:relative;
+  z-index:3;
+  animation:fadeIn .5s ease both;
+}
+.spell-detail-panel .placeholder{
+  opacity:.75;color:#ddd;font-size:.9rem;
+}
+
+/* Hide legacy */
+.spell-section .spell-tier-nav,
+.spell-section .spell-tier{display:none !important;}
+
+
+/* Burst effect */
+.magic-burst{
+  position:absolute;
+  width:40px; height:40px;
+  border:2px solid;
+  border-radius:50%;
+  transform:translate(-50%,-50%) scale(0);
+  opacity:0.9;
+  animation:burst 0.8s ease-out forwards;
+  pointer-events:none;
+  z-index:3;
+}
+@keyframes burst{
+  from{transform:translate(-50%,-50%) scale(0);opacity:0.9;}
+  to{transform:translate(-50%,-50%) scale(3);opacity:0;}
+}
+
+
+.back-to-tree {
+  position: sticky;
+  top: 8px;
+  display: block;
+  margin: 0 auto 12px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  color: var(--color);
+  border: 1px solid var(--color);
+  border-radius: 6px;
+  background: rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: all .3s ease;
+  opacity: 0;
+  transform: scale(0.9);
+}
+.back-to-tree.show {
+  opacity: 1;
+  transform: scale(1);
+}
+.back-to-tree:hover {
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 0 6px var(--color);
+}
+
+
+.back-to-tree {
+  position: sticky;
+  top: 8px;
+  display: block;
+  margin: 0 auto 12px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  color: var(--color);
+  border: 1px solid var(--color);
+  border-radius: 6px;
+  background: rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: all .3s ease;
+  opacity: 0;
+  transform: scale(0.9);
+}
+.back-to-tree.show {
+  opacity: 1;
+  transform: scale(1);
+}
+.back-to-tree.flash {
+  animation: flashIn 1s ease-out;
+}
+.back-to-tree:hover {
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 0 6px var(--color);
+}
+@keyframes flashIn {
+  0% { box-shadow: 0 0 0px var(--color); opacity: 0.5; }
+  50% { box-shadow: 0 0 15px var(--color); opacity: 1; }
+  100% { box-shadow: 0 0 6px var(--color); opacity: 1; }
+}
+</style></head>
+<body>
+<!-- ✅ 導覽列載入 -->
+<div id="site-navbar"></div>
+<!-- ✅ 頁首區塊（含導覽列） -->
+<header>
+  <h1>魔法與法術</h1>
+<!-- 🔸 導覽列按鈕放這裡 -->
+<div class="magic-nav">
+<button class="tab-btn active" data-target="rules">法術規則</button>
+<button class="tab-btn" data-target="schools">流派介紹</button>
+</div>
+</header>
+<div class="divider"></div>
+<!-- ✅ 主內容區塊 -->
+<main>
+<!-- 區塊：法術規則 -->
+<section class="tab-content active" id="rules">
+<br/>
+<!-- 🔸 次級導覽列 -->
+<div class="sub-nav">
+<button class="sub-btn active" data-sub="intro">法術須知</button>
+<button class="sub-btn" data-sub="casting">施放法術</button>
+<button class="sub-btn" data-sub="learning">學習法術</button>
+</div>
+<div class="divider"></div>
+<!-- 🔹 區塊：法術須知 -->
+<div class="sub-content active" id="intro">
+<br/>
+<!-- 🔹 書籤列 -->
+<div class="bookmark-nav">
+<button class="bookmark-btn" data-scroll="#intro1">階級</button>
+<button class="bookmark-btn" data-scroll="#intro2">魔導書</button>
+<button class="bookmark-btn" data-scroll="#intro3">金屬與魔法</button>
+<button class="bookmark-btn" data-scroll="#intro4">魔法物品</button>
+</div>
+<div class="text-block">
+<ul>
+<li>每個魔法流派都是獨立的次要技能。創角時，薩滿可以選擇一種流派作為受訓次要技能（基於智力）。</li>
+<li>你可以施放任何你已經學會的法術，不需要記憶或準備。</li>
+</ul>
+</div>
+<div class="text-block" id="intro1">
+<h3>階級</h3>
+<ul>
+<li>每個法術都有一個階級。這不影響任何遊戲機制，只用來表示該法術有多複雜和多強大。</li>
+<li>薩滿在遊戲開始時只有 1 階法術，但可以在遊戲過程中學到更高階的法術。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="intro2">
+<h3>魔導書</h3>
+<ul>
+<li>你將你學會的所有法術記錄在你的魔導書裡。抄寫一個法術需要花費一班時間。</li>
+<li>你可以直接閱讀魔導書來施放法術，雖然施法時間會變成原本的兩倍，但施法檢定會自動成功。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="intro3">
+<h3>金屬與魔法</h3>
+<ul>
+<li>金屬有反魔法的效果，若你身穿金屬護甲或備戰武器中有金屬武器，你就無法施放魔法。</li>
+<li>這包括部分金屬的物品，例如斧、矛、鑲釘皮甲、金屬箭矢。</li>
+<li>物品欄裡的物品不影響。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="intro4">
+<h3>魔法物品</h3>
+<ul>
+<li>魔法物品可能會含有一個或多個法術，可以由非巫師角色啟動。</li>
+<li>除非另有說明，辨識或啟動魔法物品內的法術需要進行語言檢定或任意魔法流派檢定。</li>
+<li>使用魔法物品內的法術一樣要消耗自身的 WP。有些魔法物品會儲存一定數量的 WP 供人使用，而不用消耗自己的 WP。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+</div> <!-- 關閉 #intro -->
+<!-- 🔹 區塊：施放法術 -->
+<div class="sub-content" id="casting">
+<br/>
+<!-- 🔹 書籤列 -->
+<div class="bookmark-nav">
+<button class="bookmark-btn" data-scroll="#cast1">汲取身體力量</button>
+<button class="bookmark-btn" data-scroll="#cast2">施法大成功</button>
+<button class="bookmark-btn" data-scroll="#cast3">施法大失敗</button>
+<button class="bookmark-btn" data-scroll="#cast4">施法時間</button>
+<button class="bookmark-btn" data-scroll="#cast5">法術射程</button>
+<button class="bookmark-btn" data-scroll="#cast6">施法構材</button>
+<button class="bookmark-btn" data-scroll="#cast7">持續時間</button>
+</div>
+<div class="text-block">
+<ul>
+<li>消耗施放法術所需的 WP（法術威力等級 ×2，戲法只消耗 1 WP）。法術的威力等級代表你在施法時為該法術灌注了多少力量。威力等級範圍為 1-3。</li>
+<li>進行該魔法流派的技能檢定（通用法術可用任意流派施放、戲法不需要進行檢定）。</li>
+<li>若檢定成功，法術成功施放。</li>
+<li>若檢定失敗，法術無效（可以強推檢定）。</li>
+</ul>
+</div>
+<div class="text-block" id="cast1">
+<p><h4>汲取身體力量</h4></p>
+<ul>
+<ul>
+<li>如果你沒有足夠的 WP 可以消耗，你可以從自己的身體汲取力量。但這個行為很危險，甚至是致命的。</li>
+<li>你不能用汲取身體力量的方式施放治療法術來治療自己。</li>
+<li>汲取身體力量的步驟如下：</li>
+<ol style="margin-left: 2em;">
+<li>在施法前骰 1D4、1D6、1D8、1D10、1D12 或 1D20（由你選擇）。</li>
+<li>擲骰的結果代表你會馬上獲得同樣數量的臨時 WP。</li>
+<li>你的 HP 也會受到相同數量的傷害，但會在施法結束後才計算。</li>
+<li>臨時 WP 當下沒有用掉就會消失。</li>
+</ol>
+</ul>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="cast2">
+<h4>施法大成功</h4>
+<ul>
+<li>目標也必須骰到大成功才能成功抵抗、格擋或閃避。另外你可以選擇下列一種效果：</li>
+<ul>
+<li>法術的傷害加倍</li>
+<li>法術的射程加倍</li>
+<li>法術不消耗 WP</li>
+<li>馬上施放另一個法術，但施法檢定獲得 1 個劣勢</li>
+</ul>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="cast3">
+<h4>施法大失敗</h4>
+<ul>
+<li>無法強推檢定。另外，擲 1D20 看看會發生什麼施法意外。</li>
+</ul>
+<p>
+<h5>施法大失敗表</h5>
+<table style="width:100%;border-collapse:collapse;border:1px solid var(--gold);margin-top:10px;">
+<thead style="background:rgba(0,0,0,0.5);color:var(--gold);">
+<tr>
+<th style="padding:8px;border:1px solid var(--gold);width:80px;">D20</th>
+<th style="padding:8px;border:1px solid var(--gold);">施法意外</th>
+</tr>
+</thead>
+<tbody>
+<tr><td style="text-align:center;border:1px solid var(--gold);">1</td><td style="border:1px solid var(--gold);">魔法的力量讓你陷入 <span class="text-red">「暈眩」</span>。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">2</td><td style="border:1px solid var(--gold);">施法突然讓你筋疲 <span class="text-red">「力竭」</span>。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">3</td><td style="border:1px solid var(--gold);">魔法能量的負擔讓你的身體變得 <span class="text-red">「虛弱」</span>。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">4</td><td style="border:1px solid var(--gold);">沒有控制好法術讓你非常 <span class="text-red">「憤怒」</span>。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">5</td><td style="border:1px solid var(--gold);">突然看到惡魔的景象讓你感到 <span class="text-red">「畏縮」</span>。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">6</td><td style="border:1px solid var(--gold);">你看見現實帷幕之外的無盡世界，意識到自己有多渺小，讓你非常 <span class="text-red">「沮喪」</span>。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">7</td><td style="border:1px solid var(--gold);">魔法蹂躪了你的身體，你受到 <span class="text-red">每威力 1D6 傷害</span>。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">8</td><td style="border:1px solid var(--gold);">法術摧殘了你的意志力，你失去 <span class="text-red">每威力 1D6 WP</span>。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">9</td><td style="border:1px solid var(--gold);">法術產生了一種 <span class="text-red">魔法疾病</span>。你和你接觸的任何人在下一班時間都會受到此疾病的影響。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">10</td><td style="border:1px solid var(--gold);">你隨機施放了另一道你擁有的法術，具有相同的目標和威力。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">11</td><td style="border:1px solid var(--gold);">你說謊時會吐出一隻 <span class="text-red">青蛙</span>。每個早上骰 1D4。骰到 1 效果結束。此效果可被解消。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">12</td><td style="border:1px solid var(--gold);">你碰到的任何 <span class="text-red">金和銀</span> 都會變成灰塵。每個早上骰 1D4。骰到 1 效果結束。此效果可被解消。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">13</td><td style="border:1px solid var(--gold);">你陷入 <span class="text-red">目盲</span> 狀態，視為處於完全黑暗。每個早上骰 1D4。骰到 1 效果結束。此效果可被解消。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">14</td><td style="border:1px solid var(--gold);">你 <span class="text-red">失憶</span> 了，忘記自己和其他人是誰。每個早上骰 1D4。骰到 1 效果結束。此效果可被解消。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">15</td><td style="border:1px solid var(--gold);">法術會額外影響一個 <span class="text-red">盟友或無辜的人</span>。治療或增益法術會額外影響一個敵人。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">16</td><td style="border:1px solid var(--gold);">法術 <span class="text-red">走火</span>。攻擊性法術變成攻擊自己。保護或治療法術反而造成傷害。增益變成減益。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">17</td><td style="border:1px solid var(--gold);">你變成一隻 <span class="text-red">動物</span>。骰 1D6：1 貓、2 狐狸、3 山羊、4 狼、5 鹿、6 熊。你無法說話，但保留原有的心智。每個早上骰 1D4。骰到 1 效果結束。此效果可被解消。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">18</td><td style="border:1px solid var(--gold);">你 <span class="text-red">年輕一階</span>。屬性和數值照表變化，但技能不變。若已經是少年，你變成孩童。力量和體質 -2，最低為 3。此效果是永久的。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">19</td><td style="border:1px solid var(--gold);">你 <span class="text-red">老一階</span>。屬性和數值照表變化，但技能不變。若已經是老年，你變成非常老。力量和體質 -2，最低為 3。此效果是永久的。</td></tr>
+<tr><td style="text-align:center;border:1px solid var(--gold);">20</td><td style="border:1px solid var(--gold);">你的魔法吸引了來自其他次元的一個 <span class="text-red">惡魔</span>。他會在下一班時間出現。具體由 GM 決定。</td></tr>
+</tbody>
+</table>
+<button class="back-to-top">↑ 返回</button>
+</p></div>
+<div class="text-block" id="cast4">
+<h3>施法時間</h3>
+<ul>
+<li>大多法術的施放時間都是一個動作。</li>
+<li>反應類的法術不會消耗你該輪的動作。代表只要你有足夠的 WP，就可以在一輪內多次施放。</li>
+<li>儀式類法術需耗時一刻時間，甚至一班時間。</li>
+<li>直接閱讀魔導書來施放法術需要兩倍的時間，代表一個動作的法術需要兩個動作，也就是兩輪才能完成。施放時間結束後，法術檢定會自動成功。</li>
+<li>反應類法術無法直接閱讀魔導書施放。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="cast5">
+<h3>法術射程</h3>
+<ul>
+<li>法術列出的射程為最大射程。</li>
+<li>射程為「自身」代表該法術只影響施法者。</li>
+</ul>
+<p><h4>區域效果(AOE)</h4></p>
+<ul>
+<ul>
+<li>除非另有說明，否則 AOE 的源點都是施法者本身。</li>
+<li>除非另有說明，AOE 法術可以被閃避，但不能被格擋。</li>
+<li>你可以排除區域內的特定目標不受法術影響，但法術檢定會有劣勢。</li>
+</ul>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="cast6">
+<h3>施法構材</h3>
+<ul>
+<p>若想施放法術，你必須符合法術列出的所有構材項目：</p>
+<li><strong>聲音：</strong>由吟唱或真言發動法術（不能用悄悄話的音量）。</li>
+<li><strong>手勢：</strong>由特定手部運動發動法術。</li>
+<li><strong>法器：</strong>由手中物品發動法術。</li>
+<li><strong>材料：</strong>由特定材料發動法術（可能會消耗）。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="cast7">
+<h3>持續時間</h3>
+<ul>
+<li>即效：馬上生效且沒有持續效果。</li>
+<li>一輪：持續到下一輪你自己的回合。</li>
+<li>一刻：持續一刻時間。</li>
+<li>一班：持續一班時間。</li>
+<li>專注：持續到你採取其他動作、受到傷害，或抵抗恐懼的意志檢定失敗。若你被突然的騷動影響，你必須進行意志檢定來維持專注。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+</div> <!-- 關閉 #intro -->
+<!-- 🔹 區塊：學習法術 -->
+<div class="sub-content" id="learning">
+<br/>
+<!-- 🔹 書籤列 -->
+<div class="bookmark-nav">
+<button class="bookmark-btn" data-scroll="#learn1">先決條件</button>
+<button class="bookmark-btn" data-scroll="#learn2">找導師學習</button>
+<button class="bookmark-btn" data-scroll="#learn3">魔導書自學</button>
+<button class="bookmark-btn" data-scroll="#learn4">學習戲法</button>
+<button class="bookmark-btn" data-scroll="#learn5">學習其他魔法流派</button>
+</div>
+<div class="text-block">
+<ul>
+<li>你可以向導師學習新法術，或從其他魔導書學習。</li>
+<li>你必須擁有該魔法流派的技能等級才能學習流派法術。</li>
+<li>你必須擁有任一魔法流派的技能等級才能學習通用法術。</li>
+</ul>
+</div>
+<div class="text-block" id="learn1">
+<h3>先決條件</h3>
+<ul>
+<li>有些法術擁有一些先決條件，你必須符合該先決條件才能學習該法術。</li>
+<li>先決條件通常要求你學會特定魔法流派，或學會其他特定法術。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="learn2">
+<h3>找導師學習</h3>
+<ul>
+<li>學習法術最簡單（但最昂貴）的方法是向會該法術的導師學習。</li>
+<li>課程耗時一班時間，但你在該次遊戲團務結束前無法啟動這個新法術。</li>
+<li>課程結束後，在該法術的魔法流派技能上打上升級標記，然後，在遊戲團務結束時，你必須用該升級標記來學習新法術，不能用來提升技能等級。</li>
+<li>進行一次帶有優勢的智力檢定，若成功，你學會該法術。否則沒有學會，必須重複進行課程。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="learn3">
+<h3>魔導書自學</h3>
+<ul>
+<li>如果你夠幸運，你可以找到其他薩滿的魔導書，然後靠自己自學其中的法術。</li>
+<li>學習方法和向導師學習一樣，但在最後階段會進行語言檢定，而非智力檢定，而且不會有優勢。</li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+<div class="text-block" id="learn4">
+<h4>學習戲法</h4>
+<ul>
+<li>戲法非常容易學習。一樣要向導師或魔導書學習，但只需要耗時一刻時間。而且不用打上升級標記，也不用進行檢定。</li>
+<button class="back-to-top">↑ 返回</button>
+</ul></div>
+<div class="text-block" id="learn5">
+<h4>學習其他魔法流派</h4>
+<ul>
+<li>若要學習其他魔法流派，你必須先獲得英雄能力「魔法天賦」，然後在擁有該魔法流派的導師底下學習至少一個禮拜。</li>
+<li>一個禮拜結束後，進行一次智力檢定。若成功，你會獲得該魔法流派的基礎技能等級（基於智力）。若失敗，你可以重複學習。</li>
+<li>非薩滿角色也可以透過此方式學習魔法。</li>
+<li>在冒險過程中，你的行動可能會導致你學習到一些<span class="text-red">不屬於當前四種流派</span>中的法術，<span class="text-red">這或許會對你的未來產生意想不到的後果</span>。</li>
+<li><span class="text-red">注意：羽術流派與獸術流派無法共存！</span></li>
+</ul>
+<button class="back-to-top">↑ 返回</button>
+</div>
+</div></section>
+<!-- 區塊：流派介紹 -->
+<section class="tab-content" id="schools">
+<br/>
+<!-- 🔸 次級導覽列 -->
+<div class="sub-nav">
+<button class="sub-btn active" data-sub="general">通用流派</button>
+<button class="sub-btn" data-sub="tonalli">靈魂流派</button>
+<button class="sub-btn" data-sub="hishna">獸術流派</button>
+<button class="sub-btn" data-sub="pluma">羽術流派</button>
+<button class="sub-btn" data-sub="elemental">元素流派</button>
+</div>
+<div class="divider"></div>
+<!-- 🔹 通用流派 -->
+<div class="sub-content active" id="general">
+<div class="text-block" id="gen1">
+<h3>通用流派 General Magic</h3>
+<p>通用魔法並非屬於特定流派，而是一系列的常見法術。不論你修行哪個流派，都可以學習通用魔法。</p>
+</div>
+<!-- ============================================================ -->
+<!-- 通用流派法術查閱區 -->
+<div class="divider"></div>
+<div class="spell-section" id="spells-general"><div class="skilltree-wrap"><svg class="skilltree-svg"></svg><div class="skilltree"></div></div>
+<h2 class="spell-title">通用流派 法術一覽</h2>
+<div class="spell-tier-nav">
+<button class="spell-tier-btn active" data-tier="gen-t0">0階（戲法）</button>
+<button class="spell-tier-btn" data-tier="gen-t1">1階</button>
+<button class="spell-tier-btn" data-tier="gen-t2">2階</button>
+<button class="spell-tier-btn" data-tier="gen-t3">3階</button>
+<button class="spell-tier-btn" data-tier="gen-t4">4階</button>
+<button class="spell-tier-btn" data-tier="gen-t5">5階</button>
+</div>
+<!-- 0~5階內容暫留空 -->
+<!-- 通用流派 0階(戲法) -->
+<div class="spell-tier active" id="gen-t0">
+<div class="spell-list-nav">
+<button class="spell-btn">亮</button>
+<button class="spell-btn">取</button>
+<button class="spell-btn">彈</button>
+<button class="spell-btn">開/關</button>
+<button class="spell-btn">縫補衣服</button>
+<button class="spell-btn">感應魔法</button>
+<button class="spell-btn">理髮</button>
+<button class="spell-btn">烹飪</button>
+<button class="spell-btn">清理</button>
+<button class="spell-btn">上鎖/開鎖</button>
+<button class="spell-btn">魔法凳</button>
+</div>
+<div class="spell-detail hidden" data-name="亮">
+<h3>亮 Light</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米（球形）</p>
+<p><strong>持續時間：</strong>一班</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你的法器發出 10 米半徑的亮光，持續一班時間。你 HP 歸零時會熄滅。</p>
+</div>
+<div class="spell-detail hidden" data-name="取">
+<h3>取 Fetch</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>讓 10 米內的一個非固定物體（不超過重量 1）漂浮至你身邊。</p>
+</div>
+<div class="spell-detail hidden" data-name="彈">
+<h3>彈 Flick</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你用手指大小的魔法力量撞擊 10 米內的一個物體或一個生物。可對目標造成 1 點傷害。此力道足以打碎玻璃。</p>
+</div>
+<!-- 🔹 開/關 -->
+<div class="spell-detail hidden" data-name="開/關">
+<h3>開/關 Open/Close</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你將 10 米內你看得見的一扇未上鎖的門打開或關起來。</p>
+</div>
+<div class="spell-detail hidden" data-name="縫補衣服">
+<h3>縫補衣服 Repair Clothes</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>立刻修復並洗淨 10 米內的一件服裝。</p>
+</div>
+<div class="spell-detail hidden" data-name="感應魔法">
+<h3>感應魔法 Sense Magic</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你可以感應你身處的地方或你手上的物品是否受到魔法影響。若有的話，是什麼樣的魔法。</p>
+</div>
+<!-- 🔹 上鎖／開鎖 -->
+<div class="spell-detail hidden" data-name="上鎖/開鎖">
+<h3>上鎖/開鎖 Lock/Unlock</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你鎖上或打開一個非魔法的鎖。</p>
+</div>
+<!-- 🔹 清理 -->
+<div class="spell-detail hidden" data-name="清理">
+<h3>清理 Clean</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你身處的房間立刻清理乾淨。所有灰塵和泥土都不見，擺設也變得整齊。</p>
+</div>
+<!-- 🔹 烹飪 -->
+<div class="spell-detail hidden" data-name="烹飪">
+<h3>烹飪 Cook Food</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你烹飪的求生檢定自動成功，且馬上烹煮完成。</p>
+</div>
+<!-- 🔹 理髮 -->
+<div class="spell-detail hidden" data-name="理髮">
+<h3>理髮 Hairstyle</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你任意改變自己頭髮的顏色、長度和造型。若情況適合，這可以讓你的欺瞞或遊說檢定獲得 1 個優勢。</p>
+</div>
+<div class="spell-detail hidden" data-name="魔法凳">
+<h3>魔法凳 Magic Stool</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你創造一個大約半米寬、半米高的圓柱體，可以讓你坐在上面或放東西。持續到你離開為止。</p>
+</div>
+</div>
+<!-- 通用流派 1階 -->
+<div class="spell-tier" id="gen-t1">
+<div class="spell-list-nav">
+<button class="spell-btn">解消術</button>
+<button class="spell-btn">防護術</button>
+</div>
+<div class="spell-detail hidden" data-name="解消術">
+<h3>解消術 Dispel</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你取消一個威力等級相等或較小的持續性法術。若 GM 和 PL 同意，解消術也可以用來終止其他魔法效果。</p>
+</div>
+<!-- 🔹 防護術 -->
+<div class="spell-detail hidden" data-name="防護術">
+<h3>防護術 Protector</h3>
+<p><strong>先決條件：</strong>學會任一魔法流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>一班</p>
+<p><strong>構材：</strong>可用於畫畫的物品、手勢、材料</p>
+<p><br/>你保護一個人或一個地方（大小不超過一個人）不受魔法影響。你可以對自己施放此法術。對保護對象施放的所有法術的威力等級都會減去防護術的威力等級。<br/>此法術也可以用來對抗怪物的魔法攻擊，讓魔法攻擊的傷害骰數量減去防護術的威力等級。</p>
+</div>
+</div>
+<!-- 通用流派 2階 -->
+<div class="spell-tier" id="gen-t2">
+<div class="spell-list-nav">
+<button class="spell-btn">反制術</button>
+</div>
+<!-- 🔹 反制術 -->
+<div class="spell-detail hidden" data-name="反制術">
+<h3>反制術 Magic Shield</h3>
+<p><strong>先決條件：</strong>學會解消術或防護術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>反應</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你干擾其他薩滿施放的法術。此法術是一個反應類法術，會中斷戰鬥的先攻順序，但不會消耗你該輪的動作。<br/><br/>你可以在對方施法檢定成功，但處理任何傷害或其他效果前，施放此法術。若你施法成功，對手法術的威力等級會減去你反制術的威力等級。若對手法術的威力等級被降至 0 以下，則該法術無效。<br/><br/>你也可以使用此法術來對抗怪物的魔法攻擊，讓魔法攻擊的傷害骰數量減去反制術的威力等級。</p>
+</div>
+</div>
+<!-- 通用流派 3階 -->
+<div class="spell-tier" id="gen-t3">
+<div class="spell-list-nav">
+<button class="spell-btn">轉移術</button>
+</div>
+<div class="spell-detail hidden" data-name="轉移術">
+<h3>轉移術 Transfer</h3>
+<p><strong>先決條件：</strong>學會反制術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你可以竊取其他類人生物的 WP，或將你的 WP 轉移給其他人。<br/>你可以奪取或贈與的 WP 數量最多等於施放此法術所需 WP 的兩倍。也就是威力等級 1 可轉移 4 WP、威力等級 2 可轉移 8 WP、威力等級 3 可轉移 12 WP。<br/>你用來施放此法術的 WP 會在轉移過程中消耗掉。你的 WP 不會超過上限，也不會低於 0，你的轉移對象亦同。<br/>若你的目標不是自願接受轉移，則此法術檢定有劣勢。</p>
+</div>
+</div>
+<!-- 通用流派 4階 -->
+<div class="spell-tier" id="gen-t4">
+<div class="spell-list-nav">
+<button class="spell-btn">封印術</button>
+<button class="spell-btn">充能術</button>
+</div>
+<div class="spell-detail hidden" data-name="封印術">
+<h3>封印術 Magic Seal</h3>
+<p><strong>先決條件：</strong>學會轉移術</p>
+<p><strong>環階：</strong>4階</p>
+<p><strong>施法時間：</strong>一班</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>永久</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你將一個法術綁定在你選擇的一個無生命物體中。封印術的威力等級決定了綁定法術的威力等級。綁定一個戲法仍需要威力等級 1 的封印術。<br/>當你施放封印術時，同時也要決定綁定的法術會如何發動。當發動條件觸發時，綁定的法術會消耗發動者的 WP。若發動者不能或不願意消耗 WP，綁定的法術就不會發動。<br/>封印術可以和充能術結合使用，讓該物體擁有自己的 WP 供發動者使用。這兩個法術儀式必須連續進行。<br/>發動綁定的法術會解除封印術，除非封印術和恆定術結合使用。</p>
+</div>
+<div class="spell-detail hidden" data-name="充能術">
+<h3>充能術 Charge</h3>
+<p><strong>先決條件：</strong>學會轉移術</p>
+<p><strong>環階：</strong>4階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>一班</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>你將自己的 WP 轉移到你選擇的一個無生命物體中，作為一種 WP 電池使用。<br/>每 1 個威力等級可以讓你轉移最多 10 WP。<br/>任何接觸該物體的人都可以使用儲存其內的 WP，而不消耗自己的 WP。<br/>在一班時間後，儲存的 WP 會消散，除非與恆定術結合使用。<br/>充能術也可以和封印術結合使用。</p>
+</div>
+</div>
+<!-- 通用流派 5階 -->
+<div class="spell-tier" id="gen-t5">
+<div class="spell-list-nav">
+<button class="spell-btn">恆定術</button>
+</div>
+<div class="spell-detail hidden" data-name="恆定術">
+<h3>恆定術 Permanence</h3>
+<p><strong>先決條件：</strong>學會封印術</p>
+<p><strong>環階：</strong>5階</p>
+<p><strong>施法時間：</strong>一班</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>永久</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>此魔法儀式可以與其他法術結合使用，使其效果永久存在。<br/>施放此法術會永久消耗施法者 1 WP（最大 WP -1）。<br/>恆定術的威力等級必須等於目標法術的威力等級。<br/>恆定術無法對持續效果為即效的法術使用。<br/>若恆定術與封印術結合使用，封印術的效果會永久存在，不再限制綁定法術的發動次數。</p>
+</div>
+</div>
+<div class="spell-detail-panel"><div class="placeholder">點擊法術以查看詳情。</div></div></div> <!-- ✅ 關閉 .spell-section -->
+</div> <!-- ✅ 關閉 #general -->
+<!-- 🔹 靈魂流派 -->
+<div class="sub-content" id="tonalli">
+<div class="text-block" id="ton1">
+<h3>靈魂流派 (托那利) Tonalli</h3>
+<p>馬茲提卡人和崇拜馬茲提克諸神的靈魂被稱為托那利(tonalli)，在死亡的那一刻，他們會到達一座宏偉的神廟。<br/>研究靈魂能量的薩滿，尊敬祖先的靈魂或世界本身的精神能量。<br/>他們相信靈魂是力量的源泉，透過儀式可治癒、強化，甚至操縱他人精神。</p>
+</div>
+<!-- ============================================================ -->
+<!-- 靈魂流派法術查閱區 -->
+<div class="divider"></div>
+<div class="spell-section" id="spells-tonalli"><div class="skilltree-wrap"><svg class="skilltree-svg"></svg><div class="skilltree"></div></div>
+<h2 class="spell-title">靈魂流派 法術一覽</h2>
+<div class="spell-tier-nav">
+<button class="spell-tier-btn active" data-tier="ton-t0">0階（戲法）</button>
+<button class="spell-tier-btn" data-tier="ton-t1">1階</button>
+<button class="spell-tier-btn" data-tier="ton-t2">2階</button>
+<button class="spell-tier-btn" data-tier="ton-t3">3階</button>
+</div>
+<!-- 靈魂流派 0階(戲法) -->
+<div class="spell-tier active" id="ton-t0">
+<div class="spell-list-nav">
+<button class="spell-btn">感應靈魂</button>
+<button class="spell-btn">奇術</button>
+<button class="spell-btn">安定靈魂</button>
+</div>
+<div class="spell-detail hidden" data-name="感應靈魂">
+<h3>感應靈魂 Tonallisense</h3>
+<p><strong>先決條件：</strong>學會靈魂流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你可以感應你周圍10米內所有靈體的存在。你可以知道他們的具體位置與數量。此法術可以穿透掩體。</p>
+</div>
+<!-- 🔹 奇術 -->
+<div class="spell-detail hidden" data-name="奇術">
+<h3>奇術 Thaumaturgy</h3>
+<p><strong>先決條件：</strong>學會靈魂流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你在射程內展現一個小小奇蹟，一種超自然力量的象徵。你在射程內創造出下列其中一種魔法效果：<ul><br/><li>你的音量提高到比原本大最多三倍。</li><br/><li>你使地表產生無害的震動。</li><br/><li>你創造出一個從射程內你所選擇的一處爲源頭發出的瞬間聲響，像是轟隆雷鳴、烏鴉尖嘯、或不祥的低語等等。</li><br/><li>你短暫地改變你眼睛的外觀。</li></ul></p>
+</div>
+<div class="spell-detail hidden" data-name="安定靈魂">
+<h3>安定靈魂 Stabilize Tonalli</h3>
+<p><strong>先決條件：</strong>學會靈魂流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>手勢、聖徽、法器、聲音</p>
+<p><br/>你觸碰一個自願生物或對自己使用，使其精神狀態在一刻時間內維持安定。<br/>在此期間，該生物的意志檢定獲得優勢。<br/>一旦獲得憤怒、畏縮或沮喪狀態時，此法術效果結束。<br/>此外，擁有此法術效果的生物若HP歸零進入瀕死狀態，他的下個回合開始時，死亡檢定後可結束法術效果來自動通過鼓舞檢定。</p>
+</div>
+</div>
+<!-- 靈魂流派 1階 -->
+<div class="spell-tier" id="ton-t1">
+<div class="spell-list-nav">
+<button class="spell-btn">放逐術</button>
+<button class="spell-btn">療傷術</button>
+<button class="spell-btn">靈魂之楔</button>
+<button class="spell-btn">靈魂低語</button>
+<button class="spell-btn">遙視術</button>
+</div>
+<!-- 🔹 放逐術 -->
+<div class="spell-detail hidden" data-name="放逐術">
+<h3>放逐術 Banish</h3>
+<p><strong>先決條件：</strong>學會靈魂流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢、法器(聖徽)</p>
+<p><br/>惡魔和不死生物是違反自然法則的褻瀆力量，必須被消滅。<br/>此法術會對這樣的存在造成 2D8 傷害。每提升一個威力等級可以讓傷害增加 1D8。<br/>護甲和天生護甲無法對抗此法術，此法術也無法被閃避或格擋。</p>
+</div>
+<div class="spell-detail hidden" data-name="療傷術">
+<h3>療傷術 Treat Wound</h3>
+<p><strong>先決條件：</strong>學會靈魂流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音</p>
+<p><br/>你讓一個生物恢復 2D6 HP。你可以對自己施放此法術。每提升 1 個威力等級可以讓恢復量增加 1D6 HP。</p>
+</div>
+<!-- 🔹 靈魂之楔 -->
+<div class="spell-detail hidden" data-name="靈魂之楔">
+<h3>靈魂之楔 Tonalli Sliver</h3>
+<p><strong>先決條件：</strong>學會靈魂流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你將由精神能量塑成的迷惘尖刺射進施法距離內一個你可見的生物的靈魂之中。對目標造成2d4傷害。<br/>每提升一個威力等級，傷害骰數量就會增加一顆。<br/>此法術可以被閃避，傷害無視護甲。</p>
+</div>
+<!-- 🔹 靈魂低語 -->
+<div class="spell-detail hidden" data-name="靈魂低語">
+<h3>靈魂低語 Tonalli Whisperer</h3>
+<p><strong>先決條件：</strong>學會靈魂流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>2米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>(聖徽)、法器、聲音</p>
+<p><br/>此法術可以讓你跟屍體的靈魂進行意識間的交流。你可以詢問數量等於威力等級的幾個問題。<br/>靈魂保有生前的個性與記憶，因此會根據自身經歷來回答或拒絕回答問題。</p>
+</div>
+<div class="spell-detail hidden" data-name="遙視術">
+<h3>遙視術 Farsight</h3>
+<p><strong>先決條件：</strong>學會靈魂流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>1公里</p>
+<p><strong>持續時間：</strong>專注</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>此法術可以讓你看見並聽見最遠一公里外的一個地點發生什麼事，就像你親臨現場一樣。<br/>你必須能夠從遠方看見或曾經造訪過該地點。<br/>每提升一個威力等級可以讓法術射程增加十倍（威力等級 2 為 10 公里；威力等級 3 為 100 公里）。<br/>此法術不能用來窺視其他次元。</p>
+</div>
+</div>
+<!-- 靈魂流派 2階 -->
+<div class="spell-tier" id="ton-t2">
+<div class="spell-list-nav">
+<button class="spell-btn">睡眠術</button>
+<button class="spell-btn">淨化術</button>
+<button class="spell-btn">治癒術</button>
+<button class="spell-btn">窺探術</button>
+<button class="spell-btn">占卜術</button>
+<button class="spell-btn">心靈重擊</button>
+<button class="spell-btn">讀心術</button>
+</div>
+<div class="spell-detail hidden" data-name="睡眠術">
+<h3>睡眠術 Sleep</h3>
+<p><strong>先決條件：</strong>學會療傷術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音</p>
+<p><br/>此法術的目標必須成功通過意志檢定（威力等級 1 有優勢；威力等級 2 正常骰；威力等級 3 有劣勢），否則就會陷入深度睡眠。若目標檢定成功，仍會獲得暈眩狀態。<br/>陷入沉睡的人很難被喚醒，但會在受到傷害時醒來。<br/>此法術只對生物有效，但對怪物無效。</p>
+</div>
+<!-- 🔹 淨化術 -->
+<div class="spell-detail hidden" data-name="淨化術">
+<h3>淨化術 Purge</h3>
+<p><strong>先決條件：</strong>學會放逐術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢、法器(聖徽)</p>
+<p><br/>你驅逐一個惡魔或不死生物，對這樣的非自然生物造成 2D10 傷害。每提升一個威力等級可以讓傷害增加 1D10。<br/>護甲和天生護甲無法對抗此法術，此法術也無法被閃避或格擋。</p>
+</div>
+<!-- 🔹 治癒術 -->
+<div class="spell-detail hidden" data-name="治癒術">
+<h3>治癒術 Heal Wound</h3>
+<p><strong>先決條件：</strong>學會療傷術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音</p>
+<p><br/>你讓一個生物恢復 2D8 HP，並治療一個非永久的重傷。<br/>你可以對自己施放此法術。<br/>每提升 1 個威力等級可以讓恢復量增加 1D8 HP。</p>
+</div>
+<!-- 🔹 窺探術 -->
+<div class="spell-detail hidden" data-name="窺探術">
+<h3>窺探術 Scrying</h3>
+<p><strong>先決條件：</strong>學會遙視術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>專注</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你可以知曉你所在地點過去發生的事件，即使已經沒有人記得發生什麼事。<br/>威力等級 1 可以讓你窺探最多一天前的事件；威力等級 2 為最多一年前，威力等級 3 為最多一個世紀前。<br/>你看見的景象通常是模糊且片段的，由 GM 決定你看見什麼。</p>
+</div>
+<div class="spell-detail hidden" data-name="占卜術">
+<h3>占卜術 Divination</h3>
+<p><strong>先決條件：</strong>學會遙視術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>100米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>你指定一個物品（例如武器、劍）、物質（例如黃金、空氣、水）、生物或生物類形（例如薩滿佐特、不死生物、歐克），或現象（例如魔法）。<br/>你會知道法術射程內離你指定目標最近的方向。<br/>每提升一個威力等級，法術射程就會加倍（威力等級 2 為 200 米，威力等級 3 為 400 米）。</p>
+</div>
+<!-- 🔹 心靈重擊 -->
+<div class="spell-detail hidden" data-name="心靈重擊">
+<h3>心靈重擊 Mental Strike</h3>
+<p><strong>先決條件：</strong>學會靈魂之楔</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>你可以將你的靈魂能量投射成強大的物理打擊。<br/>目標會被拋離 2D6 米，並受到相同數值的傷害。<br/>每提升一個威力等級，傷害骰數量就會增加一顆。<br/>此法術可以視為遠程攻擊被閃避或格擋。</p>
+</div>
+<div class="spell-detail hidden" data-name="讀心術">
+<h3>讀心術 Telepathy</h3>
+<p><strong>先決條件：</strong>學會遙視術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>專注</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>你可以讀懂另一個生物的表面想法。若要探究更深的記憶需要威力等級 2 或 3，取決於記憶的清晰程度，由 GM 裁決。<br/>你也可以使用此法術將你自己的想法傳輸給另一個人知道。</p>
+</div>
+</div>
+<!-- 靈魂流派 3階 -->
+<div class="spell-tier" id="ton-t3">
+<div class="spell-list-nav">
+<button class="spell-btn">支配術</button>
+<button class="spell-btn">傳送術</button>
+<button class="spell-btn">復活術</button>
+<button class="spell-btn">復原術</button>
+</div>
+<!-- 🔹 支配術 -->
+<div class="spell-detail hidden" data-name="支配術">
+<h3>支配術 Dominate</h3>
+<p><strong>先決條件：</strong>學會讀心術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>專注</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>你可以完全控制另一個生物的行為。<br/>若要施放此法術，與目標進行一次意志對抗檢定。威力等級 1 你有劣勢、威力等級 2 正常骰、威力等級 3 你有優勢。<br/>若你對抗成功，目標必須聽你命令馬上進行一次移動和一個動作（但不能進行需要花費 WP 的動作）。另外，目標在他的下一回合也無法做任何事情。<br/>此法術對怪物無效。</p>
+</div>
+<!-- 🔹 傳送術 -->
+<div class="spell-detail hidden" data-name="傳送術">
+<h3>傳送術 Teleport</h3>
+<p><strong>先決條件：</strong>學會占卜術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>施放這個法術後，你可以將自己傳送至最多 100 米遠的地點。你必須能夠從遠方看見或曾經造訪過該地點。<br/>每提升一個威力等級，你可以將傳送距離加倍，或帶另一個人類大小的生物和你一起傳送。<br/>此法術無法傳送至另一個次元。</p>
+</div>
+<!-- 🔹 復活術 -->
+<div class="spell-detail hidden" data-name="復活術">
+<h3>復活術 Resurrection</h3>
+<p><strong>先決條件：</strong>學會治癒術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>一班</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>永久</p>
+<p><strong>構材：</strong>聲音、手勢、材料（屍體）</p>
+<p><br/>你可以引導自然能量讓死者復活，不是以不死生物的形態，而是真正復活。<br/>施放此法術會永久消耗施法者 1 WP（最大 WP -1）。<br/>目標死亡時間越長，施放此法術的難度就越大。若目標的死亡時間在一班時間內，需要威力等級 1；一天內需要威力等級 2；一週內需要威力等級 3。超過一週的屍體過於腐爛，無法復活。<br/>此法術只有一次嘗試的機會，若檢定失敗，死者就會永遠離去，無法再被復活。<br/>死而復生的人所有基於魅力的技能都會減少 1D3（最低為 3）。</p>
+</div>
+<!-- 🔹 復原術 -->
+<div class="spell-detail hidden" data-name="復原術">
+<h3>復原術 Restoration</h3>
+<p><strong>先決條件：</strong>學會治癒術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音</p>
+<p><br/>你讓一個生物恢復 2D10 HP，並治療任何一個重傷。你可以對自己施放此法術。每提升 1 個威力等級可以讓恢復量增加 1D10 HP。</p>
+</div>
+</div>
+<div class="spell-detail-panel"><div class="placeholder">點擊法術以查看詳情。</div></div></div> <!-- ✅ 關閉 .spell-section -->
+</div> <!-- ✅ 關閉 #tonalli -->
+<!-- 🔹 獸術流派 -->
+<div class="sub-content" id="hishna">
+<div class="text-block" id="his1">
+<h3>獸術流派 (希什納) Hishna</h3>
+<p>蟲噬、獸爪與毒液的魔法，是邪神噬心者札爾特克賜予人類的黑暗贈禮。<br/>這些法術暴力而無情，模仿野獸的殘酷與掠食，但這些薩滿認為這是生存在殘酷大地上的必要力量。<br/>唯有藉由獸術，他們才能以野性的殘暴對抗荒野中的威脅，確保族群得以存續。</p>
+</div>
+<!-- ============================================================ -->
+<!-- 獸術流派法術查閱區 -->
+<div class="divider"></div>
+<div class="spell-section" id="spells-hishna"><div class="skilltree-wrap"><svg class="skilltree-svg"></svg><div class="skilltree"></div></div>
+<h2 class="spell-title">獸術流派 法術一覽</h2>
+<div class="spell-tier-nav">
+<button class="spell-tier-btn active" data-tier="his-t0">0階（戲法）</button>
+<button class="spell-tier-btn" data-tier="his-t1">1階</button>
+<button class="spell-tier-btn" data-tier="his-t2">2階</button>
+<button class="spell-tier-btn" data-tier="his-t3">3階</button>
+</div>
+<!-- 獸術流派 0階(戲法) -->
+<div class="spell-tier active" id="his-t0">
+<div class="spell-list-nav">
+<button class="spell-btn">伏擊</button>
+<button class="spell-btn">野獸感官</button>
+<button class="spell-btn">感應心跳</button>
+<button class="spell-btn">蛇臂術</button>
+</div>
+<div class="spell-detail hidden" data-name="伏擊">
+<h3>伏擊 Ambush</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>當你施放此法術時，你在持續時間內的隱匿檢定獲得優勢。</p>
+</div>
+<!-- 🔹 野獸感官 -->
+<div class="spell-detail hidden" data-name="野獸感官">
+<h3>野獸感官 Beast Senses</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你獲得如同野獸般的敏銳感官。在法術持續時間內，你在依賴聽覺、視覺和嗅覺的察覺檢定上具有優勢。</p>
+</div>
+<!-- 🔹 感應心跳 -->
+<div class="spell-detail hidden" data-name="感應心跳">
+<h3>感應心跳 Heartsense</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你可以感應你周圍10米內所有生物的心跳。你可以知道他們的具體位置與數量。此法術可以穿透掩體。</p>
+</div>
+<!-- 🔹 蛇臂術 -->
+<div class="spell-detail hidden" data-name="蛇臂術">
+<h3>蛇臂術 Scalesnare</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>手勢、材料（一片蛇鱗）</p>
+<p><br/>施放此法術後，你的手臂將瞬間變得如蛇類一般柔軟且靈活。徒手打擊命中可以同時觸發擒抱效果。</p>
+</div>
+</div>
+<!-- 獸術流派 1階 -->
+<div class="spell-tier" id="his-t1">
+<div class="spell-list-nav">
+<button class="spell-btn">噴射銳石</button>
+<button class="spell-btn">毒刃術</button>
+<button class="spell-btn">野獸低語</button>
+<button class="spell-btn">獵者之令</button>
+<button class="spell-btn">爪刃術</button>
+<button class="spell-btn">獸甲強化</button>
+<button class="spell-btn">大步奔行</button>
+</div>
+<div class="spell-detail hidden" data-name="噴射銳石">
+<h3>噴射銳石 Obsidian Shards</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你召喚出一塊尖銳的黑曜石碎片，從你的指尖飛出，攻擊你選擇的生物。造成 2D4 穿刺傷害。<br/>每提升一個威力等級可以額外召喚一根黑曜石銳片，射向射程內的另一個目標。<br/>此法術可以視為遠程攻擊被閃避或格擋。</p>
+</div>
+<!-- 🔹 毒刃術 -->
+<div class="spell-detail hidden" data-name="毒刃術">
+<h3>毒刃術 Venomblade</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>施放此法術後，你的揮砍或穿刺武器開始滲出綠色的黏性毒液。如果你用該武器攻擊敵人，視為附帶弱效毒素。<br/>威力等級2時視為附帶中效致命毒素。<br/>威力等級3時視為附帶強效致命毒素。</p>
+</div>
+<!-- 🔹 野獸低語 -->
+<div class="spell-detail hidden" data-name="野獸低語">
+<h3>野獸低語 Beast Whisperer</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>2米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音</p>
+<p><br/>此法術可以讓你跟爬蟲類或哺乳類動物談話。你可以詢問數量等於威力等級的幾個問題。<br/>動物可以告訴你牠看到、聽到、聞到的東西，但牠們的想法和人類不一樣，答案不見得是你可以輕易理解的。但好處是，牠們不會說謊。</p>
+</div>
+<div class="spell-detail hidden" data-name="獵者之令">
+<h3>獵者之令 Huntsman's Call</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>專注</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>你將注意力集中在射程內的一處。10米內的任何野獸或生物必須進行一次意志檢定，否則就會被吸引到該點，在法術持續時間內，受影響的生物將盡其所能地移動並保持盡可能接近的距離。<br/>此法術對怪物無效。<br/>每提升一個威力等級，影響範圍便增加10米。</p>
+</div>
+<!-- 🔹 爪刃術 -->
+<div class="spell-detail hidden" data-name="爪刃術">
+<h3>爪刃術 Talonblade</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>施放此法術後，你的武器會長出獸爪狀的突起。如果你用該武器攻擊敵人，每提升一個威力等級將額外增加 1D6 揮砍傷害。</p>
+</div>
+<div class="spell-detail hidden" data-name="獸甲強化">
+<h3>獸甲強化 Hishnahide</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢、材料（動物皮）</p>
+<p><br/>此法術會增加皮甲的強度和防護能力。<br/>皮甲保留其原始設計，但在外觀上會受到你所使用的材料而有變化（例如豹皮會有豹紋）。<br/>每提升一個威力等級可以讓護甲值 +2。<br/>但穿著強化後的皮甲進行隱匿檢定時會有劣勢。
+</p></div>
+<!-- 🔹 大步奔行 -->
+<div class="spell-detail hidden" data-name="大步奔行">
+<h3>大步奔行 Longstrider</h3>
+<p><strong>先決條件：</strong>學會獸術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>目標的移動力在持續時間內加倍。你可以對自己施放此法術。<br/>每提升一個威力等級可以讓你指定另一個人獲得此法術效果。</p>
+</div>
+</div>
+<!-- 獸術流派 2階 -->
+<div class="spell-tier" id="his-t2">
+<div class="spell-list-nav">
+<button class="spell-btn">豹撲術</button>
+<button class="spell-btn">札爾特克之怒</button>
+<button class="spell-btn">墓葬術</button>
+<button class="spell-btn">魔化武器</button>
+</div>
+<div class="spell-detail hidden" data-name="豹撲術">
+<h3>豹撲術 Jaguar Pounce</h3>
+<p><strong>先決條件：</strong>學會大步奔行</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢、材料(貓科動物的肌腱)</p>
+<p><br/>你觸碰一個自願生物。在法術持續時間內，如果受術者筆直向某個生物移動至少6米並進行攻擊，該次攻擊帶有優勢，且被命中的生物需進行力量檢定，否則就會被擊倒伏地。<br/>每提升一個威力等級，可額外選擇一個自願生物或自身。</p>
+</div>
+<div class="spell-detail hidden" data-name="札爾特克之怒">
+<h3>札爾特克之怒 Zaltec’s Fury</h3>
+<p><strong>先決條件：</strong>學會毒刃術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>20米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢、材料（毒蛇或蜥蜴的毒牙）</p>
+<p><br/>蛇牙從你的手中飛向你選擇的射程內一處，以該點為中心6米球形中爆炸成針狀碎片。位於球體內的每個生物受到 2d6 穿刺傷害，並附帶弱效麻痺毒素效果。<br/>威力等級2時變為附帶中效麻痺毒素。<br/>威力等級3時變為附帶強效麻痺毒素。</p>
+</div>
+<!-- 🔹 墓葬術 -->
+<div class="spell-detail hidden" data-name="墓葬術">
+<h3>墓葬術 Obsidian Tomb</h3>
+<p><strong>先決條件：</strong>學會噴射銳石</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>20米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢、材料（一顆黑曜石）</p>
+<p><br/>你選擇射程內的一個生物，由黑曜石所形成的繭瞬間將其圍住。被困住的生物無法移動或說話，並立即開始窒息。<br/>每次他的回合開始時必須進行一次體質檢定，失敗則受到等同於溺水的效果。<br/>黑曜石繭具有等同威力等級 X 5 的HP和等同威力等級的護甲值，可以對其造成傷害並擊碎。<br/>此法術對大型或以上的生物無效。</p>
+</div>
+<div class="spell-detail hidden" data-name="魔化武器">
+<h3>魔化武器 Enchant Weapon</h3>
+<p><strong>先決條件：</strong>學會爪刃術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>此法術會強化一個武器，讓該武器在進行攻擊和格擋檢定時骰到 1~2 會視為大成功。<br/>另外，該武器也會被視為魔法武器。<br/>每提升一個威力等級，骰出大成功的機率也會 +1。也就是說，威力等級 2 是骰到 1~3 大成功、威力等級 3 是骰到 1~4 大成功。</p>
+</div>
+</div>
+<!-- 獸術流派 3階 -->
+<div class="spell-tier" id="his-t3">
+<div class="spell-list-nav">
+<button class="spell-btn">豹主之咆嘯</button>
+<button class="spell-btn">撕心術</button>
+<button class="spell-btn">黑曜獸</button>
+</div>
+<!-- 🔹 豹主之咆嘯 -->
+<div class="spell-detail hidden" data-name="豹主之咆嘯">
+<h3>豹主之咆嘯 Roar of the Jaguar Lord</h3>
+<p><strong>先決條件：</strong>學會豹撲術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米（球型）</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢、材料（一顆貓眼或貓眼石）</p>
+<p><br/>你發出融合靈力與野性怒吼的豹吼。範圍內的每個生物受到恐懼攻擊，同時受到1D6傷害。<br/>若你處於憤怒狀態，傷害額外增加1d8。<br/>每提升一個威力等級，範圍增加10米，傷害骰增加1顆。</p>
+</div>
+<div class="spell-detail hidden" data-name="撕心術">
+<h3>撕心術 Heart Ripper</h3>
+<p><strong>先決條件：</strong>學會札爾特克之怒</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>此法術通常在向扎爾特克獻祭或刑求敵人時使用。<br/>你觸碰一個擁有鮮活心臟的生物，根據威力等級產生不同的效果：</p>
+<ul>
+<li>威力等級1時，目標胸膛遭到嚴重的撕裂傷，損失一半HP。</li>
+<li>威力等級2時，目標心臟遭到重擊並暫時停止跳動，損失所有HP(該生物將進行死亡檢定而不是正常的立即死亡)。</li>
+<li>威力等級3時，目標胸口爆裂，心臟飛出並落入施術者手中，當場死亡。</li>
+</ul>
+<p><br/>此法術可以視為近戰攻擊被閃避或格擋。且對怪物無效。<br/>若此法術施放失敗，將反噬自己，施術者受到等同施放時威力等級-1的效果。(大失敗則施術者受到等同施放威力等級的效果)
+</p></div>
+<!-- 🔹 黑曜獸 -->
+<div class="spell-detail hidden" data-name="黑曜獸">
+<h3>黑曜獸 Obsidian Beast</h3>
+<p><strong>先決條件：</strong>學會墓葬術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>4米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢、材料（一顆黑曜石）</p>
+<p><br/>此法術會召喚一頭由黑曜石所組成的野獸。<br/>黑曜獸在戰鬥中被視為怪物，並與創造者共用同一個先攻順序。<br/>黑曜獸會遵循創造者的命令（自由動作），但必須保持在創造者的視線範圍內。</p>
+<br/><h4>黑曜獸</h4>
+<ul>
+<li>移動力：10</li>
+<li>HP：威力等級 X 5</li>
+<li>護甲值：威力等級 × 2</li>
+<li>武器：爪擊。在近戰中自動命中（但可以被閃避或格擋）並造成每威力等級 1D6 揮砍傷害。</li>
+<li>毒刃術：黑曜獸可以用創造者的 WP 對爪子施放威力等級與自己相同的毒刃術。</li>
+</ul>
+</div>
+</div>
+<div class="spell-detail-panel"><div class="placeholder">點擊法術以查看詳情。</div></div></div> <!-- ✅ 關閉 .spell-section -->
+</div> <!-- ✅ 關閉 #hishna -->
+<!-- 🔹 羽術流派 -->
+<div class="sub-content" id="pluma">
+<div class="text-block" id="plu1">
+<h3>羽術流派 (普魯瑪) Pluma</h3>
+<p>由大地母神馬茲提卡親自創造，並由其子夸爾特賜予人類，用以對抗札爾特克的大軍。<br/>羽術薩滿透過羽毛、光輝與聖歌施法，象徵純潔、保護與秩序。</p>
+</div>
+<!-- ============================================================ -->
+<!-- 羽術流派法術查閱區 -->
+<div class="divider"></div>
+<div class="spell-section" id="spells-pluma"><div class="skilltree-wrap"><svg class="skilltree-svg"></svg><div class="skilltree"></div></div>
+<h2 class="spell-title">羽術流派 法術一覽</h2>
+<div class="spell-tier-nav">
+<button class="spell-tier-btn active" data-tier="plu-t0">0階（戲法）</button>
+<button class="spell-tier-btn" data-tier="plu-t1">1階</button>
+<button class="spell-tier-btn" data-tier="plu-t2">2階</button>
+<button class="spell-tier-btn" data-tier="plu-t3">3階</button>
+</div>
+<!-- 羽術流派 0階(戲法) -->
+<div class="spell-tier active" id="plu-t0">
+<div class="spell-list-nav">
+<button class="spell-btn">花徑</button>
+<button class="spell-btn">鳥語</button>
+<button class="spell-btn">感應氣息</button>
+<button class="spell-btn">羽落</button>
+</div>
+<div class="spell-detail hidden" data-name="花徑">
+<h3>花徑 Floral Trail</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你所到之處開滿美麗的花卉，然後在一班時間後枯萎。</p>
+</div>
+<!-- 🔹 鳥語 -->
+<div class="spell-detail hidden" data-name="鳥語">
+<h3>鳥語 Birdsong</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你的身邊會環繞許多美麗的鳥兒，持續一刻時間。這些鳥會讓你的察覺檢定獲得 1 個優勢。此戲法只能在戶外使用。</p>
+</div>
+<div class="spell-detail hidden" data-name="感應氣息">
+<h3>感應氣息 Breathsense</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你可以感應你周圍10米內所有生物的呼吸。你可以知道他們的具體位置與數量。此法術可以穿透掩體。</p>
+</div>
+<!-- 🔹 羽落 -->
+<div class="spell-detail hidden" data-name="羽落">
+<h3>羽落 Slow Fall</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>反應</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你像羽毛一樣慢慢墜落並著陸，不論高度多高。</p>
+</div>
+</div>
+<!-- 羽術流派 1階 -->
+<div class="spell-tier" id="plu-t1">
+<div class="spell-list-nav">
+<button class="spell-btn">電光一閃</button>
+<button class="spell-btn">纏繞之根</button>
+<button class="spell-btn">動物低語</button>
+<button class="spell-btn">漂浮術</button>
+<button class="spell-btn">飛羽鏢</button>
+<button class="spell-btn">綻放術</button>
+<button class="spell-btn">夸爾特之息</button>
+</div>
+<div class="spell-detail hidden" data-name="電光一閃">
+<h3>電光一閃 Lightning Flash</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>30米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你從天空召喚一道閃電。<br/>若施放成功，目標受到 2D6 閃電傷害，然後閃電會隨機彈跳至目標 2 米內的另一個生物，造成 2D4 傷害。<br/>每提升一個威力等級可以讓各個傷害骰數量增加一顆。<br/>此法術傷害無視金屬護甲，但可以視為遠程攻擊被閃避或格擋，若此法術被成功閃避或格擋，閃電就不會連鎖至其他目標。<br/>若在室內施放此法術，需消耗雙倍 WP。</p>
+</div>
+<div class="spell-detail hidden" data-name="纏繞之根">
+<h3>纏繞之根 Ensnaring Roots</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>一班</p>
+<p><strong>構材：</strong>(附近的樹枝或樹根)、手勢、材料</p>
+<p><br/>目標被樹根和樹枝纏繞而無法移動。<br/>嘗試掙脫需要一個動作。一輪只能嘗試一次，其他人可以協助。<br/>掙脫需要閃避檢定（威力等級 1 有優勢；威力等級 2 正常骰；威力等級 3 有劣勢）。<br/>此法術對怪物無效。</p>
+</div>
+<!-- 🔹 動物低語 -->
+<div class="spell-detail hidden" data-name="動物低語">
+<h3>動物低語 Animal Whisperer</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>2米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音</p>
+<p><br/>此法術可以讓你跟禽鳥類或哺乳類動物談話。你可以詢問數量等於威力等級的幾個問題。<br/>動物可以告訴你牠看到、聽到、聞到的東西，但牠們的想法和人類不一樣，答案不見得是你可以輕易理解的。但好處是，牠們不會說謊。</p>
+</div>
+<!-- 🔹 漂浮術 -->
+<div class="spell-detail hidden" data-name="漂浮術">
+<h3>漂浮術 Levitate</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>6米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你將自己、另一個人，或人類大小的物體往任意方向漂浮最多 6 米，然後目標會緩緩著陸或直接摔到地上（由你決定）。<br/>
+  若你嘗試漂浮一個非自願的生物，你的施法檢定有劣勢。<br/>
+  每提升一個威力等級可以讓漂浮距離提升 2 米，或讓你漂浮另一個人或物體。</p>
+</div>
+<!-- 🔹 飛羽鏢 -->
+<div class="spell-detail hidden" data-name="飛羽鏢">
+<h3>飛羽鏢 Feather Darts</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你召喚出一根靈體羽毛，從你的指尖飛出，攻擊你選擇的生物。造成 2D4 穿刺傷害。<br/>每提升一個威力等級可以額外召喚一根靈體羽毛，射向射程內的另一個目標。<br/>此法術可以視為遠程攻擊被閃避或格擋。</p>
+</div>
+<div class="spell-detail hidden" data-name="綻放術">
+<h3>綻放術 Blossom</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>將生命能量輸送到區域內的植物。如果法術範圍內沒有植物，則該法術無效。<br/>範圍內一點4米球形內的所有植物生命都變得更加旺盛，所有開花植物都會立即開花。<br/>該區域內所有對施術者帶有敵意的生物都會受到盛開花朵壓倒性的鎮靜氣味的影響。其進行一次意志檢定，如果失敗，只要處在開花影響的區域內，該生物對施術者失去興趣。<br/>一旦該生物受到傷害可再進行一次意志檢定，成功則該影響結束。此法術對怪物無效。<br/>此外，區域內充滿了生命能量，所有進行的死亡檢定獲得優勢。<br/>每提升一個威力等級，影響範圍便增加2米。</p>
+</div>
+<div class="spell-detail hidden" data-name="夸爾特之息">
+<h3>夸爾特之息 Breath of Qotal</h3>
+<p><strong>先決條件：</strong>學會羽術流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米（錐形）</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢、材料(一些金粉)</p>
+<p><br/>當你呼氣時，令人目眩難受的光束從你的嘴裡射出，射程內的所有生物受到2D4傷害(無視護甲)，並進行體質檢定，失敗獲得目盲狀態(視為陷入黑暗)，直到下一輪結束。<br/>每提升一個威力等級可以讓傷害骰數量增加一顆。<br/>威力等級3時體質檢定具有劣勢。</p>
+</div>
+</div>
+<!-- 羽術流派 2階 -->
+<div class="spell-tier" id="plu-t2">
+<div class="spell-list-nav">
+<button class="spell-btn">基爾茲之愛</button>
+<button class="spell-btn">羽龍捲</button>
+<button class="spell-btn">吞噬之森</button>
+<button class="spell-btn">閃電束</button>
+<button class="spell-btn">羽靈使</button>
+</div>
+<!-- 🔹 基爾茲之愛 -->
+<div class="spell-detail hidden" data-name="基爾茲之愛">
+<h3>基爾茲之愛 Kiltzi's Love</h3>
+<p><strong>先決條件：</strong>學會綻放術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>4米（球形）</p>
+<p><strong>持續時間：</strong>專注</p>
+<p><strong>構材：</strong>聲音、手勢、材料（甜食）</p>
+<p><br/>你散發出強烈的慈愛氣息，在你4米內的生物需進行一次意志檢定。失敗則會對你產生強烈的感情。<br/>如果你處於危險之中，他們將不顧一切地保護你，即使這樣做會讓他們面臨致命的危險。（如何行動由GM決定）<br/>此法術對怪物無效。<br/>此外，區域內充滿了生命能量，所有進行的死亡檢定獲得優勢。<br/>每提升一個威力等級，影響範圍便增加4米。</p>
+</div>
+<!-- 🔹 羽龍捲 -->
+<div class="spell-detail hidden" data-name="羽龍捲">
+<h3>羽龍捲 Slashing Plumage</h3>
+<p><strong>先決條件：</strong>學會飛羽鏢</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>4米（球形）</p>
+<p><strong>持續時間：</strong>專注</p>
+<p><strong>構材：</strong>聲音、手勢、材料（一根老鷹羽毛）</p>
+<p><br/>你周圍4米球形空氣中充滿了帶有鋒利邊緣的旋轉羽毛。當生物在回合中第一次進入該法術的區域或在該區域開始其回合時需通過一次閃避檢定，否則會受到 2d8 揮砍傷害。在該區域內進行的近戰或遠程攻擊具有劣勢。每提升一個威力等級，影響範圍便增加2米。</p>
+</div>
+<!-- 🔹 吞噬之森 -->
+<div class="spell-detail hidden" data-name="吞噬之森">
+<h3>吞噬之森 Engulfing Forest</h3>
+<p><strong>先決條件：</strong>學會纏繞之根</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米（球形）</p>
+<p><strong>持續時間：</strong>一班</p>
+<p><strong>構材：</strong>手勢、材料(附近的樹枝或樹根)</p>
+<p><br/>你召喚森林之靈，迅速在效果區域的地面上長出荊棘和樹根。<br/>該區域視為崎嶇地形（體操檢定失敗會失去該輪移動力）。<br/>在你施放此法術後，除了你自己和怪物以外，效果區域內的所有人都會被樹根和樹枝纏繞而無法移動。<br/>嘗試掙脫需要一個動作。一輪只能嘗試一次，其他人可以協助。<br/>掙脫需要閃避檢定（威力等級 1 有優勢；威力等級 2 正常骰；威力等級 3 有劣勢）。</p>
+</div>
+<!-- 🔹 閃電束 -->
+<div class="spell-detail hidden" data-name="閃電束">
+<h3>閃電束 Lightning Bolt</h3>
+<p><strong>先決條件：</strong>學會電光一閃</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>40米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你對一個目標召喚一道巨大的閃電。<br/>若施放成功，目標受到 2D8 閃電傷害，然後閃電會隨機彈跳至另外兩個生物，兩兩之間不超過 2 米。第二個生物受到 2D6 傷害、第三個受到 2D4 傷害。<br/>每提升一個威力等級可以讓各個傷害骰數量增加一顆。<br/>此法術傷害無視金屬護甲，但可以視為遠程攻擊被閃避或格擋，若此法術被成功閃避或格擋，閃電就不會連鎖至其他目標。<br/>若在室內施放此法術，需消耗雙倍 WP。</p>
+</div>
+<!-- 🔹 羽靈使 -->
+<div class="spell-detail hidden" data-name="羽靈使">
+<h3>羽靈使 Plumazotl</h3>
+<p><strong>先決條件：</strong>學會夸爾特之息</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>4米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢、法器</p>
+<p><br/>你召喚出一個特殊的只聽你命令的小型智慧靈體生物，形象為半透明的鳥類。<br/>免疫物理傷害，只有魔法能夠摧毀它。它只能待在你10米範圍內。<br/>戰鬥時在你的回合中你可以口頭命令它行動而無需消耗動作。<br/>根據威力等級擁有不同的能力：<br/>
+<ul><br/><li>威力等級 1：擁有你的知識和語言能力，可以說話。言語能做到的事情它也能。(例如鼓舞、遊說、知識類的協助動作)</li>
+<br/><li>威力等級 2：擁有威力等級 1 的能力。此外，會散發出6米的光芒。在戰鬥時，若羽靈使在你2米內，你可以使用反應來讓對你的近戰攻擊具有劣勢。</li>
+<br/><li>威力等級 3：擁有威力等級 1 和 2 的能力。此外，你可以將羽靈使所在的位置當作自己在該處來施放法術。</li></ul></p>
+</div>
+</div>
+<!-- 羽術流派 3階 -->
+<div class="spell-tier" id="plu-t3">
+<div class="spell-list-nav">
+<button class="spell-btn">宏偉之冠</button>
+<button class="spell-btn">雷霆箭</button>
+<button class="spell-btn">飛行術</button>
+<button class="spell-btn">羽父之恩賜</button>
+</div>
+<!-- 🔹 宏偉之冠 -->
+<div class="spell-detail hidden" data-name="宏偉之冠">
+<h3>宏偉之冠 Magnificent Headdress</h3>
+<p><strong>先決條件：</strong>學會基爾茲之愛</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>4米（球形）</p>
+<p><strong>持續時間：</strong>專注</p>
+<p><strong>構材：</strong>聲音、手勢、材料（一根華麗羽毛）</p>
+<p><br/>一頂高貴與華麗的羽毛頭飾出現在你的頭上，閃爍著夢幻的五彩光芒。<br/>在你4米內的生物需進行一次意志檢定。失敗則會對你產生敬畏之情並且跪下，保持伏地狀態。<br/>頭飾在範圍內提供光照。受到法術影響而伏地的生物無法攻擊你，但可以選擇攻擊其他人。<br/>此法術無法讓怪物伏地，但會優先以其他人為目標。<br/>每提升一個威力等級，影響範圍便增加4米。</p>
+</div>
+<div class="spell-detail hidden" data-name="雷霆箭">
+<h3>雷霆箭 Thunderbolt</h3>
+<p><strong>先決條件：</strong>學會閃電束</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>50米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你對一個目標召喚一道強大的雷擊。<br/>若施放成功，目標受到 2D10 閃電傷害，然後閃電會隨機彈跳至另外三個生物，兩兩之間不超過 2 米。第二個生物受到 2D8 傷害、第三個受到 2D6 傷害、第四個受到 2D4 傷害。<br/>每提升一個威力等級可以讓各個傷害骰數量增加一顆。<br/>此法術傷害無視金屬護甲，但可以視為遠程攻擊被閃避或格擋，若此法術被成功閃避或格擋，閃電就不會連鎖至其他目標。<br/>若在室內施放此法術，需消耗雙倍 WP。</p>
+</div>
+<div class="spell-detail hidden" data-name="飛行術">
+<h3>飛行術 Flight</h3>
+<p><strong>先決條件：</strong>學會漂浮術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你賦予自己或另一個最大為人類大小的生物自由飛行的能力。<br/>威力等級 1 移動力為 6，威力等級 2 移動力加倍為 12、威力等級 3 移動力再加倍為 24。<br/>飛行生物可以忽略所有地面的障礙，不會被地形影響。</p>
+</div>
+<div class="spell-detail hidden" data-name="羽父之恩賜">
+<h3>羽父之恩賜 Gifts of the Plumed Father</h3>
+<p><strong>先決條件：</strong>學會羽靈使</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>一班</p>
+<p><strong>射程：</strong>10米（球形）</p>
+<p><strong>持續時間：</strong>永久</p>
+<p><strong>構材：</strong>聲音、手勢、材料(1-3顆至少價值50金幣的寶石)</p>
+<p><br/>你將寶石種植在鬆軟的地面上。一班時間你都必須培育作物、澆水並驅除害蟲。時間內你不能離開寶石超過10米。<br/>作物將在1班時間後成熟，每種植一顆寶石就會產生一整穗金色的玉米。視為熟食可直接食用，重量為1。<br/>任何吃掉此法術所創造玉米的人，恢復全部HP，並移除疾病和毒素，以及一個狀態。<br/>每提升一個威力等級，可以多種植一顆寶石。</p>
+</div>
+</div>
+<div class="spell-detail-panel"><div class="placeholder">點擊法術以查看詳情。</div></div></div> <!-- ✅ 關閉 .spell-section -->
+</div> <!-- ✅ 關閉 #pluma -->
+<!-- 🔹 元素流派 -->
+<div class="sub-content" id="elemental">
+<div class="text-block" id="ele1">
+<h3>元素流派 Elementalism</h3>
+<p>相信火、風、水、土是構成萬物的根本。他們透過操縱這四種元素來釋放力量，展現出大自然原始而無情的威能。</p>
+</div>
+<!-- ============================================================ -->
+<!-- 元素流派法術查閱區 -->
+<div class="divider"></div>
+<div class="spell-section" id="spells-elemental"><div class="skilltree-wrap"><svg class="skilltree-svg"></svg><div class="skilltree"></div></div>
+<h2 class="spell-title">元素流派 法術一覽</h2>
+<div class="spell-tier-nav">
+<button class="spell-tier-btn active" data-tier="ele-t0">0階（戲法）</button>
+<button class="spell-tier-btn" data-tier="ele-t1">1階</button>
+<button class="spell-tier-btn" data-tier="ele-t2">2階</button>
+<button class="spell-tier-btn" data-tier="ele-t3">3階</button>
+</div>
+<!-- 元素流派 0階(戲法) -->
+<div class="spell-tier active" id="ele-t0">
+<div class="spell-list-nav">
+<button class="spell-btn">升溫/冷卻</button>
+<button class="spell-btn">煙團</button>
+<button class="spell-btn">點燃</button>
+</div>
+<!-- 🔹 升溫／冷卻 -->
+<div class="spell-detail hidden" data-name="升溫/冷卻">
+<h3>升溫/冷卻 Heat/Chill</h3>
+<p><strong>先決條件：</strong>學會元素流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米（球形）</p>
+<p><strong>持續時間：</strong>一班</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你讓你 10 米半徑內的區域變得溫暖或涼爽。可以在一班時間內抵抗寒冷效果。</p>
+</div>
+<div class="spell-detail hidden" data-name="煙團">
+<h3>煙團 Puff of Smoke</h3>
+<p><strong>先決條件：</strong>學會元素流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>一團煙霧在你面前噴發，很適合戲劇化的登場。若情況合理，這可以讓你的隱匿檢定獲得 1 個優勢。</p>
+</div>
+<div class="spell-detail hidden" data-name="點燃">
+<h3>點燃 Ignite</h3>
+<p><strong>先決條件：</strong>學會元素流派</p>
+<p><strong>環階：</strong>0階（戲法）</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢</p>
+<p><br/>你點燃或熄滅 10 米內的一個蠟燭、火炬或提燈。</p>
+</div>
+</div>
+<!-- 元素流派 1階 -->
+<div class="spell-tier" id="ele-t1">
+<div class="spell-list-nav">
+<button class="spell-btn">火球術</button>
+<button class="spell-btn">石柱術</button>
+<button class="spell-btn">碎裂術</button>
+<button class="spell-btn">強風術</button>
+<button class="spell-btn">寒霜術</button>
+</div>
+<!-- 🔹 火球術 -->
+<div class="spell-detail hidden" data-name="火球術">
+<h3>火球術 Fireball</h3>
+<p><strong>先決條件：</strong>學會元素流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>20米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>一道火球從你的手掌或法器射向目標，造成 2D6 火焰傷害，並點燃可燃物體。<br/>每提升一個威力等級可以讓傷害增加 1D6，或創造另一道火球射向射程內的另一個目標。<br/>此法術可以視為遠程攻擊被閃避或格擋。</p>
+</div>
+<div class="spell-detail hidden" data-name="石柱術">
+<h3>石柱術 Pillar</h3>
+<p><strong>先決條件：</strong>學會元素流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>一班</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>此法術會從地面或石造地板升起一根 3 米高、1 米寬的石柱。<br/>每提升一個威力等級可以讓石柱的高度增加 3 米。<br/>若有人站在該地點，他必須進行體操檢定（不需動作），失敗會從石柱上摔下來。若此法術在天花板不足 3 米高的室內施放，則站在法術地點上的目標若體操檢定失敗，他會改為受到 2D6 鈍擊傷害。</p>
+</div>
+<div class="spell-detail hidden" data-name="碎裂術">
+<h3>碎裂術 Shatter</h3>
+<p><strong>先決條件：</strong>學會元素流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>觸碰</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音</p>
+<p><br/>藉由破壞連結物質的無形力量，你可以打破有形的物體。<br/>此法術可以對一個無生命且非魔法的物品造成 2D10 傷害。<br/>每提升一個威力等級可以讓傷害增加 1D10。<br/>任何護甲值都無法對抗此法術。</p>
+</div>
+<div class="spell-detail hidden" data-name="強風術">
+<h3>強風術 Gust of Wind</h3>
+<p><strong>先決條件：</strong>學會元素流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米（錐形）</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>此法術會創造一陣強風。效果區域內所有人類大小的未固定物體和生物都會被推離 2D4 米，並受到相同數值的傷害。此法術在對抗集群時會造成 2D6 傷害。<br/>每提升一個威力等級可以讓傷害骰數量增加一顆。<br/>此法術對大型或巨型的怪物無效。</p>
+</div>
+<!-- 🔹 寒霜術 -->
+<div class="spell-detail hidden" data-name="寒霜術">
+<h3>寒霜術 Frost</h3>
+<p><strong>先決條件：</strong>學會元素流派</p>
+<p><strong>環階：</strong>1階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>4米（球形）</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>你將你周圍的溫度大幅降低。當成功施放法術時，效果區域內的所有自然火焰都會被熄滅，且區域內除了施法者以外的所有生物都會失去 1D6 HP (視為霜凍傷害) 和 1D6 WP，並受到寒冷效果影響，在身體溫暖前無法回復 HP 和 WP。<br/>效果區域內的類人生物（非怪物）也會被凍僵在原地，無法移動也無法採取動作（反應也不行）。凍僵的目標在自己回合可以進行**力量**檢定來掙脫（不需動作）。<br/>每提升一個威力等級可以讓法術射程增加 4 米。<br/>效果區域內的任何水體都會立刻結凍。這可以在河面上創造一個漂浮的冰塊，讓你走在上面或作為冰筏使用。</p>
+</div>
+</div>
+<!-- 元素流派 2階 -->
+<div class="spell-tier" id="ele-t2">
+<div class="spell-list-nav">
+<button class="spell-btn">石盾術</button>
+<button class="spell-btn">爆焰術</button>
+<button class="spell-btn">浪潮術</button>
+<button class="spell-btn">旋風術</button>
+<button class="spell-btn">石牆術</button>
+</div>
+<div class="spell-detail hidden" data-name="石盾術">
+<h3>石盾術 Stone Shield</h3>
+<p><strong>先決條件：</strong>學會石柱術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>反應</p>
+<p><strong>射程：</strong>自身</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、材料(石頭)</p>
+<p><br/>你立刻召喚一道岩石護盾，讓襲來的攻擊傷害降低 2D6。<br/>每提升一個威力等級可以讓傷害再降低 1D6。<br/>此法術可以和護甲互相結合。</p>
+</div>
+<div class="spell-detail hidden" data-name="爆焰術">
+<h3>爆焰術 Fire Blast</h3>
+<p><strong>先決條件：</strong>學會火球術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>30米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>手勢、聲音</p>
+<p><br/>一道巨大的火焰衝擊波從你的手掌或法器射向目標，造成 2D8 火焰傷害，並點燃可燃物體。<br/>每提升一個威力等級可以讓傷害增加 1D8，或創造另一道衝擊波射向射程內的另一個目標。<br/>此法術可以視為遠程攻擊被閃避或格擋。</p>
+</div>
+<div class="spell-detail hidden" data-name="浪潮術">
+<h3>浪潮術 Tidal Wave</h3>
+<p><strong>先決條件：</strong>學會寒霜術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>20米（錐形）</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢、材料（水源）</p>
+<p><br/>你從射程內的水源召喚一道巨大波浪。效果區域的源點為該水源，而非從你開始。<br/>效果區域內所有未固定的物體和生物都會被推離水源 2D6 米，並受到相同數值的傷害。<br/>每提升一個威力等級可以讓傷害骰數量增加一顆。</p>
+</div>
+<!-- 🔹 旋風術 -->
+<div class="spell-detail hidden" data-name="旋風術">
+<h3>旋風術 Whirlwind</h3>
+<p><strong>先決條件：</strong>學會強風術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>4米（球形）</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>此法術會在施法者周圍創造一陣強大的旋風。效果區域內所有人類大小的未固定物體和生物都會被推離 2D4 米，並受到相同數值的傷害。此法術在對抗集群時會造成 2D6 傷害。<br/>每提升一個威力等級可以讓法術射程增加 4 米，讓傷害骰數量增加一顆。<br/>如果你自願讓施法檢定承受一個劣勢，你可以讓射程內的一個生物被拋到射程內你選擇的另一個位置，而且你可以決定該生物是否會受到傷害，以及是否會跌倒伏地。</p>
+</div>
+<div class="spell-detail hidden" data-name="石牆術">
+<h3>石牆術 Stonewall</h3>
+<p><strong>先決條件：</strong>學會石柱術</p>
+<p><strong>環階：</strong>2階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>10米</p>
+<p><strong>持續時間：</strong>一班</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>此法術會從地面或石造地板升起一道 1 米厚、2 米高、3 米寬的石牆。<br/>每提升一個威力等級可以升起另一道相同尺寸的石牆。<br/>若有人站在該地點，他必須進行體操檢定（不需動作），失敗會從石牆上摔下來。若此法術在天花板不足 2 米高的室內施放，則站在法術地點上的目標若體操檢定失敗，他會改為受到 2D6 鈍擊傷害。</p>
+</div>
+</div>
+<!-- 元素流派 3階 -->
+<div class="spell-tier" id="ele-t3">
+<div class="spell-list-nav">
+<button class="spell-btn">埃哈風勇士</button>
+<button class="spell-btn">泰茲卡火蠑螈</button>
+<button class="spell-btn">普魯托克巨像</button>
+<button class="spell-btn">阿祖爾使者</button>
+<button class="spell-btn">烈火鳳凰</button>
+<button class="spell-btn">火風暴</button>
+</div>
+<div class="spell-detail hidden" data-name="埃哈風勇士">
+<h3>埃哈風勇士 Wind Warrior of Eha</h3>
+<p><strong>先決條件：</strong>學會旋風術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>4米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>此法術會召喚一個風元素，以暴風雲形成的類人形態現身。<br/>風元素在戰鬥中被視為怪物，並與創造者共用同一個先攻順序<br/>風元素會遵循創造者的命令（自由動作），但必須保持在創造者的視線範圍內。</p>
+<br/><h4>風元素</h4>
+<ul>
+<li>移動力：24</li>
+<li>HP：威力等級 X 5</li>
+<li>護甲值：—</li>
+<li>抗性：穿刺傷害減半。</li>
+<li>武器：呼嘯之風。在近戰中自動命中（但可以被閃避或格擋），將目標拋離每威力等級 1D4 遠，並造成相同數量的傷害。</li>
+<li>強風術：風元素可以用創造者的 WP 施放威力等級與自己相同的強風術。</li>
+</ul>
+</div>
+<div class="spell-detail hidden" data-name="泰茲卡火蠑螈">
+<h3>泰茲卡火蠑螈 Salamander of Tezca</h3>
+<p><strong>先決條件：</strong>學會爆焰術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>4米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢、材料（明火）</p>
+<p><br/>此法術會召喚一個火元素，以火蠑螈的形態現身。<br/>火元素在戰鬥中被視為怪物，並與創造者共用同一個先攻順序<br/>火元素會遵循創造者的命令（自由動作），但必須保持在創造者的視線範圍內。</p>
+<br/><h4>火元素</h4>
+<ul>
+<li>移動力：12</li>
+<li>HP：威力等級 X 5</li>
+<li>護甲值：—</li>
+<li>抗性：穿刺傷害減半。</li>
+<li>免疫：火焰傷害無效（包括魔法火焰）。</li>
+<li>火焰之攫。在近戰中自動命中（但可以被閃避或格擋）並造成每威力等級 1D6 鈍擊傷害。護甲無效。</li>
+<li>爆焰術：火元素可以用創造者的 WP 施放威力等級與自己相同的爆焰術。</li>
+</ul>
+</div>
+<!-- 🔹 普魯托克巨像 -->
+<div class="spell-detail hidden" data-name="普魯托克巨像">
+<h3>普魯托克巨像 Gnome of Plutoq</h3>
+<p><strong>先決條件：</strong>學會石牆術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>4米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢、材料（石頭或土壤）</p>
+<p><br/>此法術會召喚一個土元素，以灰褐色沙子或泥土做成的類人形態現身。<br/>土元素在戰鬥中被視為怪物，並與創造者共用同一個先攻順序<br/>土元素會遵循創造者的命令（自由動作），但必須保持在創造者的視線範圍內。</p>
+<br/><h4>土元素</h4>
+<ul>
+<li>移動力：8</li>
+<li>HP：威力等級 X 5</li>
+<li>護甲值：4</li>
+<li>武器：岩石之拳。在近戰中自動命中（但可以被閃避或格擋）並造成每威力等級 1D6 鈍擊傷害。</li>
+<li>石柱術：土元素可以用創造者的 WP 施放威力等級與自己相同的石柱術。</li>
+</ul>
+</div>
+<div class="spell-detail hidden" data-name="阿祖爾使者">
+<h3>阿祖爾使者 Undine of Azul</h3>
+<p><strong>先決條件：</strong>學會浪潮術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>一刻</p>
+<p><strong>射程：</strong>4米</p>
+<p><strong>持續時間：</strong>一刻</p>
+<p><strong>構材：</strong>聲音、手勢、材料（水源）</p>
+<p><br/>此法術會召喚一個水元素，以完全由水組成的女性類人形態現身。<br/>水元素在戰鬥中被視為怪物，並與創造者共用同一個先攻順序<br/>水元素會遵循創造者的命令（自由動作），但必須保持在創造者的視線範圍內。</p>
+<br/><h4>水元素</h4>
+<ul>
+<li>移動力：12</li>
+<li>HP：威力等級 X 5</li>
+<li>護甲值：—</li>
+<li>抗性：穿刺傷害減半。</li>
+<li>武器：呼嘯之風。潮汐之擁。在近戰中自動命中（但可以被閃避或格擋）並造成每威力等級 1D6 傷害。護甲無效。</li>
+<li>浪潮術：水元素可以用創造者的 WP 施放威力等級與自己相同的浪潮術。</li>
+</ul>
+</div>
+<div class="spell-detail hidden" data-name="烈火鳳凰">
+<h3>烈火鳳凰 Firebird</h3>
+<p><strong>先決條件：</strong>學會爆焰術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>40米</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>一隻可怕的火鳳凰從你的手掌或法器射向目標，造成 2D10 火焰傷害，並點燃可燃物體。<br/>每提升一個威力等級可以讓傷害增加 1D10，或創造另一隻火鳳凰射向射程內的另一個目標。<br/>此法術可以視為遠程攻擊被閃避或格擋。</p>
+</div>
+<!-- 🔹 火風暴 -->
+<div class="spell-detail hidden" data-name="火風暴">
+<h3>火風暴 Firestorm</h3>
+<p><strong>先決條件：</strong>學會爆焰術與旋風術</p>
+<p><strong>環階：</strong>3階</p>
+<p><strong>施法時間：</strong>動作</p>
+<p><strong>射程：</strong>4米（球形）</p>
+<p><strong>持續時間：</strong>即效</p>
+<p><strong>構材：</strong>聲音、手勢</p>
+<p><br/>此法術會在施法者周圍創造一陣火焰旋風。效果區域內所有生物都會受到 2D6 火焰傷害。<br/>每提升一個威力等級可以讓法術射程增加 4 米，並讓傷害骰數量增加一顆。</p>
+</div>
+</div>
+<div class="spell-detail-panel"><div class="placeholder">點擊法術以查看詳情。</div></div></div> <!-- ✅ 關閉 .spell-section -->
+</div> <!-- ✅ 關閉 #elemental -->
+</section>
+</main>
+<!-- ✅ 導覽列互動 CSS -->
+<style>
+.magic-nav {
+  text-align:center;
+  margin-top:20px;
+}
+.tab-btn {
+  background:rgba(0,0,0,0.4);
+  color:var(--gold);
+  border:1px solid var(--gold);
+  border-radius:6px;
+  margin:4px;
+  padding:14px 24px;
+  font-size:1.4rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+}
+.tab-btn:hover {
+  background:var(--gold);
+  color:#000;
+}
+.tab-btn.active {
+  background:var(--gold);
+  color:#000;
+}
+.tab-content {
+  display:none;
+}
+.tab-content.active {
+  display:block;
+}
+</style>
+<!-- ✅ 切換腳本 -->
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(sec => sec.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+</script>
+<!-- 🔸 次級導覽樣式 -->
+<style>
+
+.sub-nav {
+  text-align:center;
+  margin-bottom: 0;
+}
+.divider {
+  margin-top: -6px; /* 稍微往上拉貼齊 */
+}
+
+.sub-btn {
+  background:rgba(0,0,0,0.3);
+  color:var(--gold);
+  border:1px solid var(--gold);
+  border-radius:6px;
+  margin:4px;
+  padding:10px 22px;
+  font-size:1.2rem;
+  cursor:pointer;
+  transition:all 0.3s ease;
+}
+.sub-btn:hover {
+  background:var(--gold);
+  color:#000;
+}
+.sub-btn.active {
+  background:var(--gold);
+  color:#000;
+}
+.sub-content {
+  display:none;
+}
+.sub-content.active {
+  display:block;
+}
+</style>
+<script>
+/* ========= 通用：分頁切換 (#rules / #schools) ========= */
+document.querySelectorAll('.nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(sec => sec.classList.remove('active'));
+    btn.classList.add('active');
+    const target = document.querySelector('#' + btn.dataset.tab);
+    if (target) target.classList.add('active');
+  });
+});
+
+/* ========= 各主題的次級導覽（法術規則 or 流派介紹） ========= */
+document.querySelectorAll('.tab-content').forEach(tab => {
+  const subBtns = tab.querySelectorAll('.sub-btn');
+  subBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      subBtns.forEach(b => b.classList.remove('active'));
+      tab.querySelectorAll('.sub-content').forEach(sec => sec.classList.remove('active'));
+      btn.classList.add('active');
+      const target = tab.querySelector('#' + btn.dataset.sub);
+      if (target) target.classList.add('active');
+    });
+  });
+});
+
+/* ========= 書籤列滾動置中 ========= */
+document.querySelectorAll('.bookmark-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const selector = btn.dataset.scroll;
+    if (!selector) return;
+    const target = document.querySelector(selector);
+    if (!target) return;
+
+    const targetTop = target.getBoundingClientRect().top + window.scrollY;
+    const viewport = window.innerHeight;
+    const h = target.offsetHeight;
+    const scrollToY = targetTop - (viewport / 2) + (h / 2) - 40;
+    window.scrollTo({ top: scrollToY, behavior: 'smooth' });
+
+    btn.parentElement.querySelectorAll('.bookmark-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+
+/* ========= 返回書籤列置中 ========= */
+document.querySelectorAll('.back-to-top').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const parentSection = btn.closest('.sub-content');
+    const nav = parentSection && parentSection.querySelector('.bookmark-nav');
+    if (!nav) return;
+    const rect = nav.getBoundingClientRect();
+    const y = rect.top + window.scrollY - (window.innerHeight / 2) + (rect.height / 2);
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+});
+
+/* ========= 各流派法術查閱區（獨立控制） ========= */
+document.querySelectorAll('.spell-section').forEach(section => {
+  const tierBtns = section.querySelectorAll('.spell-tier-btn');
+  tierBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      section.querySelectorAll('.spell-tier').forEach(t => t.classList.remove('active'));
+      tierBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = section.querySelector('#' + btn.dataset.tier);
+      if (target) target.classList.add('active');
+    });
+  });
+});
+</script>
+<script>
+/* === 法術詳細內容切換 === */
+document.querySelectorAll('.spell-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tier = btn.closest('.spell-tier');
+    const allDetails = tier.querySelectorAll('.spell-detail');
+    const id = btn.textContent.trim();
+    const target = tier.querySelector(`[data-name="${id}"]`);
+
+    // 若點擊同一顆，則收起
+    if (target && !target.classList.contains('hidden')) {
+      target.classList.add('hidden');
+      btn.classList.remove('active');
+      return;
+    }
+
+    // 收起其他所有法術內容
+    allDetails.forEach(d => d.classList.add('hidden'));
+    tier.querySelectorAll('.spell-btn').forEach(b => b.classList.remove('active'));
+
+    // 顯示新的內容
+    if (target) {
+      target.classList.remove('hidden');
+      btn.classList.add('active');
+    }
+  });
+});
+</script>
+<script id="skilltree-js">
+(function(){
+  const q=(s,e=document)=>e.querySelector(s);
+  const qa=(s,e=document)=>Array.from(e.querySelectorAll(s));
+  const norm=s=>(s||'').trim();
+
+  function smartMatch(a,b){
+    const clean=s=>s.replace(/[（）()]/g,'').trim();
+    a=clean(a); b=clean(b);
+    if(a===b) return true;
+    if(Math.abs(a.length-b.length)<=2 && (a.includes(b)||b.includes(a))) return true;
+    return false;
+  }
+
+  qa('.spell-section').forEach(section=>{
+    const wrap=q('.skilltree-wrap',section);
+    const tree=q('.skilltree',section);
+    const svg=q('.skilltree-svg',section);
+    const panel=q('.spell-detail-panel',section);
+    if(!wrap||!tree) return;
+    console.log('🧭 [DynamicSmart] 智慧比對技能樹:',section.id);
+
+    // rebuild nodes
+    tree.innerHTML='';
+    let tiers=qa('.spell-tier',section);
+    tiers.forEach((t,i)=>{
+      const m=(t.id||'').match(/(\d+)/);
+      t.dataset.tier=m?parseInt(m[1],10):i;
+    });
+    tiers.sort((a,b)=>parseInt(a.dataset.tier,10)-parseInt(b.dataset.tier,10));
+    const nodesMap={};
+    tiers.forEach(tierEl=>{
+      const col=document.createElement('div');
+      col.className='skill-col';
+      const n=parseInt(tierEl.dataset.tier,10);
+      const title=document.createElement('div');
+      title.className='skill-tier-title';
+      title.innerHTML=`<hr><span>${n}階</span>`;
+      col.appendChild(title);
+      const btns=qa('.spell-btn,button',tierEl).filter(el=>norm(el.textContent));
+      btns.forEach(btn=>{
+        const node=document.createElement('button');
+        node.type='button';
+        node.className='skill-node';
+        node.textContent=norm(btn.textContent);
+        node.dataset.spellId=norm(btn.dataset.name||btn.dataset.id||btn.textContent);
+        col.appendChild(node);
+        nodesMap[node.dataset.spellId]=node;
+      });
+      tree.appendChild(col);
+    });
+
+    // build prereq map
+    const prereqMap={};
+    qa('.spell-detail',section).forEach(d=>{
+      const h=q('h3,h4',d);
+      if(!h) return;
+      const name=norm(h.textContent).replace(/[A-Za-z()]/g,'');
+      const ps=qa('p',d);
+      let pText='';
+      ps.forEach(p=>{
+        const text=p.textContent.replace(/\s+/g,'');
+        if(/(先決條件|前置條件|Prerequisite|需掌握|必須學會|需求)/.test(text)){
+          pText=text;
+        }
+      });
+      if(!pText) return;
+      const matches=pText.match(/學會([^。；，、]*)/g)||pText.match(/掌握([^。；，、]*)/g)||[];
+      const list=[];
+      matches.forEach(m=>{
+        const parts=m.replace(/(學會|掌握)/g,'').split(/或|、|和|,|，|與/);
+        parts.forEach(pt=>{
+          pt=norm(pt);
+          if(pt && !pt.includes('任一') && !pt.includes('流派')) list.push(pt);
+        });
+      });
+      if(list.length) prereqMap[name]=[...new Set(list)];
+    });
+
+    Object.keys(prereqMap).forEach(spell=>{
+      const nodeKey=Object.keys(nodesMap).find(k=>smartMatch(k,spell));
+      const node=nodesMap[nodeKey];
+      if(!node) return;
+      const reqs=prereqMap[spell]
+        .map(r=>Object.keys(nodesMap).find(k=>smartMatch(k,r))||r)
+        .filter(Boolean);
+      node.dataset.req=reqs.join(',');
+      node.title='前置：'+reqs.join(', ');
+    });
+
+    // reorder vertically
+    function reorderByConnections(){
+      const tierCols=qa('.skill-col',tree);
+      for(let i=1;i<tierCols.length;i++){
+        const prevCol=tierCols[i-1];
+        const curCol=tierCols[i];
+        const prevNodes=qa('.skill-node',prevCol);
+        const curNodes=qa('.skill-node',curCol);
+        if(!prevNodes.length||!curNodes.length) continue;
+        const posMap={};
+        curNodes.forEach(n=>{
+          let reqs=(n.dataset.req||'').split(',').map(norm).filter(Boolean);
+          let sum=0,count=0;
+          reqs.forEach(rid=>{
+            const fromKey=Object.keys(nodesMap).find(k=>smartMatch(k,rid));
+            const from=nodesMap[fromKey];
+            if(from){
+              const idx=prevNodes.indexOf(from);
+              if(idx>=0){sum+=idx;count++;}
+            }
+          });
+          posMap[n.textContent]=count?sum/count:curNodes.indexOf(n);
+        });
+        curNodes.sort((a,b)=>posMap[a.textContent]-posMap[b.textContent]);
+        curNodes.forEach(n=>curCol.appendChild(n));
+      }
+    }
+    reorderByConnections();
+
+    function getXY(el){
+      const wrapRect=wrap.getBoundingClientRect();
+      const r=el.getBoundingClientRect();
+      return {x:(r.left-wrapRect.left)+r.width/2,y:(r.top-wrapRect.top)+r.height/2};
+    }
+    function clearConnections(){ if(svg) svg.innerHTML=''; }
+
+    function drawConnectionsFor(node){
+      if(!svg) return;
+      clearConnections();
+      const rect=tree.getBoundingClientRect();
+      svg.setAttribute('width',rect.width);
+      svg.setAttribute('height',rect.height);
+      const spellId=norm(node.dataset.spellId||node.textContent);
+      const reqs=norm(node.dataset.req||'').split(',').map(norm).filter(Boolean);
+      let count=0;
+
+      const drawPath=(from,to)=>{
+        const a=getXY(from),b=getXY(to);
+        const dx=Math.max(40,(b.x-a.x)/2);
+        const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+        path.setAttribute('d',`M ${a.x} ${a.y} C ${a.x+dx} ${a.y}, ${b.x-dx} ${b.y}, ${b.x} ${b.y}`);
+        path.setAttribute('class','connection');
+        svg.appendChild(path);
+        count++;
+      };
+
+      // prerequisites
+      reqs.forEach(rid=>{
+        const fromKey=Object.keys(nodesMap).find(k=>smartMatch(k,rid));
+        const from=nodesMap[fromKey];
+        if(from) drawPath(from,node);
+      });
+      // next spells
+      qa('.skill-node',section).forEach(other=>{
+        const others=(other.dataset.req||'').split(',').map(norm).filter(Boolean);
+        if(others.some(r=>smartMatch(r,spellId))) drawPath(node,other);
+      });
+
+      console.log('✨ [DynamicSmart] 顯示',count,'條連線');
+    }
+
+    function findDetail(spellId){
+      let detail=qa('.spell-detail',section).find(d=>norm(d.dataset.name)===spellId||norm(d.dataset.id)===spellId);
+      if(detail) return detail;
+      return qa('.spell-detail',section).find(d=>{
+        const h=q('h3,h4',d);
+        return h&&norm(h.textContent).includes(spellId);
+      })||null;
+    }
+
+    function showDetail(spellId,node){
+      qa('.skill-node',section).forEach(n=>n.classList.remove('active'));
+      node.classList.add('active');
+      panel.innerHTML='';
+      const target=findDetail(spellId);
+      if(target){
+        const clone=target.cloneNode(true);
+        clone.classList.remove('hidden');
+        panel.appendChild(clone);
+      }
+      setTimeout(()=>{  panel.scrollIntoView({behavior:'smooth',block:'nearest'});  // ensure back-to-tree button exists and is visible
+  let backBtn = panel.querySelector('.back-to-tree');
+  if(!backBtn){
+    backBtn = document.createElement('button');
+    backBtn.className = 'back-to-tree show';
+    backBtn.textContent = '⬆ 返回';
+    panel.prepend(backBtn);
+    backBtn.addEventListener('click', ()=>{
+      wrap.scrollIntoView({behavior:'smooth',block:'start'});
+      backBtn.classList.remove('show');
+      setTimeout(()=>backBtn.remove(), 600);
+    });
+  } else {
+    backBtn.classList.add('show');
+  }
+}, 500);
+      drawConnectionsFor(node);
+    }
+
+    qa('.skill-node',section).forEach(node=>{
+      node.addEventListener('click',(e)=>{ e.preventDefault(); e.stopPropagation();
+        const sid=norm(node.dataset.spellId||node.textContent);
+        showDetail(sid,node);
+      });
+    });
+  });
+})();
+</script><script id="skilltree-particles">
+document.querySelectorAll('.skilltree-wrap').forEach(wrap=>{
+  const canvas=document.createElement('canvas');
+  canvas.className='skilltree-canvas';
+  canvas.style.zIndex='2';
+  canvas.style.mixBlendMode='screen';
+  wrap.prepend(canvas);
+  const ctx=canvas.getContext('2d');
+  let width,height;
+  function resize(){
+    width=canvas.width=wrap.clientWidth;
+    height=canvas.height=wrap.clientHeight;
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  const color=getComputedStyle(wrap).getPropertyValue('--color')||'#ffffff';
+  const nodes=wrap.querySelectorAll('.skill-node');
+  const particles=[];
+  for(let i=0;i<40;i++){
+    particles.push({
+      x:Math.random()*width,
+      y:Math.random()*height,
+      r:Math.random()*4+4,
+      dx:(Math.random()-0.5)*0.5,
+      dy:(Math.random()-0.5)*0.5,
+      blink:Math.random()*300+150,
+      life:Math.random()*300,
+      bright:Math.random()*0.5+0.5
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,width,height);
+    particles.forEach(p=>{
+      p.x+=p.dx; p.y+=p.dy;
+      if(p.x<0||p.x>width) p.dx*=-1;
+      if(p.y<0||p.y>height) p.dy*=-1;
+
+      // attraction to nodes
+      let ax=0, ay=0;
+      nodes.forEach(n=>{
+        const rect=n.getBoundingClientRect();
+        const wrapRect=wrap.getBoundingClientRect();
+        const nx=rect.left-wrapRect.left+rect.width/2;
+        const ny=rect.top-wrapRect.top+rect.height/2;
+        const dist=Math.hypot(p.x-nx,p.y-ny);
+        if(dist<120){
+          const force=(120-dist)/120*0.04;
+          ax+=(nx-p.x)*force;
+          ay+=(ny-p.y)*force;
+        }
+      });
+      p.dx+=ax; p.dy+=ay;
+      p.dx*=0.98; p.dy*=0.98;
+
+      // blinking
+      p.life++;
+      if(p.life>p.blink){
+        p.life=0;
+        p.bright=1.2;
+        p.blink=Math.random()*300+150;
+      } else {
+        p.bright=Math.max(0.5,p.bright-0.005);
+      }
+
+      // glow
+      const grad=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+      grad.addColorStop(0,`rgba(${hexToRgb(color)},${0.9*p.bright})`);
+      grad.addColorStop(0.5,`rgba(${hexToRgb(color)},${0.4*p.bright})`);
+      grad.addColorStop(1,'transparent');
+      ctx.fillStyle=grad;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  function hexToRgb(hex){
+    const shorthand=/^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex=hex.replace(shorthand,(m,r,g,b)=>r+r+g+g+b+b);
+    const result=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result?`${parseInt(result[1],16)},${parseInt(result[2],16)},${parseInt(result[3],16)}`:'255,255,255';
+  }
+
+  draw();
+
+  // --- Burst + Audio + Delayed Smooth Scroll ---
+  nodes.forEach(n=>{
+    n.addEventListener('click',()=>{
+      const rect=n.getBoundingClientRect();
+      const wrapRect=wrap.getBoundingClientRect();
+      const x=rect.left-wrapRect.left+rect.width/2;
+      const y=rect.top-wrapRect.top+rect.height/2;
+
+      // Burst element
+      const burst=document.createElement('div');
+      burst.className='magic-burst';
+      burst.style.left=x+'px';
+      burst.style.top=y+'px';
+      burst.style.borderColor=color;
+      wrap.appendChild(burst);
+      setTimeout(()=>burst.remove(),800);
+
+      // Brighten nearby particles
+      particles.forEach(p=>{
+        const dist=Math.hypot(p.x-x,p.y-y);
+        if(dist<150) p.bright=2.0;
+      });
+
+      // Play tone
+      playMagicTone(color);
+
+      // Delay 0.5s then scroll to local detail panel
+      const detail=wrap.querySelector('.spell-detail-panel');
+      if(detail){
+        setTimeout(()=>{
+          detail.scrollIntoView({behavior:'smooth', block:'center'});
+          const backBtn=document.createElement('button');
+          backBtn.className='back-to-tree';
+          backBtn.textContent='⬆ 返回';
+          detail.prepend(backBtn);
+          setTimeout(()=>backBtn.classList.add('show','flash'),200);
+          backBtn.addEventListener('click',()=>{
+            wrap.scrollIntoView({behavior:'smooth',block:'start'});
+            backBtn.classList.remove('show');
+            setTimeout(()=>backBtn.remove(),800);
+          });
+        },500);
+      }
+    });
+  });
+
+  function playMagicTone(color){
+    const ctxAudio=new (window.AudioContext||window.webkitAudioContext)();
+    const osc=ctxAudio.createOscillator();
+    const gain=ctxAudio.createGain();
+    const delay=ctxAudio.createDelay();
+    const feedback=ctxAudio.createGain();
+    delay.delayTime.value=0.15;
+    feedback.gain.value=0.25;
+    delay.connect(feedback).connect(delay);
+    osc.connect(gain).connect(delay).connect(ctxAudio.destination);
+
+    let baseFreq=440;
+    if(color.includes('e5a84c')) baseFreq=660;      // Pluma
+    else if(color.includes('4ec9b0')) baseFreq=220; // Elemental
+    else if(color.includes('b078e0')) baseFreq=330; // Tonalli
+    else if(color.includes('d1463d')) baseFreq=180; // Hishna
+    else baseFreq=440;                              // General
+
+    osc.type='sine';
+    osc.frequency.setValueAtTime(baseFreq,ctxAudio.currentTime);
+    osc.frequency.linearRampToValueAtTime(baseFreq*2,ctxAudio.currentTime+0.6);
+    gain.gain.setValueAtTime(0.15,ctxAudio.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctxAudio.currentTime+0.6);
+    osc.start();
+    osc.stop(ctxAudio.currentTime+0.6);
+  }
+});
+</script></body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>三聖學 Academy</title>
+
+  <!-- 導覽列與背景 -->
+  <link rel="stylesheet" href="navbar.css" />
+  <link rel="stylesheet" href="style.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="navbar.js"></script>
+  <link rel="stylesheet" href="background.css">
+  <script defer src="background.js"></script>
+
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      color: #f5f5f5;
+      font-family: "Noto Serif TC", serif;
+    }
+
+    main {
+      max-width: 950px;
+      margin: 0 auto;
+      padding: 2rem;
+      margin-top:0px;
+      line-height: 1.8;
+    }
+
+    h2 {
+      color: var(--gold, #d4af37);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    /* ===== 引言句樣式 ===== */
+    .intro {
+      text-align: center;
+      font-style: italic;
+      color: var(--gold, #d4af37);
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      padding: 0.8rem 1.2rem;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 8px;
+      background: rgba(255, 215, 0, 0.05);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.08);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: introFadeIn 1.4s ease-out forwards;
+    }
+
+    @keyframes introFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== 學派徽章樣式 ===== */
+    .seal {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+
+    .seal img {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 2px solid rgba(212, 175, 55, 0.4);
+      background: rgba(0, 0, 0, 0.25);
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.25);
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 羽光流轉效果 */
+    .seal::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 3px solid transparent;
+      border-top-color: rgba(255, 215, 0, 0.8);
+      border-right-color: rgba(255, 215, 0, 0.3);
+      border-bottom-color: rgba(255, 215, 0, 0.5);
+      border-left-color: rgba(255, 215, 0, 0.2);
+      animation: orbit 8s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes orbit {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* 分頁切換樣式 */
+    section {
+      display: none;
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1.5rem 2rem;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.08);
+      margin-bottom: 3rem;
+      margin-top: 1rem;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      background: rgba(255, 215, 0, 0.1);
+      border: 1px solid var(--gold, #d4af37);
+      color: var(--gold, #d4af37);
+      padding: 8px 20px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active {
+      background: var(--gold, #d4af37);
+      color: #111;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    }
+
+/* ==== 修正頁首多餘空白（H1 預設外距 & margin-collapsing） ==== */
+#site-navbar { margin: 0; }
+
+main {
+  margin-top: 0;          /* 不要額外往下推 */
+  padding-top: 0;         /* 保持緊貼導覽列 */
+  display: flow-root;     /* 阻止第一個子元素的 margin 與容器產生折疊 */
+}
+
+main > h1.page-title { 
+  margin-top: 0;          /* 移除 H1 的預設上外距（造成空白的主因） */
+}
+
+/* 保險：若 H1 不是第一個元素，仍清掉第一個可視元素的上外距 */
+main > *:first-child { 
+  margin-top: 0;
+}
+  </style>
+</head>
+
+<body>
+  <div id="site-navbar"></div>
+  <canvas id="background"></canvas>
+  <main>
+    <h1 class="page-title" style="text-align:center; color:var(--gold,#d4af37);">三聖學 Academy</h1>
+    <p class="subtitle" style="text-align:center; color:#ddd;">理性與奧秘並行的殿堂．理解神祉創造的法則</p>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" data-target="celestonomy">天律學</button>
+      <button class="tab-btn" data-target="numeronomy">數律學</button>
+      <button class="tab-btn" data-target="theonomy">神律學</button>
+      <button class="tab-btn" data-target="vitalogy">生知學</button>
+      <button class="tab-btn" data-target="academy">學院概要</button>
+    </div>
+
+    <!-- 天律學 -->
+    <section id="celestonomy" class="active">
+      <h2>🌌 天律學 Celestonomy</h2>
+      <div class="seal"><img src="images/celestonomy_seal.png" alt="天律學圖章" /></div>
+      <p class="intro"><em>「當夜空被第一顆恆星劃破時，人們學會了數算時間，也學會了仰望。」</em></p>
+      <h3>〈起源與信念〉</h3>
+  <p>
+    天律學起源於帕伊特早期的航海文明。最初的觀星者為了追蹤潮汐與季風，在海岸與高原上建立了「石影塔」，記錄星辰與太陽的運行。這些塔最終形成了天律學的雛形。隨著曆法的出現與農業的穩定，觀星者開始意識到星辰的週期性蘊含某種更高秩序的力量。天律學由此誕生，並逐步形成一套以「觀測」為核心的信念：唯有理解天體的軌跡，才能理解神祉創造世界的邏輯。
+  </p>
+
+  <h3>〈教義與實踐〉</h3>
+  <p>
+    天律學者主張「觀測即信仰」。他們相信神祉並非以奇蹟干預凡世，而是透過天體的運行揭示法則。每一次日蝕、流星或風暴，皆是宇宙秩序的回聲。學派成員花費數十年研究恆星移動的微小偏差，並以此預測季節、氣候與祭典時序。對天律學者而言，祈禱的形式不是言語，而是紀錄與理解。他們在圖坎沙漠中建立了「觀星高塔」，由矮人工匠協助設計，能在烈風中精準追蹤星軌，成為理性信仰的象徵。
+  </p>
+
+  <h3>〈學派與影響〉</h3>
+  <p>
+    隨著學派擴張，天律學分為三支：主張星象決定命運的「預兆派」、強調理性觀測的「秩序派」、以及試圖將天象與神學結合的「符兆派」。三派理念時有爭論，但共同奠定了馬茲提卡的曆法學、航海學與氣候學。天律學者的研究使城邦能在乾季與雨季間精確安排農耕，並推動了早期的天象儀器與金屬觀測鏡的製作。時至今日，天律學仍是理性信仰的基礎之一，代表人類仰望星空的求知之心。
+  </p>
+
+  <blockquote>
+    「星辰無言，卻循其軌；理解天道者，方能理解命運。」  
+    —— 瑪索亞．光觀者，《天體秩序論》
+  </blockquote>
+</section>
+
+
+    <!-- 數律學 -->
+    <section id="numeronomy">
+      <h2>🔢 數律學 Numeronomy</h2>
+      <div class="seal"><img src="images/numeronomy_seal.png" alt="數律學圖章" /></div>
+      <p class="intro"><em>「神以數創世，凡人以數理解神。」</em></p>
+     <h3>〈起源與信念〉</h3>
+  <p>
+    數律學興起於帕伊特的烏拉托斯城，是三聖學體系的理性核心。最早的學者發現，不論是建築結構、樂曲節奏還是貿易價格，皆能以比例與數列解釋。這使他們相信：神在創世時以「數」作為秩序之語。於是，一群數學與哲學兼修的學者建立了「比例學院」，致力於尋找萬物之間的幾何平衡。他們稱自己為「秩序的抄錄者」，視理解數律為模仿神的創造行為。
+  </p>
+
+  <h3>〈教義與實踐〉</h3>
+  <p>
+    數律學者主張萬物可被計算。凡存在於世界的現象，無論自然、社會或精神，皆可化為可測量的關係。他們研究黃金比例、振動頻率與城市幾何，並認為理性的精確是對神最崇高的敬意。學派內部分為兩大流派：「計序派」相信透過完備的方程，人類能最終預測命運；「均衡派」則主張數字只是理解神意的象徵，而非掌控世界的工具。兩派雖爭辯不休，但其辯論推動了邏輯學與工程學的成熟。
+  </p>
+
+  <h3>〈學派與影響〉</h3>
+  <p>
+    烏拉托斯城因此成為馬茲提卡的科技中心。數律學者設計的建築以比例聞名，其三螺旋塔即為象徵。學派的理論推動了曆法改革、貿易制度與城邦防禦，甚至影響到軍事陣形與宗教儀式的佈局。對他們而言，混沌並非無序，而是尚未解出的方程。雖然薩滿與神律學者常指責他們「試圖計算神」，但數律學者堅信理解不等於僭越。正如奧蘇特．計序者所言：「秩序是神留下的最明確印記。」
+  </p>
+
+  <blockquote>
+    「萬物皆有結構，混沌只是尚未被看見的秩序。」  
+    —— 奧蘇特．計序者，《秩序的幾何》
+  </blockquote>
+</section>
+
+    <!-- 神律學 -->
+    <section id="theonomy">
+      <h2>⚖️ 神律學 Theonomy</h2>
+      <div class="seal"><img src="images/theonomy_seal.png" alt="神律學圖章" /></div>
+      <p class="intro"><em>「若宇宙有法，則神必在其律中；理解律者，乃是理解神的第一步。」</em></p>
+      <h3>〈起源與信念〉</h3>
+  <p>
+    神律學誕生於宗教權威崩解的年代。當舊神殿的祭司失去信眾信任，一群理性派學者提出新論：神蹟並非違反自然，而是運行於更高層次的法則之中。這場思想革命讓信仰走出盲目崇拜，進入理性研究的時代。神律學者相信神祉在創世時立下「律」，而所有現象──從河川流向到人心動盪──皆受此律支配。研究神學即是研究秩序本身。
+  </p>
+
+  <h3>〈教義與實踐〉</h3>
+  <p>
+    神律學將信仰化為推理。祭儀不再是單純的祈禱，而是依據精確公式與符文結構執行。著名的《羽蛇法典》記錄了神祉等階與律令的數學化形式，被視為理性神學的聖典。神律學者以符號、幾何與天象為工具，模擬神意運行的圖式。他們主張：「人不可成神，但可理解神的法則。」這種信念讓他們在馬茲提卡南部建立起學術與宗教並行的體系。
+  </p>
+
+  <h3>〈學派與影響〉</h3>
+  <p>
+    比丘烏姆聖城是神律學的核心。當地的聖院學派將三聖理論融合為「羽蛇法典學」，試圖在數理與信仰間尋找統一。每十年一次的「羽律朝聖行」象徵理性對信仰的朝覲。雖然薩滿與神律學者理念對立──前者以靈性理解神，後者以理性推演神──但兩者最終形成共治。神律學的出現使馬茲提卡的宗教由感性走向理性，也奠定了現代祭儀體系的基礎。
+  </p>
+
+  <blockquote>
+    「神蹟不是違反自然的奇蹟，而是自然在更高層次中運行的秩序。」  
+    —— 亞瑪赫．奎奧提爾，《羽蛇之法論》
+  </blockquote>
+</section>
+
+    <!-- 生知學 -->
+    <section id="vitalogy">
+      <h2>🌱 生知學 Vitalogy</h2>
+      <div class="seal"><img src="images/vitalogy_seal.png" alt="生知學圖章" /></div>
+      <p class="intro"><em>「若理性源於觀察，那觀察的起點，必是生命本身。」</em></p>
+    <h3>〈起源與信念〉</h3>
+  <p>
+    生知學是三聖學出現之前最古老的知識體系，起源於馬茲提卡南部部落的口述傳統。早期智者認為，真正的智慧來自生命本身，而非文字記錄。他們以「活知」為信條，主張唯有親歷、觀察與痛苦才能獲得理解。狩獵、耕作與疾病都是教課書，風、雨與火是教師。這種源自生活的知識後來被稱為「生知學」，意指「由生命所生的學問」。
+  </p>
+
+  <h3>〈教義與實踐〉</h3>
+  <p>
+    生知學拒絕抽象理論，強調經驗與體驗的重要。智者在叢林與山谷間教導弟子觀察獸跡、辨識氣味與節氣，並從自然互動中領悟秩序。知識被視為一種呼吸的行為，而非書本的內容。三聖學院成立後，學者將生知學的理念融入課程，設立「田野實修」與「生命記錄」課程。學生必須在自然環境中度過一季，以體驗理性與生命的共鳴。
+  </p>
+
+  <h3>〈學派與影響〉</h3>
+  <p>
+    雖然生知學缺乏嚴謹體制，但其影響深遠。許多薩滿、醫者與探險家皆被視為其傳人。他們以故事與符號記錄知識，成為馬茲提卡最早的教育形式。三聖學者將其尊為「理性之母學」，認為理性若脫離生命，終將枯竭。生知學提醒人們：學問的根源並非書本，而是呼吸與感受。它象徵著人類對世界最原始也最真誠的理解。
+  </p>
+
+  <blockquote>
+    「文字不會教會你如何生存，唯有飢餓與雨水能。」  
+    —— 伊札特．長行者，《行於生命之書》
+  </blockquote>
+</section>
+
+    <!-- 三聖學院 -->
+    <section id="academy">
+      <h2>🏛️ 三聖學院 Academy</h2>
+      <div class="seal"><img src="images/academy_seal.png" alt="三聖學院總徽章" /></div>
+      <p class="intro"><em>「知識之環連結天地，理性之火長燃於神與凡之間。」</em></p>
+     <h3>〈組織與架構〉</h3>
+  <p>
+    三聖學院是馬茲提卡大陸上最權威的知識體系，由天律、數律與神律三大學院組成。其總院位於帕伊特的烏拉托斯，由數律學派主導研究，象徵理性與科技的核心。學院設有理事院，由三院導師與中立的「平衡者」共同主持，以維持各派權力與資源的均衡。分院遍布佩澤拉克、圖坎與比丘烏姆，分別象徵應用、觀測與信仰的延伸。
+  </p>
+
+  <h3>〈課程與教育〉</h3>
+  <p>
+    學院教育分為五階：學徒、研究者、導師、賢者與高導師。學生須通過「三試」——觀星、解題與誦法——以證明觀察、邏輯與信仰三者兼備。課程涵蓋天象學、幾何學、符文學、歷史修辭與田野實修。學徒在導師指導下完成一項「巡行研究」，需前往異地協助實驗或祭典，以檢驗理論的實用性。這種制度確保學問不止於理論，而能服務社會。
+  </p>
+
+  <h3>〈學院的社會角色〉</h3>
+  <p>
+    三聖學院不僅是知識殿堂，更是大陸秩序的維繫者。理事院負責制訂曆法、監督祭期、審核律法，並在戰亂或災變時提供決策指導。學者被尊稱為「理性祭司」，他們以理解而非權力引導信仰。每十年舉行的「羽律朝聖行」象徵理性回歸信仰，提醒學者知識的最終目標是平衡與和諧。正因三聖學院的存在，馬茲提卡才能在神與凡人之間維持持久的秩序。
+  </p>
+</section>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabs = document.querySelectorAll(".tab-btn");
+      const sections = document.querySelectorAll("section");
+
+      tabs.forEach(btn => {
+        btn.addEventListener("click", () => {
+          tabs.forEach(b => b.classList.remove("active"));
+          sections.forEach(s => s.classList.remove("active"));
+
+          btn.classList.add("active");
+          const target = document.getElementById(btn.dataset.target);
+          if (target) {
+            target.classList.add("active");
+            gsap.fromTo(target, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6 });
+          }
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+:root {
+  --gold: #c9a35a;
+  --jade: #0e4b3a;
+  --ink: #1a1a1a;
+  --paper: #f5e9c9;
+}
+
+.navbar {
+  width: 100%;
+  background: rgba(0,0,0,0.75);
+  border-bottom: 1px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.nav-list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 10px 20px;
+  transition: all 0.4s ease;
+  gap: 20px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: all 0.4s ease;
+}
+
+.nav-toggle {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  padding: 6px 10px;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.nav-toggle:hover {
+  color: #fffbe8;
+  transform: scale(1.05);
+  text-shadow: 0 0 10px rgba(201,163,90,0.6);
+}
+
+.nav-item.open > .nav-toggle {
+  color: #fffbe8;
+  text-shadow: 0 0 10px rgba(201,163,90,0.8);
+}
+
+/* === 子選單水平展開 === */
+.submenu {
+  display: none;
+  overflow: hidden;
+  align-items: center;
+  gap: 16px;
+  background: rgba(15,15,15,0.9);
+  border: 1px solid var(--gold);
+  border-radius: 10px;
+  margin-left: 10px;
+  padding: 6px 12px;
+  position: relative;
+  white-space: nowrap;
+}
+
+.nav-item.open > .submenu {
+  display: flex;
+}
+
+.submenu a {
+  color: #fffbe8;
+  font-size: 0.95rem;
+  text-decoration: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.submenu a:hover {
+  background: rgba(201,163,90,0.25);
+  color: var(--gold);
+}
+
+/* === 金羽流光特效 === */
+.feather-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 240%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,240,150,0.25) 10%,
+    rgba(255,230,130,0.8) 35%,
+    rgba(255,215,90,1) 55%,
+    rgba(255,190,60,0.6) 75%,
+    rgba(255,255,255,0) 100%
+  );
+  filter: blur(14px) brightness(1.5);
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  border-radius: 8px;
+}
+
+/* === 新增：底部橘金光層 === */
+.navbar-glow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,130,30,0.1) 0%,
+    rgba(255,160,60,0.8) 40%,
+    rgba(255,200,100,1) 50%,
+    rgba(255,160,60,0.8) 60%,
+    rgba(255,130,30,0.1) 100%
+  );
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+  filter: blur(8px);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+
+.feather-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 240%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,170,80,0.25) 10%,
+    rgba(255,150,60,0.8) 35%,
+    rgba(255,120,30,1) 55%,
+    rgba(255,100,20,0.6) 75%,
+    rgba(255,255,255,0) 100%
+  );
+  filter: blur(14px) brightness(1.4);
+  mix-blend-mode: screen;
+  opacity: 0;
+  pointer-events: none;
+  border-radius: 8px;
+}

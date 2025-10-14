@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>角色成長</title>
+
+  <!-- ✅ 導覽列與背景模組 -->
+  <link rel="stylesheet" href="navbar.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="navbar.js"></script>
+  <link rel="stylesheet" href="background.css">
+  <script defer src="background.js"></script>
+
+  <!-- ✅ 字型 -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/quatl" rel="stylesheet">
+
+  <style>
+    :root { --gold:#c9a35a; --jade:#0e4b3a; --ink:#1a1a1a; --paper:#f5e9c9; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body { font-family:'Noto Sans TC',sans-serif; color:#f1e8d6; }
+
+    /* ✅ 頁首 */
+    header{
+      text-align:left;
+      padding:40px 40px 20px;
+      background:transparent;
+    }
+    header h1{
+      font-family:"Quatl",serif;
+      font-size:2rem;
+      color:var(--gold);
+      letter-spacing:2px;
+    }
+    header p{
+      margin-top:8px;
+      font-size:1.05rem;
+      color:#fffbe8;
+      line-height:1.7;
+    }
+
+    /* ✅ 次導覽列 */
+    .subnav{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:10px;
+      padding:16px 0 0;
+    }
+    .subnav button{
+      background:rgba(0,0,0,0.3);
+      border:1px solid var(--gold);
+      color:var(--gold);
+      padding:10px 18px;
+      border-radius:8px;
+      cursor:pointer;
+      font-size:1rem;
+      transition:all 0.3s ease;
+    }
+    .subnav button:hover{
+      background:rgba(255,215,100,0.15);
+      transform:translateY(-2px);
+    }
+    .subnav button.active{
+      background:var(--gold);
+      color:#1a1a1a;
+      font-weight:bold;
+    }
+
+    /* ✅ 主內容 */
+    main{
+      max-width:1200px;
+      margin:30px auto;
+      padding:0 32px 40px;
+      background:rgba(0,0,0,0.25);
+      border:1px solid var(--gold);
+      border-radius:12px;
+      backdrop-filter:blur(3px);
+      box-shadow:0 4px 10px rgba(0,0,0,0.5);
+    }
+    section{
+      display:none;
+      animation:fadeIn 0.5s ease;
+    }
+    section.active{
+      display:block;
+    }
+    @keyframes fadeIn{
+      from{opacity:0;transform:translateY(10px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    section h2{
+      color:var(--gold);
+      font-size:1.5rem;
+      margin-top:24px;
+      margin-bottom:10px;
+    }
+    section p, section li{
+      line-height:1.8;
+      margin-bottom:10px;
+    }
+    section ul{
+      margin-left:24px;
+      list-style-type:disc;
+    }
+
+    .divider{
+      width:100%;
+      height:80px;
+      margin:0px 0 0;
+      background:url('images/aztec-divider.png') repeat-x;
+      background-size:auto 200%;
+      opacity:.9;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ✅ 導覽列載入 -->
+  <div id="site-navbar"></div>
+
+  <header>
+    <h1>角色成長</h1>
+    <p>作為一個冒險者，生活會帶來許多挑戰。如果你能活下來，你肯定會改變，甚至可能大幅成長。</p>
+<br>
+    <!-- ✅ 次導覽列 -->
+    <div class="subnav">
+      <button data-target="adv-mark">提升標記</button>
+      <button data-target="adv-roll">提升檢定</button>
+      <button data-target="teacher">導師</button>
+      <button data-target="magic">魔法</button>
+      <button data-target="hero">英雄能力</button>
+    </div>
+  <div class="divider"></div>
+  </header>
+
+
+  <main>
+    <!-- 提升標記 -->
+    <section id="adv-mark" class="active">
+      <h2>提升標記 Advancement Marks</h2>
+      <ul>
+        <li>當你的技能檢定骰出大成功或大失敗時，將技能旁的小格子打勾，這稱作「提升標記」。</li>
+        <li>每一次遊戲團務結束時，GM 會問你關於該團務的一些問題，每回答一個「是」，你可以自選一個技能標上提升標記：
+          <ul>
+            <li>你是否有參加這場團務？</li>
+            <li>你是否有探索全新的區域？</li>
+            <li>你是否打敗了至少一個危險的敵人？</li>
+            <li>你是否在不依靠武力的情況下克服了一個障礙？</li>
+            <li>你是否有扮演出你的弱點？</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 提升檢定 -->
+    <section id="adv-roll">
+      <h2>提升檢定 Advancement Rolls</h2>
+      <ul>
+        <li>標好提升標記後，為每一個有標記的技能進行提升檢定（1D20），若擲骰結果＞目前的技能數值，則技能數值可以 +1（最多 18）。</li>
+        <li>每骰完一個提升檢定後，無論成功或失敗，都將提升標記劃掉，下次團務會再重新進行一次提升步驟。</li>
+      </ul>
+    </section>
+
+    <!-- 導師 -->
+    <section id="teacher">
+      <h2>導師 Teacher</h2>
+      <ul>
+        <li>你可以找導師進行特定技能的高強度訓練，但導師的該技能數值必須至少為 15 且比你還高。</li>
+        <li>在一班時間的訓練過後，你可以馬上針對該技能進行提升檢定，不用等到團務結束。</li>
+        <li>但是，一個導師只能提升一個技能 1 級，之後你就必須靠自身經驗來精進技能。</li>
+      </ul>
+    </section>
+
+    <!-- 魔法 -->
+    <section id="magic">
+      <h2>魔法 Magic</h2>
+      <ul>
+        <li>你已知魔法流派（次要技能）的提升方式和其他技能相同。</li>
+        <li>若要學習新法術和新的魔法學派則必須進行特殊訓練，請參考「<strong>魔法&法術</strong>」。</li>
+      </ul>
+    </section>
+
+    <!-- 英雄能力 -->
+    <section id="hero">
+      <h2>英雄能力 Heroic Abilities</h2>
+      <ul>
+        <li>你可以透過以下兩種方式獲得新的英雄能力（必須達到先決條件）：
+          <ul>
+            <li>當你將一個技能數值提升至 18 時，你可以馬上自選獲得一個新的英雄能力。若該技能因為任何原因而降至 17 以下，你的英雄能力不會因此消失，而當該技能再次提升至 18 時，你甚至可以再獲得一個新的英雄能力。</li>
+            <li>在完成一個偉大的壯舉後，GM 可以獎勵你一個英雄能力。這應該是非常罕見的事件，一場標準長度的冒險應該最多只有一次。</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    // ✅ 切換子分頁功能
+    const buttons = document.querySelectorAll('.subnav button');
+    const sections = document.querySelectorAll('main section');
+    buttons.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        buttons.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        sections.forEach(sec=>{
+          sec.classList.toggle('active', sec.id===btn.dataset.target);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
