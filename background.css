@@ -4,7 +4,7 @@
 
 /* 整體底色與叢林圖背景 */
 body {
-  background: #081a14 url('images/bg-jungle.png') center center / cover no-repeat fixed;
+  background: #081a14 url('images/bg-jungle.webp') center center / cover no-repeat fixed;
   color: #f5e9c9;
   overflow-x: hidden;
 }
@@ -45,8 +45,9 @@ body {
   background: transparent;
 }
 body {
-  background: #081a14 url('images/bg-jungle.png') center center / cover no-repeat fixed;
+  background: #081a14 url('images/bg-jungle.webp') center center / cover no-repeat fixed;
   color: #f5e9c9;
   overflow-x: hidden;
   filter: brightness(1.15) contrast(1.05);
+
 }
