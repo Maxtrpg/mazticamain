@@ -76,9 +76,12 @@ main h3:hover {
   box-shadow: 0 0 16px rgba(212,175,55,0.25);
 }
 
+
 /* 左側圖片 */
 .deity-img {
-  flex: 0 0 220px;
+  flex: 0 0 320px;
+  height: 100%; /* ← 新增，讓圖片區塊與文字等高 */
+  align-self: stretch; /* 讓它在 flex 容器中撐滿高度 */
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 8px rgba(212,175,55,0.25);
@@ -86,8 +89,10 @@ main h3:hover {
 .deity-img img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover; /* 圖片充滿容器但不變形 */
   border-radius: 10px;
+  transform: scale(1.05); /* 稍微放大內容 */
 }
 
 /* 右側文字內容 */
